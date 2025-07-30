@@ -201,22 +201,10 @@ class AudioManager {
   }
   
   playHTMLAudio(url, loop = false, volume = 1.0) {
-    // Fallback HTML5 audio implementation
-    const audio = new Audio(url);
-    audio.loop = loop;
-    audio.volume = volume;
-    
-    // Handle common audio file not found gracefully
-    audio.addEventListener('error', () => {
-      console.log(`🎵 Audio file not found: ${url} (using placeholder)`);
-      this.playPlaceholderSound();
-    });
-    
-    audio.play().catch(error => {
-      console.log('Audio play failed (user interaction required):', error.message);
-    });
-    
-    return audio;
+    // Create placeholder synthetic audio instead of trying to load missing files
+    this.playPlaceholderSound();
+    console.log(`🎵 Playing placeholder audio for: ${url}`);
+    return null;
   }
   
   playWebAudioSound(sound, volume) {
