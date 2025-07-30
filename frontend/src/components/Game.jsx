@@ -281,14 +281,25 @@ const Game = () => {
       gameEngineRef.current.startGame();
       setIsPaused(false);
       
-      // Start level music immediately
+      // Start level music immediately with better error handling
       if (audioManager && !isMuted) {
-        console.log('Starting audio and music...');
-        audioManager.resumeAudioContext(); // Resume audio context on user interaction
-        audioManager.playMusic(1); // Start with level 1 music
-        
-        // Play a confirmation sound to indicate game start
-        audioManager.playSFX('game_start', { volume: 0.3 });
+        console.log('🎵 Starting audio and music...');
+        try {
+          // Resume audio context on user interaction
+          audioManager.resumeAudioContext();
+          
+          // Start level music
+          audioManager.playMusic(1);
+          
+          // Play a confirmation sound to indicate game start
+          audioManager.playSFX('game_start', { volume: 0.3 });
+          
+          console.log('🎵 Audio started successfully');
+        } catch (audioError) {
+          console.error('Audio failed to start:', audioError);
+        }
+      } else {
+        console.log('🔇 Audio muted or not available');
       }
       
       console.log('🎮 Game started successfully! Canvas should now show gameplay.');
