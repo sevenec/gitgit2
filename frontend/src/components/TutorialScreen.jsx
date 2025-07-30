@@ -72,6 +72,13 @@ const TutorialScreen = ({ onComplete, onSkip }) => {
       color: "from-green-500 to-yellow-500"
     },
     {
+      title: "Blaster Controls",
+      icon: Target,
+      content: "When you have the Blaster power-up, tap/click anywhere on the screen to shoot projectiles and destroy obstacles!",
+      visual: "blaster_demo",
+      color: "from-yellow-500 to-orange-500"
+    },
+    {
       title: "Level Progression",
       icon: Heart,
       content: "Survive 45-60 seconds per level to advance. Each level gets more challenging with faster obstacles and new backgrounds!",
