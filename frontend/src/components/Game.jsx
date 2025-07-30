@@ -286,7 +286,11 @@ const Game = () => {
     if (!hasCompletedTutorial) {
       setShowTutorial(true);
     } else {
-      startActualGame();
+      // Add delay to ensure canvas is mounted before starting game directly
+      setTimeout(() => {
+        setGameState('playing');
+        startActualGame();
+      }, 200);
     }
   };
 
