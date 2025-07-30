@@ -399,6 +399,12 @@ window.GameRenderer = class GameRenderer {
   }
   
   renderGame(gameEngine) {
+    // Apply screen shake effects first
+    this.ctx.save();
+    if (gameEngine.screenEffects) {
+      gameEngine.screenEffects.applyShake(this.ctx);
+    }
+    
     // Render player with flutterer customization
     if (gameEngine.player) {
       this.drawFlutterer(
@@ -424,9 +430,9 @@ window.GameRenderer = class GameRenderer {
       }
     });
     
-    // Render power-ups
+    // Render power-ups with enhanced glow effect
     gameEngine.powerUps.forEach(powerUp => {
-      this.drawPowerUp(powerUp);
+      this.drawEnhancedPowerUp(powerUp);
     });
     
     // Render player projectiles
@@ -436,7 +442,7 @@ window.GameRenderer = class GameRenderer {
       }
     });
     
-    // Render particles with enhanced effects
+    // Render original particles with enhanced effects
     gameEngine.particles.forEach(particle => {
       this.ctx.globalAlpha = particle.alpha;
       this.ctx.fillStyle = particle.color;
@@ -445,7 +451,15 @@ window.GameRenderer = class GameRenderer {
       this.ctx.fill();
     });
     
+    // Render enhanced particle system
+    if (gameEngine.particleSystem) {
+      gameEngine.particleSystem.render(this.ctx);
+    }
+    
     this.ctx.globalAlpha = 1;
+    
+    // Restore context after shake effects
+    this.ctx.restore();
     
     // Render special effects
     this.renderSpecialEffects(gameEngine.specialEffects);
