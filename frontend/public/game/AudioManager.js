@@ -587,15 +587,26 @@ window.AudioManager = class AudioManager {
     this.sfxVolume = Math.max(0, Math.min(1, volume));
   }
 
-  // Toggle mute functionality - properly using mute/unmute methods
+  // Toggle mute/unmute with COMPLETE AUDIO CONTROL
   toggleMute() {
-    if (this.musicDisabled) {
-      this.unmute();
-      console.log('🔊 Audio unmuted');
+    if (this.musicDisabled && this.sfxDisabled) {
+      // Currently everything is disabled, enable all audio
+      this.musicDisabled = false;
+      this.sfxDisabled = false;
+      this.musicVolume = 0.3; // Moderate music volume
+      this.sfxVolume = 0.2; // Low sound effects volume
+      this.masterVolume = 0.5; // Moderate master volume
+      console.log('🔊 AUDIO ENABLED - Music and sound effects now active (volumes reduced)');
       return false; // Not muted
     } else {
-      this.mute();
-      console.log('🔇 Audio muted');
+      // Currently enabled, disable everything
+      this.musicDisabled = true;
+      this.sfxDisabled = true;
+      this.musicVolume = 0.0;
+      this.sfxVolume = 0.0;
+      this.masterVolume = 0.0;
+      this.forceStopAllAudio(); // Stop any currently playing audio
+      console.log('🔇 AUDIO DISABLED - All music and sound effects muted');
       return true; // Muted
     }
   }
