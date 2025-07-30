@@ -267,7 +267,7 @@ class AudioManager {
     return configs[level] || configs[Math.min(level, 5)];
   }
   
-  createVariedMelody(musicConfig, fadeTime) {
+  createRelaxingMelody(musicConfig, fadeTime) {
     let melodyIndex = 0;
     let melodyOscillator = null;
     
@@ -281,29 +281,36 @@ class AudioManager {
       
       melodyOscillator = this.audioContext.createOscillator();
       const gainNode = this.audioContext.createGain();
+      const filter = this.audioContext.createBiquadFilter();
       
-      melodyOscillator.connect(gainNode);
+      melodyOscillator.connect(filter);
+      filter.connect(gainNode);
       gainNode.connect(this.musicGain);
       
-      melodyOscillator.type = musicConfig.melodyWave;
+      melodyOscillator.type = 'sine'; // Always use sine for soft melody
       melodyOscillator.frequency.value = musicConfig.melody[melodyIndex % musicConfig.melody.length];
       
-      const noteLength = musicConfig.tempo * 0.0006; // Shorter notes
+      // Add gentle low-pass filtering for warmth
+      filter.type = 'lowpass';
+      filter.frequency.value = 800;
+      filter.Q.value = 1;
+      
+      const noteLength = musicConfig.tempo * 0.0008; // Longer, more sustained notes
       gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-      gainNode.gain.linearRampToValueAtTime(0.04, this.audioContext.currentTime + 0.05); // Reduced volume
-      gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + noteLength);
+      gainNode.gain.linearRampToValueAtTime(0.025, this.audioContext.currentTime + 0.1); // Very soft volume
+      gainNode.gain.exponentialRampToValueAtTime(0.005, this.audioContext.currentTime + noteLength);
       
       melodyOscillator.start(this.audioContext.currentTime);
       melodyOscillator.stop(this.audioContext.currentTime + noteLength);
       
       melodyIndex++;
       
-      // Schedule next note with variation
-      this.melodyTimeout = setTimeout(playMelodyNote, musicConfig.tempo + (Math.random() * 200 - 100));
+      // Schedule next note with consistent timing for relaxation
+      this.melodyTimeout = setTimeout(playMelodyNote, musicConfig.tempo);
     };
     
-    // Start melody after fade-in
-    this.melodyTimeout = setTimeout(playMelodyNote, fadeTime + 200);
+    // Start melody after fade-in with longer delay for gentleness
+    this.melodyTimeout = setTimeout(playMelodyNote, fadeTime + 500);
   }
   
   fadeOutMusic(track, duration = 1000) {
