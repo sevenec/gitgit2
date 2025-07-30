@@ -205,15 +205,21 @@ const Game = () => {
   };
 
   const startActualGame = () => {
+    console.log('startActualGame called');
     if (gameEngineRef.current) {
+      console.log('Starting game engine...');
       gameEngineRef.current.startGame();
       setIsPaused(false);
       
       // Start level music
       if (audioManager && !isMuted) {
+        console.log('Starting audio...');
         audioManager.playMusic(1); // Start with level 1 music
         audioManager.resumeAudioContext(); // Resume audio context on user interaction
       }
+      console.log('Game started successfully');
+    } else {
+      console.error('Game engine not initialized when trying to start game');
     }
   };
 
