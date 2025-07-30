@@ -180,6 +180,9 @@ window.GameEngine = class GameEngine {
       shieldTime: 0,
       blasterMode: false,
       blasterTime: 0,
+      blasterLevel: 0, // 0 = no blaster, 1 = single shot, 2 = dual shot, 3 = laser beam
+      blasterCooldown: 0,
+      lastShotTime: 0,
       speedBoost: false,
       speedBoostTime: 0,
       specialCooldown: 0,
