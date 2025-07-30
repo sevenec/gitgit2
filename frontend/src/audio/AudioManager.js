@@ -158,11 +158,12 @@ class AudioManager {
 
   setMusicVolume(volume) {
     this.musicVolume = Math.max(0, Math.min(1, volume));
+    // Keep music disabled regardless of volume setting
     if (this.musicGain) {
-      this.musicGain.gain.value = this.musicVolume;
+      this.musicGain.gain.value = 0; // Always 0 - music disabled
     }
     if (this.currentMusicAudio) {
-      this.currentMusicAudio.volume = this.musicVolume;
+      this.currentMusicAudio.volume = 0; // Always 0 - music disabled
     }
   }
 
@@ -173,26 +174,20 @@ class AudioManager {
     }
   }
 
-  // Mute/unmute controls
+  // Mute/unmute controls - music stays disabled
   toggleMute() {
     this.isMuted = !this.isMuted;
     
     if (this.isMuted) {
-      if (this.currentMusicAudio) {
-        this.currentMusicAudio.pause();
-      }
       if (this.masterGain) {
         this.masterGain.gain.value = 0;
       }
       console.log('🔇 Audio muted');
     } else {
-      if (this.currentMusicAudio) {
-        this.currentMusicAudio.play();
-      }
       if (this.masterGain) {
         this.masterGain.gain.value = this.masterVolume;
       }
-      console.log('🔊 Audio unmuted');
+      console.log('🔊 Audio unmuted (music remains disabled)');
     }
     
     return this.isMuted;
@@ -231,34 +226,37 @@ class AudioManager {
 
   // Audio quality setting (for mobile optimization)
   setAudioQuality(quality) {
-    console.log(`🎼 Audio quality set to: ${quality}`);
-    // In a real implementation, this would adjust audio parameters
-    // For now, we'll just log it since our fallback system is already optimized
+    console.log(`🎼 Audio quality set to: ${quality} (music disabled)`);
   }
 
   // Resume audio context for auto-play policies
   resumeAudioContext() {
     if (this.audioContext && this.audioContext.state === 'suspended') {
       this.audioContext.resume().then(() => {
-        console.log('🎵 Audio context resumed');
+        console.log('🎵 Audio context resumed (music disabled)');
       });
     }
   }
 
   // Stop all audio
   stopAllAudio() {
-    if (this.currentMusicAudio) {
-      this.currentMusicAudio.pause();
-      this.currentMusicAudio = null;
-    }
-    
+    // Clean up any remaining nodes
     this.currentMusicNodes.forEach(node => {
-      try { node.stop(); } catch(e) {}
+      try { 
+        if (node.stop) node.stop(); 
+        if (node.disconnect) node.disconnect();
+      } catch(e) {}
     });
     this.currentMusicNodes = [];
     
     this.currentMusic = null;
-    console.log('🔇 All audio stopped');
+    console.log('🔇 All audio stopped (music was already disabled)');
+  }
+
+  // Method to enable music in the future (currently does nothing)
+  enableMusic() {
+    console.log('🎵 Music can be enabled by setting musicDisabled = false and implementing simple HTML5 audio');
+    console.log('🎵 Current status: Music remains DISABLED as requested');
   }
 }
 
