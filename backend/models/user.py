@@ -19,6 +19,11 @@ class GameStats(BaseModel):
     total_playtime: int = 0  # in seconds
     achievements: List[str] = []
 
+class SharedScore(BaseModel):
+    score: int
+    platform: str
+    timestamp: datetime
+
 class DailyChallenge(BaseModel):
     challenge_id: str
     challenge_type: str  # 'score', 'survival', 'level', 'enemies'
