@@ -155,10 +155,16 @@ window.GameEngine = class GameEngine {
     this.obstacles = [];
     this.powerUps = [];
     this.particles = [];
+    this.projectiles = [];
+    this.specialEffects = [];
+    this.backgroundEffects = [];
     this.levelTime = 0;
     this.isBossLevel = this.currentLevel === this.maxLevel;
     
-    // Initialize player
+    // Initialize player with flutterer stats
+    const fluttererHealth = this.selectedFlutterer?.skills?.health || 100;
+    const fluttererSpeed = this.selectedFlutterer?.skills?.speed || 1.0;
+    
     this.player = {
       x: this.canvas.width / 2,
       y: this.canvas.height - 100,
@@ -166,19 +172,24 @@ window.GameEngine = class GameEngine {
       targetY: this.canvas.height - 100,
       width: 40,
       height: 40,
-      speed: 8,
-      health: 100,
-      maxHealth: 100,
+      baseSpeed: 8 * fluttererSpeed,
+      speed: 8 * fluttererSpeed,
+      health: fluttererHealth,
+      maxHealth: fluttererHealth,
       hasShield: false,
       shieldTime: 0,
       blasterMode: false,
       blasterTime: 0,
       speedBoost: false,
-      speedBoostTime: 0
+      speedBoostTime: 0,
+      specialCooldown: 0,
+      trailParticles: []
     };
     
     // Initialize boss for final level
     if (this.isBossLevel) {
+      this.gameState = 'bossIntro';
+      this.bossIntroTimer = 3000; // 3 second intro
       this.boss = {
         x: this.canvas.width / 2,
         y: 100,
@@ -188,13 +199,102 @@ window.GameEngine = class GameEngine {
         maxHealth: 500,
         shootTimer: 0,
         moveDirection: 1,
-        speed: 2
+        speed: 2,
+        phase: 1,
+        attackPattern: 0,
+        specialAttackTimer: 0,
+        invulnerable: false,
+        tentacles: this.createBossTentacles()
       };
     }
     
-    // Adjust game speed based on level
-    this.gameSpeed = 2 + (this.currentLevel * 0.5);
-    this.obstacleSpawnRate = 0.02 + (this.currentLevel * 0.005);
+    // Adjust game speed and spawn rates based on level
+    const levelConfig = this.getLevelConfig(this.currentLevel);
+    this.gameSpeed = levelConfig.difficulty.gameSpeed;
+    this.obstacleSpawnRate = levelConfig.difficulty.obstacleSpawnRate;
+    this.powerUpSpawnRate = levelConfig.difficulty.powerUpSpawnRate;
+    
+    // Initialize background effects based on level theme
+    this.initializeLevelEffects(levelConfig);
+  }
+  
+  getLevelConfig(level) {
+    // Simplified level config - in full implementation this would come from levels.js
+    const configs = {
+      1: { difficulty: { gameSpeed: 2, obstacleSpawnRate: 0.02, powerUpSpawnRate: 0.005 }, theme: 'starry' },
+      5: { difficulty: { gameSpeed: 4, obstacleSpawnRate: 0.04, powerUpSpawnRate: 0.009 }, theme: 'nebula' },
+      10: { difficulty: { gameSpeed: 6.5, obstacleSpawnRate: 0.065, powerUpSpawnRate: 0.014 }, theme: 'core' },
+      15: { difficulty: { gameSpeed: 4, obstacleSpawnRate: 0.03, powerUpSpawnRate: 0.02 }, theme: 'boss' }
+    };
+    
+    // Find closest config
+    const availableLevels = Object.keys(configs).map(Number).sort((a, b) => a - b);
+    let targetLevel = availableLevels[0];
+    
+    for (let i = 0; i < availableLevels.length; i++) {
+      if (level >= availableLevels[i]) {
+        targetLevel = availableLevels[i];
+      }
+    }
+    
+    return configs[targetLevel];
+  }
+  
+  initializeLevelEffects(config) {
+    this.backgroundEffects = [];
+    
+    // Add theme-specific background effects
+    switch (config.theme) {
+      case 'starry':
+        for (let i = 0; i < 5; i++) {
+          this.backgroundEffects.push({
+            type: 'shooting_star',
+            x: Math.random() * this.canvas.width,
+            y: -10,
+            speed: 3 + Math.random() * 2,
+            life: 1000 + Math.random() * 2000
+          });
+        }
+        break;
+      case 'nebula':
+        for (let i = 0; i < 10; i++) {
+          this.backgroundEffects.push({
+            type: 'nebula_particle',
+            x: Math.random() * this.canvas.width,
+            y: Math.random() * this.canvas.height,
+            speed: 0.5 + Math.random(),
+            color: `hsl(${280 + Math.random() * 80}, 70%, 60%)`,
+            size: 2 + Math.random() * 3
+          });
+        }
+        break;
+      case 'boss':
+        // Add ominous energy effects
+        for (let i = 0; i < 8; i++) {
+          this.backgroundEffects.push({
+            type: 'energy_tendril',
+            x: Math.random() * this.canvas.width,
+            y: Math.random() * this.canvas.height,
+            angle: Math.random() * Math.PI * 2,
+            length: 50 + Math.random() * 100,
+            color: '#FF1493'
+          });
+        }
+        break;
+    }
+  }
+  
+  createBossTentacles() {
+    const tentacles = [];
+    for (let i = 0; i < 6; i++) {
+      tentacles.push({
+        angle: (i * Math.PI) / 3,
+        length: 60 + Math.random() * 40,
+        wiggleOffset: Math.random() * Math.PI,
+        health: 50
+      });
+    }
+    return tentacles;
   }
   
   update(deltaTime) {
