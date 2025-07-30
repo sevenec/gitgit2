@@ -1,4 +1,4 @@
-class GameRenderer {
+window.GameRenderer = class GameRenderer {
   constructor(canvas, ctx) {
     this.canvas = canvas;
     this.ctx = ctx;
