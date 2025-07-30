@@ -66,43 +66,46 @@ window.AudioManager = class AudioManager {
       return;
     }
     
-    console.log(`Starting intro music: ${introMusicPath}`);
+    console.log(`🎼 Starting intro music: ${introMusicPath}`);
     
-    // Stop any current music
-    this.stopMusic();
+    // Stop any current music with enhanced cleanup
+    this.stopAllAudio();
     
-    // Create intro music element
-    const audio = new Audio(introMusicPath);
-    audio.volume = this.musicVolume * this.masterVolume * 0.8; // Slightly quieter for intro
-    audio.loop = true; // Loop intro music
-    
-    // Handle loading and playback
-    audio.addEventListener('canplaythrough', () => {
-      console.log('Intro music ready to play');
-    });
-    
-    audio.addEventListener('error', (e) => {
-      console.error(`Failed to load intro music: ${introMusicPath}`, e);
-    });
-    
-    // Store reference and play
-    this.currentTrack = audio;
-    
-    // Play intro music (modern browsers require user interaction)
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          console.log('Intro music started successfully');
-        })
-        .catch(error => {
-          console.warn('Intro music needs user interaction:', error);
-          // Store for later playback after user interaction
-          document.addEventListener('click', () => {
-            this.resumeMusic();
-          }, { once: true });
-        });
-    }
+    // Small delay to ensure cleanup
+    setTimeout(() => {
+      // Create intro music element
+      const audio = new Audio(introMusicPath);
+      audio.volume = this.musicVolume * this.masterVolume * 0.8; // Slightly quieter for intro
+      audio.loop = true; // Loop intro music
+      
+      // Handle loading and playback
+      audio.addEventListener('canplaythrough', () => {
+        console.log('Intro music ready to play');
+      });
+      
+      audio.addEventListener('error', (e) => {
+        console.error(`Failed to load intro music: ${introMusicPath}`, e);
+      });
+      
+      // Store reference and play
+      this.currentTrack = audio;
+      
+      // Play intro music (modern browsers require user interaction)
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log('✅ Intro music started successfully - SINGLE TRACK ONLY');
+          })
+          .catch(error => {
+            console.warn('Intro music needs user interaction:', error);
+            // Store for later playback after user interaction
+            document.addEventListener('click', () => {
+              this.resumeMusic();
+            }, { once: true });
+          });
+      }
+    }, 100); // 100ms delay for cleanup
   }
   
   // Play background music for specific level
