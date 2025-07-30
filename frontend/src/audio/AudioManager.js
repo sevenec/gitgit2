@@ -227,12 +227,19 @@ class AudioManager {
       oscillator.connect(gainNode);
       gainNode.connect(this.sfxGain);
       
-      oscillator.frequency.setValueAtTime(400, this.audioContext.currentTime);
+      // Create a pleasant notification tone
+      oscillator.frequency.setValueAtTime(440, this.audioContext.currentTime); // A4 note
+      oscillator.frequency.exponentialRampToValueAtTime(880, this.audioContext.currentTime + 0.1); // A5 note
+      
       gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.2);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
       
       oscillator.start(this.audioContext.currentTime);
-      oscillator.stop(this.audioContext.currentTime + 0.2);
+      oscillator.stop(this.audioContext.currentTime + 0.3);
+      
+      console.log('🔊 Playing placeholder sound');
+    } else {
+      console.log('🔇 Audio context not available');
     }
   }
   
