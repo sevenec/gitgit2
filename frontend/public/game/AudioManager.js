@@ -161,7 +161,7 @@ window.AudioManager = class AudioManager {
     }
   }
   
-  // Stop current music with optional fade out
+  // Stop current music with optional fade out - ENHANCED to stop ALL audio
   stopMusic(fadeOut = false) {
     if (!this.currentTrack) return;
     
@@ -169,18 +169,42 @@ window.AudioManager = class AudioManager {
       // Fade out over 1 second
       const fadeStep = this.currentTrack.volume / 20;
       const fadeInterval = setInterval(() => {
-        if (this.currentTrack.volume - fadeStep > 0) {
+        if (this.currentTrack && this.currentTrack.volume - fadeStep > 0) {
           this.currentTrack.volume -= fadeStep;
         } else {
-          this.currentTrack.pause();
-          this.currentTrack = null;
+          if (this.currentTrack) {
+            this.currentTrack.pause();
+            this.currentTrack.currentTime = 0; // Reset to beginning
+            this.currentTrack = null;
+          }
           clearInterval(fadeInterval);
         }
       }, 50);
     } else {
-      // Immediate stop
-      this.currentTrack.pause();
-      this.currentTrack = null;
+      // Immediate stop with full cleanup
+      try {
+        this.currentTrack.pause();
+        this.currentTrack.currentTime = 0; // Reset to beginning
+        this.currentTrack = null;
+        console.log('🔇 Music stopped and cleaned up');
+      } catch (e) {
+        console.warn('Error stopping music:', e);
+        this.currentTrack = null; // Force cleanup
+      }
+    }
+    
+    // ADDITIONAL SAFETY: Stop any other audio elements that might be playing
+    try {
+      const allAudioElements = document.querySelectorAll('audio');
+      allAudioElements.forEach(audio => {
+        if (!audio.paused) {
+          audio.pause();
+          audio.currentTime = 0;
+          console.log('🔇 Stopped additional audio element');
+        }
+      });
+    } catch (e) {
+      console.warn('Error stopping additional audio elements:', e);
     }
   }
   
