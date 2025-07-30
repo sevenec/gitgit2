@@ -57,8 +57,11 @@ const Game = () => {
       const container = canvas.parentElement;
       const rect = container.getBoundingClientRect();
       
-      canvas.width = Math.min(400, rect.width - 40);
-      canvas.height = Math.min(600, window.innerHeight - 200);
+      // Set larger canvas size
+      canvas.width = Math.max(400, Math.min(600, rect.width - 40));
+      canvas.height = Math.max(500, Math.min(700, window.innerHeight - 300));
+      
+      console.log('Canvas resized to:', canvas.width, 'x', canvas.height);
       
       const ctx = canvas.getContext('2d');
       
