@@ -413,6 +413,5 @@ class AudioManager {
   }
 }
 
-// Export singleton instance
-const AudioManagerInstance = new AudioManager();
-export default AudioManagerInstance;
+// Export the class directly (not instance) so it can be instantiated
+export default AudioManager;
