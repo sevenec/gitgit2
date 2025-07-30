@@ -491,17 +491,53 @@ window.GameRenderer = class GameRenderer {
     // Get flutterer-specific visual properties
     const visualProps = this.getFluttererVisualProperties(flutterer);
     
+    // Animation timing
+    const time = Date.now() * 0.01;
+    const wingFlap = Math.sin(time * 0.8) * 0.3 + 0.7; // Wing flapping animation
+    const bodyBob = Math.sin(time * 0.5) * 1; // Gentle body movement
+    
+    // Apply gentle floating animation
+    this.ctx.translate(0, bodyBob);
+    
     // Butterfly body - vary thickness and length based on flutterer
     this.ctx.fillStyle = colors.body;
     const bodyWidth = visualProps.bodyWidth;
     const bodyHeight = visualProps.bodyHeight;
     this.ctx.fillRect(-bodyWidth/2, -bodyHeight/2, bodyWidth, bodyHeight);
     
-    // Wings with rarity and character-based variations
-    this.drawEnhancedWings(colors, visualProps, flutterer);
+    // Add body segments for realism
+    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+    for (let i = 0; i < 3; i++) {
+      const segmentY = -bodyHeight/2 + (i + 1) * (bodyHeight/4);
+      this.ctx.fillRect(-bodyWidth/2, segmentY, bodyWidth, 1);
+    }
+    
+    // Wings with rarity and character-based variations + flutter animation
+    this.drawEnhancedWings(colors, visualProps, flutterer, wingFlap);
     
     // Special effects based on flutterer type
     this.drawFluttererSpecialEffects(flutterer, visualProps);
+    
+    // Antennae with subtle movement
+    this.ctx.strokeStyle = colors.body;
+    this.ctx.lineWidth = 1;
+    const antennaeSway = Math.sin(time * 0.7) * 0.1;
+    
+    this.ctx.beginPath();
+    this.ctx.moveTo(-1, -bodyHeight/2);
+    this.ctx.lineTo(-3 + antennaeSway, -bodyHeight/2 - 6);
+    this.ctx.moveTo(1, -bodyHeight/2);
+    this.ctx.lineTo(3 - antennaeSway, -bodyHeight/2 - 6);
+    this.ctx.stroke();
+    
+    // Antennae tips
+    this.ctx.fillStyle = colors.accent;
+    this.ctx.beginPath();
+    this.ctx.arc(-3 + antennaeSway, -bodyHeight/2 - 6, 1, 0, Math.PI * 2);
+    this.ctx.fill();
+    this.ctx.beginPath();
+    this.ctx.arc(3 - antennaeSway, -bodyHeight/2 - 6, 1, 0, Math.PI * 2);
+    this.ctx.fill();
     
     // Reset shadow
     this.ctx.shadowBlur = 0;
