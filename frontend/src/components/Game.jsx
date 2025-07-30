@@ -563,6 +563,8 @@ const Game = () => {
             onOpenFluttererSelector={handleOpenFluttererSelector}
             onOpenSettings={() => console.log('Settings')}
             audioManager={audioManager}
+            user={user}
+            gameStats={gameStats}
           />
         )}
 
