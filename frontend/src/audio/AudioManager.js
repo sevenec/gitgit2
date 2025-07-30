@@ -448,12 +448,12 @@ class AudioManager {
     const brassDistortion = this.createDistortionNode(0.1);
     
     brassOsc.type = 'sawtooth'; // Rich harmonic content for brass
-    brassOsc.frequency.value = freq * 0.5; // Lower octave for brass foundation
+    brassOsc.frequency.value = freq * 0.75; // Perfect fourth interval for brass depth
     
     // Brass-specific filtering
     brassFilter.type = 'bandpass';
-    brassFilter.frequency.value = 400 + (index * 150);
-    brassFilter.Q.value = 3;
+    brassFilter.frequency.value = 300 + (index * 200); // Lower frequency range
+    brassFilter.Q.value = 2.5;
     
     // Connect with subtle distortion for brass character
     brassOsc.connect(brassDistortion);
@@ -461,7 +461,7 @@ class AudioManager {
     brassFilter.connect(brassGain);
     brassGain.connect(this.musicGain);
     
-    brassGain.gain.value = 0.006 + (index * 0.002);
+    brassGain.gain.value = 0.004 + (index * 0.001); // Reduced volume
     
     brassOsc.start();
     this.currentMusicNodes.push(brassOsc);
