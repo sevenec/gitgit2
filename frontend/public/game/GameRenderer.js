@@ -56,6 +56,25 @@ window.GameRenderer = class GameRenderer {
         this.renderGameComplete(gameEngine);
         break;
     }
+    
+    // Always render UI elements on top
+    if (gameEngine.gameState === 'playing' || gameEngine.gameState === 'paused') {
+      this.renderUI(gameEngine);
+    }
+    
+    // Render enhanced effects and indicators
+    if (gameEngine.screenEffects) {
+      gameEngine.screenEffects.renderEffects(this.ctx, this.canvas);
+    }
+    
+    if (gameEngine.mobileInput) {
+      gameEngine.mobileInput.renderTouchIndicator(this.ctx);
+    }
+    
+    // Render performance stats in debug mode
+    if (gameEngine.performanceOptimized) {
+      this.renderPerformanceStats(gameEngine);
+    }
   }
   
   renderEnhancedBackground(level) {
