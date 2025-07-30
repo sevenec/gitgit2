@@ -28,9 +28,9 @@ const Game = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [selectedFlutterer, setSelectedFlutterer] = useState(null);
   const [sessionId, setSessionId] = useState(null);
-  const [showOpeningScreen, setShowOpeningScreen] = useState(false);
+  const [showOpeningScreen, setShowOpeningScreen] = useState(true); // Go directly to opening screen
   const [showTutorial, setShowTutorial] = useState(false);
-  const [showLoadingScreen, setShowLoadingScreen] = useState(true);
+  const [showLoadingScreen, setShowLoadingScreen] = useState(false); // Skip loading screen for now
   const [audioManager, setAudioManager] = useState(null);
   const [highScore, setHighScore] = useState(0);
   const [gameEngineReady, setGameEngineReady] = useState(false);
