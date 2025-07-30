@@ -24,7 +24,7 @@ window.GameEngine = class GameEngine {
     this.obstacleSpawnRate = 0.02;
     this.powerUpSpawnRate = 0.005;
     
-    // Touch controls
+    // Touch controls - will be replaced by MobileInputHandler
     this.touchStartX = 0;
     this.touchStartY = 0;
     this.isTouching = false;
@@ -45,10 +45,22 @@ window.GameEngine = class GameEngine {
       bossDefeats: parseInt(localStorage.getItem('butterflyBossDefeats') || '0')
     };
     
-    // Enhanced effects
+    // Enhanced effects systems
     this.backgroundEffects = [];
     this.specialEffects = [];
     
+    // Visual & Mobile Enhancement Systems
+    this.particleSystem = null;
+    this.screenEffects = null;
+    this.mobileInput = null;
+    this.performanceOptimized = false;
+    
+    // Performance monitoring
+    this.frameCount = 0;
+    this.fps = 60;
+    this.lastFpsCheck = performance.now();
+    
+    this.initializeEnhancedSystems();
     this.setupEventListeners();
     this.initializeDefaultFlutterer();
   }
