@@ -1164,8 +1164,8 @@ window.GameEngine = class GameEngine {
           
           // Play explosion sound effect
           try {
-            if (window.AudioManager) {
-              window.AudioManager.playSound('explosion', { volume: 0.8 });
+            if (window.audioManager) {
+              window.audioManager.playSound('explosion', { volume: 0.8 });
             }
           } catch (error) {
             console.warn('Audio error:', error);
