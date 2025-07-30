@@ -115,18 +115,21 @@ const Game = () => {
         setLevel(gameEngineRef.current.currentLevel);
         setLives(gameEngineRef.current.lives);
         
-        // Update high score and stats
-        if (gameEngineRef.current.score > highScore) {
-          const newHighScore = gameEngineRef.current.score;
-          setHighScore(newHighScore);
-          localStorage.setItem('butterflyNebulaHighScore', newHighScore.toString());
+        // Update game stats from user data
+        if (user?.game_stats) {
+          setHighScore(user.game_stats.high_score);
+          setGameStats({
+            highScore: user.game_stats.high_score,
+            maxLevel: user.game_stats.max_level,
+            enemiesDefeated: user.game_stats.enemies_defeated,
+            totalSurvivalTime: user.game_stats.total_survival_time,
+            bossDefeats: user.game_stats.boss_defeats
+          });
         }
         
-        // Update game stats
-        if (gameEngineRef.current.currentLevel > gameStats.maxLevel) {
-          const newMaxLevel = gameEngineRef.current.currentLevel;
-          setGameStats(prev => ({...prev, maxLevel: newMaxLevel}));
-          localStorage.setItem('butterflyMaxLevel', newMaxLevel.toString());
+        // Submit score when game ends
+        if (gameEngineRef.current.gameState === 'gameOver' && gameEngineRef.current.score > 0) {
+          handleGameEnd();
         }
       }
 
