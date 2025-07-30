@@ -2322,4 +2322,99 @@ window.GameRenderer = class GameRenderer {
     this.ctx.font = '16px Arial';
     this.ctx.fillText('Tap or Click to Play Again', this.canvas.width / 2, this.canvas.height / 2 + 80);
   }
+
+  drawEnhancedPowerUp(powerUp) {
+    this.ctx.save();
+    this.ctx.translate(powerUp.x, powerUp.y);
+    
+    const time = Date.now() * 0.003;
+    
+    // Floating animation
+    const float = Math.sin(time * 4 + powerUp.x * 0.01) * 3;
+    this.ctx.translate(0, float);
+    
+    // Rotation animation
+    this.ctx.rotate(time * 2);
+    
+    // Enhanced glow effect
+    const glowIntensity = 15 + Math.sin(time * 6) * 5;
+    this.ctx.shadowColor = this.getPowerUpColor(powerUp.type);
+    this.ctx.shadowBlur = glowIntensity;
+    
+    // Pulsing scale
+    const pulseScale = 1 + Math.sin(time * 8) * 0.2;
+    this.ctx.scale(pulseScale, pulseScale);
+    
+    // Main power-up body with gradient
+    const gradient = this.ctx.createRadialGradient(0, 0, 0, 0, 0, powerUp.width / 2);
+    gradient.addColorStop(0, '#FFFFFF');
+    gradient.addColorStop(0.3, this.getPowerUpColor(powerUp.type));
+    gradient.addColorStop(1, this.getPowerUpColor(powerUp.type) + '80');
+    
+    this.ctx.fillStyle = gradient;
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, powerUp.width / 2, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Sparkling particles around power-up
+    for (let i = 0; i < 6; i++) {
+      const sparkleAngle = time * 3 + (i / 6) * Math.PI * 2;
+      const sparkleRadius = powerUp.width / 2 + 8;
+      const sparkleX = Math.cos(sparkleAngle) * sparkleRadius;
+      const sparkleY = Math.sin(sparkleAngle) * sparkleRadius;
+      
+      this.ctx.fillStyle = `rgba(255, 255, 255, ${0.7 + Math.sin(time * 10 + i) * 0.3})`;
+      this.ctx.beginPath();
+      this.ctx.arc(sparkleX, sparkleY, 1.5, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+    
+    // Power-up symbol with enhanced styling
+    this.ctx.shadowBlur = 3;
+    this.ctx.shadowColor = '#000000';
+    this.ctx.fillStyle = '#FFFFFF';
+    this.ctx.font = 'bold 14px Arial';
+    this.ctx.textAlign = 'center';
+    this.ctx.strokeStyle = '#000000';
+    this.ctx.lineWidth = 2;
+    
+    const symbol = this.getPowerUpSymbol(powerUp.type);
+    this.ctx.strokeText(symbol, 0, 4);
+    this.ctx.fillText(symbol, 0, 4);
+    
+    this.ctx.restore();
+  }
+
+  renderPerformanceStats(gameEngine) {
+    // Performance statistics overlay
+    this.ctx.save();
+    
+    // Semi-transparent background
+    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    this.ctx.fillRect(this.canvas.width - 180, 10, 170, 120);
+    
+    // Stats text
+    this.ctx.fillStyle = '#00FF00';
+    this.ctx.font = '12px monospace';
+    this.ctx.textAlign = 'left';
+    
+    let y = 30;
+    const stats = [
+      `FPS: ${gameEngine.fps || 'N/A'}`,
+      `Particles: ${gameEngine.particleSystem ? gameEngine.particleSystem.particles.length : 0}`,
+      `Obstacles: ${gameEngine.obstacles.length}`,
+      `Power-ups: ${gameEngine.powerUps.length}`,
+      `Projectiles: ${gameEngine.projectiles.length}`,
+      `Level: ${gameEngine.currentLevel}/15`,
+      `Score: ${gameEngine.score}`,
+      `Health: ${gameEngine.player ? gameEngine.player.health : 'N/A'}/${gameEngine.player ? gameEngine.player.maxHealth : 'N/A'}`
+    ];
+    
+    stats.forEach(stat => {
+      this.ctx.fillText(stat, this.canvas.width - 175, y);
+      y += 14;
+    });
+    
+    this.ctx.restore();
+  }
 };
