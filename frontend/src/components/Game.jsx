@@ -254,6 +254,14 @@ const Game = () => {
   };
 
   const handleStartGame = () => {
+    console.log('🎮 handleStartGame called');
+    
+    // Ensure audio starts on user interaction
+    if (audioManager) {
+      console.log('🎵 Starting audio on user interaction...');
+      audioManager.resumeAudioContext();
+    }
+    
     setShowOpeningScreen(false);
     
     // Check if tutorial should be shown
