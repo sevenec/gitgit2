@@ -4,6 +4,8 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Pause, Play, RotateCcw, Volume2, VolumeX, Star, Coins } from 'lucide-react';
 import FluttererSelector from './FluttererSelector';
+import OpeningScreen from './OpeningScreen';
+import TutorialScreen from './TutorialScreen';
 import { FLUTTERERS } from '../data/flutterers';
 import { useUser } from '../hooks/useUser';
 import { useGame } from '../hooks/useGame';
