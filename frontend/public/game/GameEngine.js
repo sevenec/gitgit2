@@ -880,6 +880,12 @@ window.GameEngine = class GameEngine {
       case 'blaster':
         this.player.blasterMode = true;
         this.player.blasterTime = 10000;
+        // Increase blaster level (max level 3)
+        this.player.blasterLevel = Math.min(3, this.player.blasterLevel + 1);
+        
+        // Show level-up indicator
+        this.createFloatingText(this.player.x, this.player.y - 30, 
+          `BLASTER LV${this.player.blasterLevel}!`, '#FF00FF', 2000);
         break;
       case 'health':
         this.player.health = Math.min(this.player.maxHealth, this.player.health + 25);
