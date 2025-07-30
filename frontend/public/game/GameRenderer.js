@@ -1867,22 +1867,6 @@ window.GameRenderer = class GameRenderer {
     
     this.ctx.restore();
   }
-    this.ctx.fillStyle = healthColors[boss.phase - 1] || '#00FF00';
-    const healthPercent = boss.health / boss.maxHealth;
-    this.ctx.fillRect(-barWidth / 2, barY, barWidth * healthPercent, barHeight);
-    
-    this.ctx.strokeStyle = '#FFFFFF';
-    this.ctx.lineWidth = 2;
-    this.ctx.strokeRect(-barWidth / 2, barY, barWidth, barHeight);
-    
-    // Phase indicator
-    this.ctx.fillStyle = '#FFFFFF';
-    this.ctx.font = 'bold 12px Arial';
-    this.ctx.textAlign = 'center';
-    this.ctx.fillText(`PHASE ${boss.phase}`, 0, barY - 10);
-    
-    this.ctx.restore();
-  }
   
   drawBossProjectile(projectile) {
     this.ctx.save();
