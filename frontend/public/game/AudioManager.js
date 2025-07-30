@@ -61,7 +61,7 @@ window.AudioManager = class AudioManager {
     }
   }
   
-  // Play intro music with COMPLETE OVERLAP PREVENTION
+  // Play intro music - SIMPLE SINGLE AUDIO ELEMENT APPROACH
   playIntroMusic() {
     if (this.musicDisabled) {
       console.log('🔇 Music disabled - no intro music');
@@ -74,39 +74,21 @@ window.AudioManager = class AudioManager {
       return;
     }
     
-    console.log('🎵 Starting intro music with browser autoplay handling');
+    console.log('🎵 SINGLE ELEMENT: Starting intro music');
     
-    // FORCE STOP any existing audio
-    this.forceStopAllAudio();
+    // SIMPLE APPROACH: Just change the source of the single audio element
+    this.audioElement.src = introMusicPath;
+    this.currentTrackPath = introMusicPath;
     
-    // Create audio immediately
-    const audio = new Audio(introMusicPath);
-    audio.volume = this.musicVolume * this.masterVolume * 0.7; // Extra quiet for intro
-    audio.loop = true;
-    audio.preload = 'auto';
-    
-    // Handle loading and errors
-    audio.addEventListener('canplaythrough', () => {
-      console.log('✅ Intro music loaded and ready to play');
-    });
-    
-    audio.addEventListener('error', (e) => {
-      console.error('❌ Failed to load intro music:', e);
-    });
-    
-    // Store reference
-    this.currentTrack = audio;
-    
-    // Try to play immediately, but handle browser restrictions
-    const playPromise = audio.play();
+    // Try to play
+    const playPromise = this.audioElement.play();
     if (playPromise !== undefined) {
       playPromise
         .then(() => {
-          console.log('✅ INTRO MUSIC STARTED SUCCESSFULLY on app open!');
+          console.log('✅ INTRO MUSIC STARTED - Single element approach');
         })
         .catch(error => {
-          console.warn('⚠️ Intro music blocked by browser - will start on first user click');
-          // Set up one-time click listener to start music
+          console.warn('⚠️ Intro music needs user interaction:', error);
           this.setupUserInteractionMusic();
         });
     }
