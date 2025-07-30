@@ -249,8 +249,14 @@ const Game = () => {
   };
 
   const handleLoadingComplete = () => {
-    setShowLoadingScreen(false);
-    setShowOpeningScreen(true);
+    console.log('🎮 handleLoadingComplete called');
+    try {
+      setShowLoadingScreen(false);
+      setShowOpeningScreen(true);
+      console.log('✅ Loading screen hidden, opening screen shown');
+    } catch (error) {
+      console.error('❌ Error in handleLoadingComplete:', error);
+    }
   };
 
   const handleStartGame = () => {
