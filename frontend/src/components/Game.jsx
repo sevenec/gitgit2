@@ -294,24 +294,27 @@ const Game = () => {
       setIsPaused(false);
       
       // Start level music immediately with better error handling
-      if (audioManager && !isMuted) {
-        console.log('🎵 Starting audio and music...');
+      if (audioManager) {
+        console.log('🎵 Starting audio system...');
         try {
+          // Unmute audio for game start
+          setIsMuted(false);
+          
           // Resume audio context on user interaction
           audioManager.resumeAudioContext();
           
-          // Start level music
+          // Start level music (level 1 gets upbeat music)
           audioManager.playMusic(1);
           
-          // Play a confirmation sound to indicate game start
-          audioManager.playSFX('game_start', { volume: 0.3 });
+          // Play game start confirmation sound
+          audioManager.playSFX('game_start', { volume: 0.5 });
           
-          console.log('🎵 Audio started successfully');
+          console.log('🎵 Audio started successfully - Level 1 music playing');
         } catch (audioError) {
           console.error('Audio failed to start:', audioError);
         }
       } else {
-        console.log('🔇 Audio muted or not available');
+        console.log('🔇 AudioManager not available');
       }
       
       console.log('🎮 Game started successfully! Canvas should now show gameplay.');
