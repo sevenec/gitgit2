@@ -122,9 +122,15 @@ const Game = () => {
             gameEngineRef.current.setRenderer(renderer);
           }
           
-          // Set selected flutterer if available
-          if (selectedFlutterer) {
-            gameEngineRef.current.setSelectedFlutterer(selectedFlutterer);
+          // Set selected flutterer if available, otherwise use default
+          const fluttererToUse = selectedFlutterer || { 
+            id: 'basic_cosmic', 
+            name: 'Basic Cosmic Flutter',
+            colors: { body: '#8B4513', wing1: '#FF6B9D', wing2: '#FF8FA3', accent: '#FFFFFF' }
+          };
+          
+          if (gameEngineRef.current.setSelectedFlutterer) {
+            gameEngineRef.current.setSelectedFlutterer(fluttererToUse);
           }
           
           console.log('Game initialized successfully');
