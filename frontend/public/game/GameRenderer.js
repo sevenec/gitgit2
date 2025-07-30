@@ -1159,6 +1159,107 @@ window.GameRenderer = class GameRenderer {
     this.ctx.save();
     this.ctx.translate(projectile.x, projectile.y);
     
+    // Enhanced projectile rendering based on shot type
+    switch (projectile.shotType) {
+      case 'single':
+        this.drawSingleShot(projectile);
+        break;
+      case 'dual':
+        this.drawDualShot(projectile);
+        break;
+      case 'laser':
+        this.drawLaserBeam(projectile);
+        break;
+      default:
+        this.drawBasicProjectile(projectile);
+    }
+    
+    this.ctx.restore();
+  }
+  
+  drawSingleShot(projectile) {
+    // Basic energy projectile
+    this.ctx.fillStyle = projectile.color;
+    this.ctx.shadowColor = projectile.color;
+    this.ctx.shadowBlur = 10;
+    
+    this.ctx.beginPath();
+    this.ctx.ellipse(0, 0, projectile.width/2, projectile.height/2, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Add energy core
+    this.ctx.fillStyle = '#FFFFFF';
+    this.ctx.beginPath();
+    this.ctx.ellipse(0, 0, projectile.width/4, projectile.height/4, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.shadowBlur = 0;
+  }
+  
+  drawDualShot(projectile) {
+    // Smaller dual projectiles
+    this.ctx.fillStyle = projectile.color;
+    this.ctx.shadowColor = projectile.color;
+    this.ctx.shadowBlur = 8;
+    
+    this.ctx.beginPath();
+    this.ctx.ellipse(0, 0, projectile.width/2, projectile.height/2, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Twin sparkle effect
+    this.ctx.fillStyle = '#FFFFFF';
+    this.ctx.beginPath();
+    this.ctx.ellipse(-1, 0, 1, 2, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    this.ctx.beginPath();
+    this.ctx.ellipse(1, 0, 1, 2, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.shadowBlur = 0;
+  }
+  
+  drawLaserBeam(projectile) {
+    // Powerful laser beam
+    const time = Date.now() * 0.01;
+    
+    // Outer glow
+    this.ctx.strokeStyle = projectile.color;
+    this.ctx.lineWidth = projectile.width + 4;
+    this.ctx.shadowColor = projectile.color;
+    this.ctx.shadowBlur = 15;
+    
+    this.ctx.beginPath();
+    this.ctx.moveTo(0, -projectile.height/2);
+    this.ctx.lineTo(0, projectile.height/2);
+    this.ctx.stroke();
+    
+    // Inner beam
+    this.ctx.strokeStyle = '#FFFFFF';
+    this.ctx.lineWidth = projectile.width/2;
+    this.ctx.shadowBlur = 5;
+    
+    this.ctx.beginPath();
+    this.ctx.moveTo(0, -projectile.height/2);
+    this.ctx.lineTo(0, projectile.height/2);
+    this.ctx.stroke();
+    
+    // Pulsing core
+    const pulse = Math.sin(time * 0.5) * 0.3 + 0.7;
+    this.ctx.strokeStyle = `rgba(255, 255, 255, ${pulse})`;
+    this.ctx.lineWidth = 2;
+    
+    this.ctx.beginPath();
+    this.ctx.moveTo(0, -projectile.height/2);
+    this.ctx.lineTo(0, projectile.height/2);
+    this.ctx.stroke();
+    
+    this.ctx.shadowBlur = 0;
+  }
+  
+  drawBasicProjectile(projectile) {
+    this.ctx.save();
+    this.ctx.translate(projectile.x, projectile.y);
+    
     this.ctx.fillStyle = projectile.color;
     this.ctx.shadowColor = projectile.color;
     this.ctx.shadowBlur = 8;
