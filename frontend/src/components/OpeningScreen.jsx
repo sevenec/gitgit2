@@ -99,6 +99,12 @@ const OpeningScreen = ({ onStartGame, onShowTutorial, onOpenFluttererSelector, o
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 via-pink-900 to-orange-900 relative overflow-hidden">
+      {/* Music Status Indicator */}
+      <div className="fixed top-4 right-4 text-white/80 text-sm flex items-center gap-2 z-50">
+        <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+        <span>🎵 Click anywhere to start music</span>
+      </div>
+      
       {/* Simplified Background */}
       <div className="absolute inset-0">
         {/* Simple Stars */}
