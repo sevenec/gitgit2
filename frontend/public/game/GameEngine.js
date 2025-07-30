@@ -436,12 +436,199 @@ window.GameEngine = class GameEngine {
       this.boss.moveDirection *= -1;
     }
     
-    // Boss shooting
-    this.boss.shootTimer += deltaTime;
-    if (this.boss.shootTimer > 1000) { // Shoot every second
-      this.spawnBossProjectile();
-      this.boss.shootTimer = 0;
+    // Update boss phase based on health
+    const healthPercentage = this.boss.health / this.boss.maxHealth;
+    if (healthPercentage > 0.66) {
+      this.boss.phase = 1;
+    } else if (healthPercentage > 0.33) {
+      this.boss.phase = 2;
+    } else {
+      this.boss.phase = 3;
     }
+    
+    // Boss shooting patterns
+    this.boss.shootTimer += deltaTime;
+    this.boss.specialAttackTimer += deltaTime;
+    
+    switch (this.boss.phase) {
+      case 1:
+        // Phase 1: Basic projectile shooting
+        if (this.boss.shootTimer > 1000) {
+          this.spawnBossProjectile('basic');
+          this.boss.shootTimer = 0;
+        }
+        break;
+        
+      case 2:
+        // Phase 2: Faster shooting + swarm attacks
+        if (this.boss.shootTimer > 700) {
+          this.spawnBossProjectile('spread');
+          this.boss.shootTimer = 0;
+        }
+        if (this.boss.specialAttackTimer > 3000) {
+          this.spawnEnemySwarm();
+          this.boss.specialAttackTimer = 0;
+        }
+        break;
+        
+      case 3:
+        // Phase 3: Rage mode - beam attacks
+        if (this.boss.shootTimer > 500) {
+          this.spawnBossProjectile('homing');
+          this.boss.shootTimer = 0;
+        }
+        if (this.boss.specialAttackTimer > 2000) {
+          this.spawnRageBeam();
+          this.boss.specialAttackTimer = 0;
+        }
+        break;
+    }
+    
+    // Update tentacles (visual only)
+    if (this.boss.tentacles) {
+      this.boss.tentacles.forEach(tentacle => {
+        tentacle.wiggleOffset += 0.1;
+      });
+    }
+    
+    // Boss defeated
+    if (this.boss.health <= 0) {
+      this.createBossExplosion();
+      this.gameStats.bossDefeats++;
+      this.saveBossDefeat();
+      this.boss = null;
+      this.completeLevel();
+    }
+  }
+  
+  spawnBossProjectile(type) {
+    if (!this.boss || !this.player) return;
+    
+    switch (type) {
+      case 'basic':
+        this.obstacles.push({
+          x: this.boss.x,
+          y: this.boss.y + this.boss.height/2,
+          width: 15,
+          height: 15,
+          rotation: 0,
+          rotationSpeed: 0.3,
+          type: 'boss_projectile',
+          vx: (this.player.x - this.boss.x) * 0.003,
+          vy: 3,
+          color: '#FF00FF'
+        });
+        break;
+        
+      case 'spread':
+        // Create 3 projectiles in a spread pattern
+        for (let i = -1; i <= 1; i++) {
+          this.obstacles.push({
+            x: this.boss.x + (i * 30),
+            y: this.boss.y + this.boss.height/2,
+            width: 12,
+            height: 12,
+            rotation: 0,
+            rotationSpeed: 0.4,
+            type: 'boss_projectile',
+            vx: i * 2,
+            vy: 4,
+            color: '#FF6600'
+          });
+        }
+        break;
+        
+      case 'homing':
+        this.obstacles.push({
+          x: this.boss.x,
+          y: this.boss.y + this.boss.height/2,
+          width: 18,
+          height: 18,
+          rotation: 0,
+          rotationSpeed: 0.5,
+          type: 'boss_homing',
+          vx: 0,
+          vy: 2,
+          color: '#FF0000',
+          homingSpeed: 0.002
+        });
+        break;
+    }
+  }
+  
+  spawnEnemySwarm() {
+    // Spawn small enemy insects
+    for (let i = 0; i < 5; i++) {
+      this.obstacles.push({
+        x: Math.random() * this.canvas.width,
+        y: -30,
+        width: 20,
+        height: 20,
+        rotation: 0,
+        rotationSpeed: 0.2,
+        type: 'swarm_insect',
+        vx: (Math.random() - 0.5) * 2,
+        vy: 2 + Math.random() * 2
+      });
+    }
+  }
+  
+  spawnRageBeam() {
+    // Create a warning indicator first
+    this.specialEffects.push({
+      type: 'beam_warning',
+      x: this.boss.x,
+      y: this.boss.y,
+      width: 20,
+      height: this.canvas.height,
+      life: 1000,
+      maxLife: 1000,
+      alpha: 1,
+      color: '#FF0000'
+    });
+    
+    // Spawn actual beam after warning
+    setTimeout(() => {
+      this.obstacles.push({
+        x: this.boss.x - 10,
+        y: this.boss.y,
+        width: 20,
+        height: this.canvas.height,
+        type: 'rage_beam',
+        life: 2000,
+        color: '#FF0000'
+      });
+    }, 1000);
+  }
+  
+  createBossExplosion() {
+    // Create massive explosion effect
+    for (let i = 0; i < 20; i++) {
+      this.particles.push({
+        x: this.boss.x + (Math.random() - 0.5) * this.boss.width,
+        y: this.boss.y + (Math.random() - 0.5) * this.boss.height,
+        vx: (Math.random() - 0.5) * 10,
+        vy: (Math.random() - 0.5) * 10,
+        color: ['#FF0000', '#FF6600', '#FFFF00', '#FFFFFF'][Math.floor(Math.random() * 4)],
+        life: 2000,
+        maxLife: 2000,
+        alpha: 1,
+        size: 5 + Math.random() * 10
+      });
+    }
+    
+    // Screen shake effect
+    this.specialEffects.push({
+      type: 'screen_shake',
+      intensity: 10,
+      life: 1000,
+      maxLife: 1000,
+      alpha: 1
+    });
+  }
+  
+  saveBossDefeat() {
+    localStorage.setItem('butterflyBossDefeats', this.gameStats.bossDefeats.toString());
   }
   
   spawnObjects() {
