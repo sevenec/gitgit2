@@ -1269,51 +1269,166 @@ window.GameRenderer = class GameRenderer {
   
   drawObstacle(obstacle) {
     this.ctx.save();
-    this.ctx.translate(obstacle.x, obstacle.y);
-    this.ctx.rotate(obstacle.rotation);
+    this.ctx.translate(obstacle.x + obstacle.width/2, obstacle.y + obstacle.height/2);
     
     if (obstacle.type === 'asteroid') {
-      // Draw asteroid
-      this.ctx.fillStyle = '#8B7355';
-      this.ctx.strokeStyle = '#A0522D';
-      this.ctx.lineWidth = 2;
-      
-      this.ctx.beginPath();
-      const sides = 8;
-      for (let i = 0; i < sides; i++) {
-        const angle = (i * Math.PI * 2) / sides;
-        const radius = obstacle.width / 2 + Math.sin(angle * 3) * 3;
-        const x = Math.cos(angle) * radius;
-        const y = Math.sin(angle) * radius;
-        
-        if (i === 0) {
-          this.ctx.moveTo(x, y);
-        } else {
-          this.ctx.lineTo(x, y);
-        }
-      }
-      this.ctx.closePath();
-      this.ctx.fill();
-      this.ctx.stroke();
+      this.drawEnhancedAsteroid(obstacle);
+    } else if (obstacle.type === 'insect') {
+      this.drawEnhancedInsect(obstacle);
     } else {
-      // Draw hostile insect
-      this.ctx.fillStyle = '#8B0000';
-      this.ctx.beginPath();
-      this.ctx.ellipse(0, 0, obstacle.width / 2, obstacle.height / 2, 0, 0, Math.PI * 2);
-      this.ctx.fill();
-      
-      // Insect features
-      this.ctx.fillStyle = '#FF0000';
-      this.ctx.beginPath();
-      this.ctx.arc(-obstacle.width/4, -obstacle.height/4, 2, 0, Math.PI * 2);
-      this.ctx.fill();
-      
-      this.ctx.beginPath();
-      this.ctx.arc(obstacle.width/4, -obstacle.height/4, 2, 0, Math.PI * 2);
-      this.ctx.fill();
+      // Fallback for other obstacle types
+      this.drawBasicObstacle(obstacle);
     }
     
     this.ctx.restore();
+  }
+  
+  drawEnhancedAsteroid(obstacle) {
+    const time = Date.now() * 0.001;
+    const size = Math.min(obstacle.width, obstacle.height) / 2;
+    
+    // Rotating asteroid with multiple layers
+    this.ctx.rotate(time * 0.5 + obstacle.rotation);
+    
+    // Main asteroid body with rough edges
+    this.ctx.fillStyle = '#8B4513';
+    this.ctx.beginPath();
+    
+    // Create irregular asteroid shape
+    const points = 8;
+    for (let i = 0; i < points; i++) {
+      const angle = (i / points) * Math.PI * 2;
+      const variance = 0.7 + Math.sin(angle * 3) * 0.3; // Irregular shape
+      const radius = size * variance;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+      
+      if (i === 0) {
+        this.ctx.moveTo(x, y);
+      } else {
+        this.ctx.lineTo(x, y);
+      }
+    }
+    this.ctx.closePath();
+    this.ctx.fill();
+    
+    // Add metallic highlights
+    this.ctx.strokeStyle = '#CD853F';
+    this.ctx.lineWidth = 2;
+    this.ctx.stroke();
+    
+    // Glowing core
+    const gradient = this.ctx.createRadialGradient(0, 0, 0, 0, 0, size * 0.6);
+    gradient.addColorStop(0, 'rgba(255, 140, 0, 0.8)');
+    gradient.addColorStop(0.5, 'rgba(255, 69, 0, 0.4)');
+    gradient.addColorStop(1, 'rgba(139, 69, 19, 0.1)');
+    
+    this.ctx.fillStyle = gradient;
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, size * 0.4, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Sparkle effects
+    for (let i = 0; i < 3; i++) {
+      const sparkleAngle = time * 2 + i * Math.PI * 0.67;
+      const sparkleRadius = size * 0.8;
+      const sparkleX = Math.cos(sparkleAngle) * sparkleRadius;
+      const sparkleY = Math.sin(sparkleAngle) * sparkleRadius;
+      
+      this.ctx.fillStyle = `rgba(255, 255, 255, ${0.8 + Math.sin(time * 4 + i) * 0.2})`;
+      this.ctx.beginPath();
+      this.ctx.arc(sparkleX, sparkleY, 2, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+  }
+  
+  drawEnhancedInsect(obstacle) {
+    const time = Date.now() * 0.003;
+    const size = Math.min(obstacle.width, obstacle.height) / 2;
+    
+    // Floating insect with wing animation
+    const hover = Math.sin(time * 4) * 3;
+    this.ctx.translate(0, hover);
+    
+    // Insect body - segmented
+    this.ctx.fillStyle = '#8B0000';
+    
+    // Head
+    this.ctx.beginPath();
+    this.ctx.ellipse(0, -size * 0.7, size * 0.3, size * 0.4, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Thorax
+    this.ctx.beginPath();
+    this.ctx.ellipse(0, 0, size * 0.4, size * 0.6, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Abdomen
+    this.ctx.beginPath();
+    this.ctx.ellipse(0, size * 0.5, size * 0.35, size * 0.7, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Animated wings
+    const wingFlap = Math.sin(time * 20) * 0.3 + 0.7; // Fast wing flapping
+    
+    this.ctx.fillStyle = 'rgba(255, 0, 0, 0.6)';
+    
+    // Left wing
+    this.ctx.save();
+    this.ctx.scale(wingFlap, 1);
+    this.ctx.beginPath();
+    this.ctx.ellipse(-size * 0.6, -size * 0.2, size * 0.4, size * 0.8, -0.3, 0, Math.PI * 2);
+    this.ctx.fill();
+    this.ctx.restore();
+    
+    // Right wing
+    this.ctx.save();
+    this.ctx.scale(wingFlap, 1);
+    this.ctx.beginPath();
+    this.ctx.ellipse(size * 0.6, -size * 0.2, size * 0.4, size * 0.8, 0.3, 0, Math.PI * 2);
+    this.ctx.fill();
+    this.ctx.restore();
+    
+    // Glowing eyes
+    this.ctx.fillStyle = '#FF4500';
+    this.ctx.beginPath();
+    this.ctx.arc(-size * 0.15, -size * 0.7, 3, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.beginPath();
+    this.ctx.arc(size * 0.15, -size * 0.7, 3, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Antennae
+    this.ctx.strokeStyle = '#8B0000';
+    this.ctx.lineWidth = 2;
+    this.ctx.beginPath();
+    this.ctx.moveTo(-size * 0.1, -size * 0.9);
+    this.ctx.lineTo(-size * 0.2, -size * 1.2);
+    this.ctx.moveTo(size * 0.1, -size * 0.9);
+    this.ctx.lineTo(size * 0.2, -size * 1.2);
+    this.ctx.stroke();
+    
+    // Menacing aura
+    this.ctx.strokeStyle = `rgba(255, 0, 0, ${0.3 + Math.sin(time * 6) * 0.2})`;
+    this.ctx.lineWidth = 3;
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, size * 1.2, 0, Math.PI * 2);
+    this.ctx.stroke();
+  }
+  
+  drawBasicObstacle(obstacle) {
+    // Fallback rendering for other obstacle types
+    const size = Math.min(obstacle.width, obstacle.height) / 2;
+    
+    this.ctx.fillStyle = obstacle.color || '#666';
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, size, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.strokeStyle = '#999';
+    this.ctx.lineWidth = 2;
+    this.ctx.stroke();
   }
   
   drawPowerUp(powerUp) {
