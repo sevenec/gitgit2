@@ -294,6 +294,36 @@ const TutorialScreen = ({ onComplete, onSkip }) => {
           </div>
         );
       
+      case 'blaster_demo':
+        return (
+          <div className="h-40 bg-gradient-to-br from-yellow-900 to-orange-900 rounded-lg relative overflow-hidden">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center text-white">
+                <div className="mb-2">🎯</div>
+                <p className="text-sm">With Blaster power-up: Tap/Click to shoot!</p>
+                <div className="mt-4 flex items-center justify-center space-x-4">
+                  {/* Butterfly with blaster */}
+                  <div className="relative">
+                    <div className="text-2xl">🦋</div>
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-400 rounded-full animate-pulse" />
+                  </div>
+                  {/* Projectile animation */}
+                  <div className="flex space-x-1">
+                    <div className="w-1 h-1 bg-yellow-400 rounded-full animate-pulse" />
+                    <div className="w-1 h-1 bg-yellow-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}} />
+                    <div className="w-1 h-1 bg-yellow-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}} />
+                  </div>
+                  {/* Target obstacle */}
+                  <div className="relative">
+                    <div className="w-6 h-6 bg-red-500 rounded-full opacity-70" />
+                    <div className="absolute inset-0 w-6 h-6 bg-yellow-400 rounded-full animate-ping opacity-30" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      
       default:
         return <div className="h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-400">Visual Demo</div>;
     }
