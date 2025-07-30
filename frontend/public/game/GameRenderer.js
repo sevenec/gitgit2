@@ -521,4 +521,4 @@ window.GameRenderer = class GameRenderer {
     this.ctx.font = '16px Arial';
     this.ctx.fillText('Tap or Click to Play Again', this.canvas.width / 2, this.canvas.height / 2 + 80);
   }
-}
+};
