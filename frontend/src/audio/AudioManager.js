@@ -73,46 +73,20 @@ class AudioManager {
     console.log(`🔊 ${Object.keys(this.soundEffects).length} basic sound effects available`);
   }
 
-  // Auto-play music with HTML5 Audio for high quality
+  // Music playback - DISABLED FOR NOW
   playMusic(level) {
+    if (this.musicDisabled) {
+      console.log('🔇 Music is disabled - no music will play');
+      return;
+    }
+    
     if (this.isMuted) {
       console.log('🔇 Music muted - not playing');
       return;
     }
     
-    const track = this.musicTracks[level] || this.musicTracks.menu;
-    console.log(`🎵 Starting high-quality music for level ${level}: ${track.name}`);
-    
-    // Stop current music
-    if (this.currentMusicAudio) {
-      this.currentMusicAudio.pause();
-      this.currentMusicAudio.currentTime = 0;
-      this.currentMusicAudio = null;
-    }
-    
-    // Create HTML5 audio element for high-quality playback
-    this.currentMusicAudio = new Audio();
-    this.currentMusicAudio.src = track.src;
-    this.currentMusicAudio.loop = true;
-    this.currentMusicAudio.volume = this.musicVolume;
-    
-    // Handle audio loading and fallback
-    this.currentMusicAudio.addEventListener('loadeddata', () => {
-      console.log(`✅ High-quality audio loaded: ${track.name}`);
-      this.currentMusicAudio.play().catch(() => {
-        console.log('🎵 Using fallback procedural audio for:', track.name);
-        this.playFallbackMusic(level);
-      });
-    });
-    
-    this.currentMusicAudio.addEventListener('error', () => {
-      console.log('🎵 Audio file not found, using fallback for:', track.name);
-      this.playFallbackMusic(level);
-    });
-    
-    // Load the audio
-    this.currentMusicAudio.load();
-    this.currentMusic = track;
+    // If music is enabled in the future, we can add simple HTML5 audio here
+    console.log(`🎵 Music for level ${level} would play here (currently disabled)`);
   }
 
   // Fallback procedural music generation with HIGH-QUALITY orchestral/electronic sounds
