@@ -168,7 +168,11 @@ async def unlock_flutterer(user_id: str, flutterer_id: str, db=Depends(get_datab
     
     await db.users.update_one(
         {"user_id": user_id},
-        {"$set": {"flutterer_progress": user_obj.flutterer_progress}}
+        {"$set": {f"flutterer_progress.{flutterer_id}": {
+            "flutterer_id": flutterer_id,
+            "unlocked": True,
+            "usage_count": 0
+        }}}
     )
     
     return {"success": True, "flutterer_id": flutterer_id}
