@@ -24,8 +24,8 @@ window.GameRenderer = class GameRenderer {
     // Clear canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     
-    // Render background
-    this.renderBackground(gameEngine.currentLevel);
+    // Render enhanced background
+    this.renderEnhancedBackground(gameEngine.currentLevel);
     
     // Render background effects
     this.renderBackgroundEffects(gameEngine.backgroundEffects);
@@ -55,6 +55,204 @@ window.GameRenderer = class GameRenderer {
       case 'gameComplete':
         this.renderGameComplete(gameEngine);
         break;
+    }
+  }
+  
+  renderEnhancedBackground(level) {
+    // Enhanced background rendering with level-specific themes
+    const backgroundConfig = this.getLevelBackgroundConfig(level);
+    
+    // Create complex multi-stop gradient
+    const gradient = this.ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height);
+    backgroundConfig.gradientStops.forEach((stop, index) => {
+      gradient.addColorStop(index / (backgroundConfig.gradientStops.length - 1), stop);
+    });
+    
+    this.ctx.fillStyle = gradient;
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    // Render enhanced star field
+    this.renderEnhancedStars();
+    
+    // Add level-specific visual effects
+    this.renderLevelVisualEffects(level, backgroundConfig);
+  }
+  
+  getLevelBackgroundConfig(level) {
+    const configs = {
+      1: {
+        name: 'Starry Genesis',
+        gradientStops: ['#0B1426', '#1B2951', '#2A3F7A', '#4A5F9A'],
+        effects: ['twinkling_stars', 'gentle_drift']
+      },
+      5: {
+        name: 'Colorful Nebula', 
+        gradientStops: ['#2D1B69', '#8B2986', '#E94560', '#F2CC8F'],
+        effects: ['nebula_swirls', 'color_transitions']
+      },
+      10: {
+        name: 'Galactic Core',
+        gradientStops: ['#4A1A4A', '#7A2A7A', '#AA3AAA', '#DA4ADA'],
+        effects: ['core_pulsation', 'energy_streams']
+      },
+      15: {
+        name: 'Boss Arena',
+        gradientStops: ['#4B0082', '#8B008B', '#FF1493', '#FF69B4'],
+        effects: ['boss_aura', 'energy_tendrils', 'ominous_glow']
+      }
+    };
+    
+    // Find appropriate config for level
+    const levelKeys = Object.keys(configs).map(Number).sort((a, b) => b - a);
+    for (let key of levelKeys) {
+      if (level >= key) {
+        return configs[key];
+      }
+    }
+    return configs[1];
+  }
+  
+  renderEnhancedStars() {
+    // Enhanced star field with multiple types and twinkling
+    this.ctx.fillStyle = '#FFFFFF';
+    this.starField.forEach(star => {
+      star.y += star.speed;
+      if (star.y > this.canvas.height) {
+        star.y = -5;
+        star.x = Math.random() * this.canvas.width;
+      }
+      
+      // Enhanced twinkling effect
+      const time = Date.now() * 0.003;
+      const twinkle = Math.sin(time + star.x * 0.01) * 0.3 + 0.7;
+      
+      this.ctx.save();
+      this.ctx.globalAlpha = star.brightness * twinkle;
+      
+      // Add subtle glow to larger stars
+      if (star.size > 2) {
+        this.ctx.shadowColor = '#FFFFFF';
+        this.ctx.shadowBlur = star.size * 2;
+      }
+      
+      this.ctx.beginPath();
+      this.ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+      this.ctx.fill();
+      
+      this.ctx.restore();
+    });
+  }
+  
+  renderLevelVisualEffects(level, config) {
+    const time = Date.now() * 0.001;
+    
+    switch (true) {
+      case level <= 3:
+        this.renderTwinklingEffect(time);
+        break;
+      case level <= 7:
+        this.renderNebulaSwirls(time);
+        break;
+      case level <= 12:
+        this.renderEnergyStreams(time);
+        break;
+      case level === 15:
+        this.renderBossAura(time);
+        break;
+    }
+  }
+  
+  renderTwinklingEffect(time) {
+    // Subtle twinkling particles
+    for (let i = 0; i < 15; i++) {
+      const x = (Math.sin(time * 0.5 + i) * 0.5 + 0.5) * this.canvas.width;
+      const y = (Math.cos(time * 0.3 + i * 0.7) * 0.5 + 0.5) * this.canvas.height;
+      const alpha = Math.sin(time * 2 + i) * 0.3 + 0.3;
+      
+      this.ctx.save();
+      this.ctx.globalAlpha = alpha;
+      this.ctx.fillStyle = '#E6E6FA';
+      this.ctx.beginPath();
+      this.ctx.arc(x, y, 1, 0, Math.PI * 2);
+      this.ctx.fill();
+      this.ctx.restore();
+    }
+  }
+  
+  renderNebulaSwirls(time) {
+    // Colorful nebula swirl effects
+    for (let i = 0; i < 4; i++) {
+      const centerX = this.canvas.width * (0.2 + i * 0.2);
+      const centerY = this.canvas.height * 0.5 + Math.sin(time + i) * 50;
+      const radius = 25 + Math.sin(time * 2 + i) * 8;
+      
+      this.ctx.save();
+      this.ctx.translate(centerX, centerY);
+      this.ctx.rotate(time * 0.5 + i);
+      
+      const colors = ['#8B2986', '#E94560', '#F2CC8F'];
+      const gradient = this.ctx.createRadialGradient(0, 0, 0, 0, 0, radius);
+      gradient.addColorStop(0, `${colors[i % colors.length]}40`);
+      gradient.addColorStop(0.7, `${colors[i % colors.length]}20`);
+      gradient.addColorStop(1, 'transparent');
+      
+      this.ctx.fillStyle = gradient;
+      this.ctx.fillRect(-radius, -radius, radius * 2, radius * 2);
+      
+      this.ctx.restore();
+    }
+  }
+  
+  renderEnergyStreams(time) {
+    // Galactic core energy streams
+    this.ctx.save();
+    this.ctx.strokeStyle = 'rgba(170, 58, 170, 0.4)';
+    this.ctx.lineWidth = 2;
+    this.ctx.shadowColor = '#AA3AAA';
+    this.ctx.shadowBlur = 6;
+    
+    for (let i = 0; i < 6; i++) {
+      const startX = (i * this.canvas.width / 6) + Math.sin(time + i) * 15;
+      const startY = 0;
+      const endX = startX + Math.cos(time * 0.7 + i) * 20;
+      const endY = this.canvas.height;
+      
+      this.ctx.beginPath();
+      this.ctx.moveTo(startX, startY);
+      this.ctx.quadraticCurveTo(
+        startX + Math.sin(time * 2 + i) * 30, 
+        this.canvas.height / 2,
+        endX, 
+        endY
+      );
+      this.ctx.stroke();
+    }
+    
+    this.ctx.restore();
+  }
+  
+  renderBossAura(time) {
+    // Ominous boss aura effect
+    const centerX = this.canvas.width / 2;
+    const centerY = 100;
+    const maxRadius = 120;
+    
+    for (let i = 0; i < 3; i++) {
+      const radius = (maxRadius * (i + 1) / 3) * (0.7 + 0.3 * Math.sin(time * 2 + i));
+      const alpha = 0.15 - (i * 0.04);
+      
+      const gradient = this.ctx.createRadialGradient(
+        centerX, centerY, 0,
+        centerX, centerY, radius
+      );
+      gradient.addColorStop(0, `rgba(255, 20, 147, ${alpha})`);
+      gradient.addColorStop(0.6, `rgba(139, 0, 139, ${alpha * 0.5})`);
+      gradient.addColorStop(1, 'transparent');
+      
+      this.ctx.fillStyle = gradient;
+      this.ctx.beginPath();
+      this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      this.ctx.fill();
     }
   }
   
