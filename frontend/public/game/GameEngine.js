@@ -454,6 +454,7 @@ window.GameEngine = class GameEngine {
       this.player.blasterTime -= deltaTime;
       if (this.player.blasterTime <= 0) {
         this.player.blasterMode = false;
+        this.player.blasterLevel = 0; // Reset blaster level when power-up expires
       }
     }
     
