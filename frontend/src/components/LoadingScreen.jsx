@@ -2,46 +2,57 @@ import React, { useState, useEffect } from 'react';
 
 const LoadingScreen = ({ onComplete }) => {
   const [progress, setProgress] = useState(0);
-  const [loadingStage, setLoadingStage] = useState('Initializing Cosmic Engine...');
+  const [loadingStage, setLoadingStage] = useState('Initializing Game Assets...');
   const [showButterfly, setShowButterfly] = useState(false);
+  const [currentTipIndex, setCurrentTipIndex] = useState(0);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   const loadingStages = [
-    'Initializing Cosmic Engine...',
-    'Loading Butterfly Flutterers...',
-    'Generating Nebula Backgrounds...',
-    'Tuning Premium Audio Tracks...',
-    'Preparing Boss Battle Arena...',
-    'Calibrating Touch Controls...',
+    'Initializing Game Assets...',
+    'Loading Audio System...',
+    'Connecting to Game Server...',
+    'Preparing Butterfly Fleet...',
+    'Configuring Level Data...',
+    'Loading Visual Effects...',
+    'Initializing Power-up Systems...',
+    'Final Preparations...',
     'Ready for Adventure!'
   ];
 
   useEffect(() => {
+    if (isCompleted) return; // Prevent multiple completions
+    
     console.log('🔄 LoadingScreen started');
     
     const loadingInterval = setInterval(() => {
       setProgress(prev => {
-        const newProgress = prev + (Math.random() * 5 + 2);
+        if (prev >= 100 || isCompleted) {
+          clearInterval(loadingInterval);
+          return prev;
+        }
+        
+        const increment = Math.random() * 3 + 1.5; // Slower but more consistent progress
+        const newProgress = Math.min(prev + increment, 100);
         const stageIndex = Math.floor((newProgress / 100) * loadingStages.length);
         
         if (stageIndex < loadingStages.length) {
           setLoadingStage(loadingStages[stageIndex]);
         }
         
-        if (newProgress >= 50) {
+        if (newProgress >= 50 && !showButterfly) {
           setShowButterfly(true);
         }
         
-        if (newProgress >= 100) {
-          clearInterval(loadingInterval);
+        if (newProgress >= 100 && !isCompleted) {
           console.log('✅ LoadingScreen completed - calling onComplete');
+          setIsCompleted(true);
+          clearInterval(loadingInterval);
           setTimeout(() => {
             try {
               onComplete();
               console.log('✅ onComplete callback executed successfully');
             } catch (error) {
               console.error('❌ Error in onComplete callback:', error);
-              // Force complete anyway
-              onComplete();
             }
           }, 500);
           return 100;
@@ -49,26 +60,29 @@ const LoadingScreen = ({ onComplete }) => {
         
         return newProgress;
       });
-    }, 100);
+    }, 150); // Slightly slower interval
 
-    // Failsafe: Force completion after maximum time (12 seconds)
+    // Failsafe: Force completion after maximum time (10 seconds)
     const failsafeTimer = setTimeout(() => {
-      console.log('⚠️ LoadingScreen failsafe triggered - forcing completion');
-      clearInterval(loadingInterval);
-      setProgress(100);
-      try {
-        onComplete();
-        console.log('✅ Failsafe onComplete executed');
-      } catch (error) {
-        console.error('❌ Error in failsafe onComplete:', error);
+      if (!isCompleted) {
+        console.log('⚠️ LoadingScreen failsafe triggered - forcing completion');
+        setIsCompleted(true);
+        clearInterval(loadingInterval);
+        setProgress(100);
+        try {
+          onComplete();
+          console.log('✅ Failsafe onComplete executed');
+        } catch (error) {
+          console.error('❌ Error in failsafe onComplete:', error);
+        }
       }
-    }, 12000);
+    }, 10000);
 
     return () => {
       clearInterval(loadingInterval);
       clearTimeout(failsafeTimer);
     };
-  }, [onComplete]);
+  }, [onComplete, isCompleted, showButterfly]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 via-pink-900 to-orange-900 flex items-center justify-center relative overflow-hidden">
