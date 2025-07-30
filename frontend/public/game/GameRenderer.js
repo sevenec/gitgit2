@@ -58,7 +58,74 @@ window.GameRenderer = class GameRenderer {
     }
   }
   
-  renderBackground(level) {
+  renderBackgroundEffects(effects) {
+    effects.forEach(effect => {
+      this.ctx.save();
+      
+      switch (effect.type) {
+        case 'shooting_star':
+          this.ctx.strokeStyle = '#FFFFFF';
+          this.ctx.lineWidth = 2;
+          this.ctx.globalAlpha = 0.8;
+          this.ctx.beginPath();
+          this.ctx.moveTo(effect.x, effect.y);
+          this.ctx.lineTo(effect.x - 20, effect.y - 10);
+          this.ctx.stroke();
+          break;
+          
+        case 'nebula_particle':
+          this.ctx.fillStyle = effect.color;
+          this.ctx.globalAlpha = 0.6;
+          this.ctx.beginPath();
+          this.ctx.arc(effect.x, effect.y, effect.size, 0, Math.PI * 2);
+          this.ctx.fill();
+          break;
+          
+        case 'energy_tendril':
+          this.ctx.strokeStyle = effect.color;
+          this.ctx.lineWidth = 3;
+          this.ctx.globalAlpha = 0.4;
+          this.ctx.beginPath();
+          this.ctx.moveTo(effect.x, effect.y);
+          const endX = effect.x + Math.cos(effect.angle) * effect.length;
+          const endY = effect.y + Math.sin(effect.angle) * effect.length;
+          this.ctx.lineTo(endX, endY);
+          this.ctx.stroke();
+          break;
+      }
+      
+      this.ctx.restore();
+    });
+  }
+  
+  renderBossIntro(gameEngine) {
+    // Render game normally first
+    this.renderGame(gameEngine);
+    
+    // Boss intro overlay
+    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    // Epic boss introduction text
+    this.ctx.fillStyle = '#FF1493';
+    this.ctx.font = 'bold 36px Arial';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('FINAL BOSS APPROACHING', this.canvas.width / 2, this.canvas.height / 2 - 60);
+    
+    this.ctx.fillStyle = '#FFFFFF';
+    this.ctx.font = 'bold 24px Arial';
+    this.ctx.fillText('MOTHER INSECT AWAKENS', this.canvas.width / 2, this.canvas.height / 2 - 20);
+    
+    this.ctx.fillStyle = '#FFD700';
+    this.ctx.font = '18px Arial';
+    this.ctx.fillText('Use all your power-ups to survive!', this.canvas.width / 2, this.canvas.height / 2 + 20);
+    
+    // Countdown timer
+    const timeLeft = Math.ceil(gameEngine.bossIntroTimer / 1000);
+    this.ctx.fillStyle = '#FF0000';
+    this.ctx.font = 'bold 48px Arial';
+    this.ctx.fillText(timeLeft.toString(), this.canvas.width / 2, this.canvas.height / 2 + 80);
+  }
     // Create gradient based on level
     let gradient;
     
