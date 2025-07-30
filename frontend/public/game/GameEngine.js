@@ -843,8 +843,17 @@ window.GameEngine = class GameEngine {
     this.lives--;
     this.createExplosion(this.player.x, this.player.y);
     
+    // Play damage sound
+    if (window.AudioManager) {
+      window.AudioManager.playSound('player_hit');
+    }
+    
     if (this.lives <= 0) {
       this.gameState = 'gameOver';
+      if (window.AudioManager) {
+        window.AudioManager.playSound('game_over');
+        window.AudioManager.stopAllAudio();
+      }
     }
   }
   
