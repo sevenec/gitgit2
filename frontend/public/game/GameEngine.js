@@ -773,8 +773,10 @@ window.GameEngine = class GameEngine {
   checkCollisions() {
     if (!this.player) return;
     
-    // Check obstacle collisions
-    this.obstacles.forEach((obstacle, index) => {
+    // Check obstacle collisions (use reverse iteration to safely remove elements)
+    for (let i = this.obstacles.length - 1; i >= 0; i--) {
+      const obstacle = this.obstacles[i];
+      
       // Special handling for homing projectiles
       if (obstacle.type === 'boss_homing') {
         const dx = this.player.x - obstacle.x;
@@ -793,9 +795,9 @@ window.GameEngine = class GameEngine {
           }
         }
         this.createExplosion(obstacle.x, obstacle.y);
-        this.obstacles.splice(index, 1);
+        this.obstacles.splice(i, 1);
       }
-    });
+    }
     
     // Check power-up collisions
     this.powerUps.forEach((powerUp, index) => {
