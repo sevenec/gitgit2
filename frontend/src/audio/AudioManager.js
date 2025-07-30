@@ -171,73 +171,147 @@ class AudioManager {
   }
   
   createContinuousMusic(track, fadeTime) {
-    // Stop any existing music
-    if (this.currentMusicNodes) {
+    // Stop ALL existing music nodes completely
+    if (this.currentMusicNodes && this.currentMusicNodes.length > 0) {
+      console.log(`🔇 Stopping ${this.currentMusicNodes.length} existing music nodes`);
       this.currentMusicNodes.forEach(node => {
-        try { node.stop(); } catch(e) {}
+        try { 
+          if (node.stop) node.stop();
+          if (node.disconnect) node.disconnect();
+        } catch(e) {}
       });
     }
     this.currentMusicNodes = [];
     
-    // Create a simple, audible musical loop
-    const baseFreq = 220; // A3
-    const melody = [1, 1.25, 1.5, 1.75, 2, 1.75, 1.5, 1.25]; // Simple melody
-    const chordRatios = [1, 1.25, 1.5]; // Major chord
+    // Stop any existing melody loops
+    if (this.melodyTimeout) {
+      clearTimeout(this.melodyTimeout);
+      this.melodyTimeout = null;
+    }
     
-    // Create continuous background chord
-    chordRatios.forEach((ratio, index) => {
+    // Create level-specific music with more variation
+    const levelMusic = this.getLevelMusicConfig(track.level || 1);
+    console.log(`🎼 Creating unique music for ${track.name}: ${levelMusic.style}`);
+    
+    // Create background harmony with level-specific characteristics
+    levelMusic.harmony.forEach((freq, index) => {
       const oscillator = this.audioContext.createOscillator();
       const gainNode = this.audioContext.createGain();
       
       oscillator.connect(gainNode);
       gainNode.connect(this.musicGain);
       
-      oscillator.type = 'sine';
-      oscillator.frequency.value = baseFreq * ratio;
+      oscillator.type = levelMusic.waveType;
+      oscillator.frequency.value = freq;
       
-      // Gentle volume for background harmony
+      // Gentle volume with slight variation per voice
+      const volume = 0.03 + (index * 0.01); // Reduced from 0.05
       gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-      gainNode.gain.linearRampToValueAtTime(0.05, this.audioContext.currentTime + fadeTime / 1000);
+      gainNode.gain.linearRampToValueAtTime(volume, this.audioContext.currentTime + fadeTime / 1000);
       
       oscillator.start(this.audioContext.currentTime);
-      
-      // Loop indefinitely until stopped
       this.currentMusicNodes.push(oscillator);
     });
     
-    // Create melodic lead that loops
+    // Create varied melody with level-specific pattern
+    this.createVariedMelody(levelMusic, fadeTime);
+    
+    this.currentMusic = track;
+    console.log(`🎵 Unique music started: ${track.name} (${levelMusic.style})`);
+  }
+  
+  getLevelMusicConfig(level) {
+    const configs = {
+      1: {
+        style: 'Gentle Cosmic',
+        harmony: [220, 275, 330], // A3, C#4, E4
+        melody: [440, 550, 660, 550, 440, 330, 275, 330],
+        waveType: 'sine',
+        melodyWave: 'triangle',
+        tempo: 1200
+      },
+      2: {
+        style: 'Energetic Space',
+        harmony: [247, 311, 370], // B3, D#4, F#4
+        melody: [494, 622, 740, 622, 494, 370, 311, 370],
+        waveType: 'sine',
+        melodyWave: 'sawtooth',
+        tempo: 1000
+      },
+      3: {
+        style: 'Mysterious Void',
+        harmony: [196, 247, 294], // G3, B3, D4
+        melody: [392, 466, 554, 466, 392, 330, 294, 330],
+        waveType: 'triangle',
+        melodyWave: 'square',
+        tempo: 1400
+      },
+      4: {
+        style: 'Intense Nebula',
+        harmony: [262, 330, 392], // C4, E4, G4
+        melody: [523, 659, 784, 659, 523, 440, 392, 440],
+        waveType: 'sawtooth',
+        melodyWave: 'triangle',
+        tempo: 900
+      },
+      5: {
+        style: 'Driving Stellar',
+        harmony: [294, 370, 440], // D4, F#4, A4
+        melody: [587, 740, 880, 740, 587, 494, 440, 494],
+        waveType: 'sine',
+        melodyWave: 'sawtooth',
+        tempo: 800
+      },
+      15: {
+        style: 'Epic Boss Battle',
+        harmony: [147, 196, 262], // D3, G3, C4 (darker, more ominous)
+        melody: [294, 370, 466, 370, 294, 262, 220, 262],
+        waveType: 'sawtooth',
+        melodyWave: 'square',
+        tempo: 600
+      }
+    };
+    
+    return configs[level] || configs[Math.min(level, 5)];
+  }
+  
+  createVariedMelody(musicConfig, fadeTime) {
     let melodyIndex = 0;
+    let melodyOscillator = null;
+    
     const playMelodyNote = () => {
-      if (this.isMuted || !this.audioContext) return;
+      if (this.isMuted || !this.audioContext || !this.currentMusic) return;
       
-      const oscillator = this.audioContext.createOscillator();
+      // Clean up previous note
+      if (melodyOscillator) {
+        try { melodyOscillator.stop(); } catch(e) {}
+      }
+      
+      melodyOscillator = this.audioContext.createOscillator();
       const gainNode = this.audioContext.createGain();
       
-      oscillator.connect(gainNode);
+      melodyOscillator.connect(gainNode);
       gainNode.connect(this.musicGain);
       
-      oscillator.type = 'triangle';
-      oscillator.frequency.value = baseFreq * 2 * melody[melodyIndex % melody.length];
+      melodyOscillator.type = musicConfig.melodyWave;
+      melodyOscillator.frequency.value = musicConfig.melody[melodyIndex % musicConfig.melody.length];
       
-      const noteLength = 0.8;
+      const noteLength = musicConfig.tempo * 0.0006; // Shorter notes
       gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-      gainNode.gain.linearRampToValueAtTime(0.08, this.audioContext.currentTime + 0.05);
+      gainNode.gain.linearRampToValueAtTime(0.04, this.audioContext.currentTime + 0.05); // Reduced volume
       gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + noteLength);
       
-      oscillator.start(this.audioContext.currentTime);
-      oscillator.stop(this.audioContext.currentTime + noteLength);
+      melodyOscillator.start(this.audioContext.currentTime);
+      melodyOscillator.stop(this.audioContext.currentTime + noteLength);
       
       melodyIndex++;
       
-      // Schedule next note
-      setTimeout(playMelodyNote, 600);
+      // Schedule next note with variation
+      this.melodyTimeout = setTimeout(playMelodyNote, musicConfig.tempo + (Math.random() * 200 - 100));
     };
     
-    // Start melody after a short delay
-    setTimeout(playMelodyNote, 500);
-    
-    this.currentMusic = track;
-    console.log(`🎵 Continuous music loop started: ${track.name}`);
+    // Start melody after fade-in
+    this.melodyTimeout = setTimeout(playMelodyNote, fadeTime + 200);
   }
   
   fadeOutMusic(track, duration = 1000) {
