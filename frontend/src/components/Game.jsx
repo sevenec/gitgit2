@@ -207,7 +207,27 @@ const Game = () => {
   };
 
   const startActualGame = () => {
-    console.log('startActualGame called');
+    console.log('startActualGame called, gameEngineReady:', gameEngineReady);
+    
+    if (!gameEngineReady) {
+      console.log('Game engine not ready yet, waiting...');
+      // Wait for game engine to be ready
+      const waitForEngine = () => {
+        if (gameEngineRef.current) {
+          console.log('Game engine now ready, starting game');
+          startGame();
+        } else {
+          setTimeout(waitForEngine, 100);
+        }
+      };
+      waitForEngine();
+      return;
+    }
+    
+    startGame();
+  };
+  
+  const startGame = () => {
     if (gameEngineRef.current) {
       console.log('Starting game engine...');
       gameEngineRef.current.startGame();
@@ -221,7 +241,7 @@ const Game = () => {
       }
       console.log('Game started successfully');
     } else {
-      console.error('Game engine not initialized when trying to start game');
+      console.error('Game engine still not initialized when trying to start game');
     }
   };
 
