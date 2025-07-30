@@ -371,15 +371,14 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Visual variety for butterfly flutterers"
-    - "Tutorial to gameplay transition"
-    - "Audio system and music playback"
+    - "Initial gameplay speed enhancement"
+    - "Music system improvement"
+    - "Collision damage for brownish obstacles"  
+    - "Health bar implementation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
   - agent: "main"
-    message: "User reported three main issues after game preview: 1) Butterflies too similar visually, 2) Tutorial doesn't transition to gameplay, 3) No music playing. Beginning systematic fixes for each issue."
-  - agent: "testing"
-    message: "Completed comprehensive backend API testing. All 12 backend endpoints are working correctly. Fixed one critical issue with rewarded ads MongoDB syntax. All user management, game configuration, score management, and monetization APIs are fully functional. Database persistence verified. Backend is production-ready."
+    message: "User reported four new critical issues: 1) Initial gameplay speed too slow, 2) Music system needs improvement - current is 'redundant' and 'awful', 3) Brownish collision objects don't damage player, 4) Health bar missing during gameplay. Starting implementation of speed enhancement, music improvements, collision damage, and health bar visibility."
