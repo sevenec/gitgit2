@@ -118,6 +118,8 @@ const Game = () => {
           // Create enhanced renderer and set it
           console.log('Creating GameRenderer instance...');
           const renderer = new window.GameRenderer(canvas);
+          gameRendererRef.current = renderer; // Store renderer reference
+          
           if (gameEngineRef.current.setRenderer) {
             gameEngineRef.current.setRenderer(renderer);
           }
