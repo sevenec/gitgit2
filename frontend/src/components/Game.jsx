@@ -548,7 +548,7 @@ const Game = () => {
     <div className="min-h-screen bg-gradient-to-b from-indigo-900 via-purple-900 to-pink-900 flex flex-col items-center justify-center p-4">
       {/* Loading Screen */}
       {showLoadingScreen && (
-        <LoadingScreen onComplete={handleLoadingComplete} />
+        <PremiumLoadingSystem onComplete={handleLoadingComplete} />
       )}
 
       {/* Opening Screen */}
