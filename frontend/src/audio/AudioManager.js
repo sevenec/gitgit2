@@ -266,6 +266,18 @@ class AudioManager {
 
   getHighQualityMusicConfig(level) {
     const configs = {
+      menu: { 
+        name: 'Cosmic Welcome',
+        mood: 'ambient_welcome',
+        key: 'C',
+        harmony: [261.63, 329.63, 392.00], // C4, E4, G4 - C Major
+        bassline: [130.81, 164.81, 196.00], // C3, E3, G3
+        melody: [523.25, 659.25, 783.99, 659.25, 523.25, 392.00, 329.63],
+        tempo: 1500,
+        atmosphere: 'ambient',
+        hasRhythm: false,
+        electronic: true
+      },
       1: { 
         name: 'Starry Awakening',
         mood: 'upbeat_orchestral',
@@ -328,7 +340,29 @@ class AudioManager {
       }
     };
     
-    return configs[level] || configs[Math.min(Math.max(level, 1), 5)];
+    // Enterprise-grade fallback system
+    const defaultConfig = {
+      name: 'Cosmic Default',
+      mood: 'ambient_safe',
+      key: 'C',
+      harmony: [261.63, 329.63, 392.00],
+      bassline: [130.81, 164.81, 196.00],
+      melody: [523.25, 659.25, 783.99],
+      tempo: 1500,
+      atmosphere: 'ambient',
+      hasRhythm: false,
+      electronic: true
+    };
+    
+    const config = configs[level] || configs[Math.min(Math.max(level, 1), 15)] || defaultConfig;
+    
+    // Validate config integrity
+    if (!config.harmony || !config.bassline || !config.melody) {
+      console.warn(`⚠️ Invalid music config for level ${level}, using default`);
+      return defaultConfig;
+    }
+    
+    return config;
   }
 
   createOrchestralHarmony(config) {
