@@ -41,9 +41,8 @@ const OpeningScreen = ({ onStartGame, onShowTutorial, onOpenFluttererSelector, o
       audioManager.playSound('button_click');
       audioManager.resumeAudioContext(); // Ensure audio context is active
       
-      // 🎵 START INTRO MUSIC when user clicks START ADVENTURE
-      console.log('🎵 Starting intro music on START ADVENTURE click');
-      audioManager.playIntroMusic();
+      // Intro music is already playing from app open
+      console.log('🎵 START ADVENTURE clicked - intro music already playing');
     }
     onStartGame();
   };
