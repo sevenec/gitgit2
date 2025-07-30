@@ -990,6 +990,46 @@ window.GameEngine = class GameEngine {
     }
   }
   
+  handleAutomaticShooting(deltaTime) {
+    const currentTime = Date.now();
+    
+    // Different firing rates based on blaster level
+    let fireRate;
+    switch (this.player.blasterLevel) {
+      case 1: fireRate = 400; break; // Single shot every 400ms
+      case 2: fireRate = 300; break; // Dual shot every 300ms  
+      case 3: fireRate = 150; break; // Laser beam every 150ms (rapid fire)
+      default: return;
+    }
+    
+    if (currentTime - this.player.lastShotTime >= fireRate) {
+      // Auto-target the nearest obstacle or shoot straight up
+      const target = this.findNearestObstacle() || { x: this.player.x, y: this.player.y - 100 };
+      this.shootProjectile(target.x, target.y);
+    }
+  }
+  
+  findNearestObstacle() {
+    let nearestObstacle = null;
+    let nearestDistance = Infinity;
+    
+    this.obstacles.forEach(obstacle => {
+      // Only target obstacles that are above or at same level as player
+      if (obstacle.y <= this.player.y) {
+        const dx = obstacle.x - this.player.x;
+        const dy = obstacle.y - this.player.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < nearestDistance && distance < 200) { // Within 200 pixels
+          nearestDistance = distance;
+          nearestObstacle = obstacle;
+        }
+      }
+    });
+    
+    return nearestObstacle;
+  }
+
   shootProjectile(targetX, targetY) {
     const currentTime = Date.now();
     
