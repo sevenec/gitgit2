@@ -183,12 +183,17 @@ const Game = () => {
   }, []);
 
   const startGameLoop = () => {
+    console.log('🎮 Starting game loop...');
+    
     const gameLoop = (currentTime) => {
       const deltaTime = currentTime - lastTimeRef.current;
       lastTimeRef.current = currentTime;
 
       if (gameEngineRef.current && gameRendererRef.current) {
+        // Update game engine
         gameEngineRef.current.update(deltaTime);
+        
+        // Render the game
         gameRendererRef.current.render(gameEngineRef.current);
         
         // Update UI state
@@ -215,8 +220,18 @@ const Game = () => {
         }
       }
 
+      // Continue the loop
       animationFrameRef.current = requestAnimationFrame(gameLoop);
     };
+
+    // Initialize the loop with current time
+    lastTimeRef.current = performance.now();
+    
+    // Start the game loop
+    animationFrameRef.current = requestAnimationFrame(gameLoop);
+    
+    console.log('🎮 Game loop started successfully!');
+  };
 
     animationFrameRef.current = requestAnimationFrame(gameLoop);
   };
