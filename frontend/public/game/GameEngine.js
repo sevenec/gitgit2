@@ -91,6 +91,9 @@ window.GameEngine = class GameEngine {
       
       if (this.gameState === 'menu' || this.gameState === 'gameOver') {
         this.startGame();
+      } else if (this.gameState === 'playing' && this.player && this.player.blasterLevel > 0) {
+        // Shoot when tapping with blaster power-up
+        this.shootProjectile(this.touchStartX, this.touchStartY);
       }
     });
     
