@@ -103,6 +103,7 @@ const Game = () => {
         
         try {
           const canvas = canvasRef.current;
+          const ctx = canvas.getContext('2d');
           
           // Resize canvas first
           const container = canvas.parentElement;
@@ -110,14 +111,16 @@ const Game = () => {
           canvas.width = Math.max(400, Math.min(600, rect.width - 40));
           canvas.height = Math.max(500, Math.min(700, window.innerHeight - 300));
           
-          // Create game engine instance
+          // Create game engine instance with both canvas and context
           console.log('Creating GameEngine instance...');
-          gameEngineRef.current = new window.GameEngine(canvas);
+          gameEngineRef.current = new window.GameEngine(canvas, ctx);
           
-          // Create enhanced renderer
+          // Create enhanced renderer and set it
           console.log('Creating GameRenderer instance...');
           const renderer = new window.GameRenderer(canvas);
-          gameEngineRef.current.setRenderer(renderer);
+          if (gameEngineRef.current.setRenderer) {
+            gameEngineRef.current.setRenderer(renderer);
+          }
           
           // Set selected flutterer if available
           if (selectedFlutterer) {
