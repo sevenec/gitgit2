@@ -157,6 +157,13 @@ const Game = () => {
     
     const initializeAudio = async () => {
       try {
+        // FORCE STOP any existing audio first to prevent overlap
+        if (window.audioManager) {
+          console.log('🔇 Stopping existing AudioManager to prevent overlap');
+          await window.audioManager.forceStopAllAudio();
+          window.audioManager = null;
+        }
+        
         // Use the window.AudioManager class directly
         if (window.AudioManager) {
           console.log('✅ AudioManager class found on window');
