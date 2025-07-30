@@ -1,0 +1,17 @@
+🎵 PLACE YOUR AUDIO FILES HERE!
+
+This is the directory where you can add your own high-quality music and sound effects.
+
+QUICK START:
+1. Download a space/cosmic music track from Pixabay or Bensound
+2. Rename it to: level_01_starry_upbeat.mp3
+3. Place it in this /app/frontend/public/sounds/ directory
+4. Refresh the game - your music will play automatically!
+
+The game will show:
+✅ "High-quality audio loaded: Starry Awakening"
+
+If no file is found, it shows:
+🎵 "Audio file not found, using fallback for: Starry Awakening"
+
+See /app/AUDIO_FILE_GUIDE.md for complete instructions!
