@@ -27,9 +27,15 @@ window.GameRenderer = class GameRenderer {
     // Render background
     this.renderBackground(gameEngine.currentLevel);
     
+    // Render background effects
+    this.renderBackgroundEffects(gameEngine.backgroundEffects);
+    
     switch (gameEngine.gameState) {
       case 'menu':
         this.renderMenu();
+        break;
+      case 'bossIntro':
+        this.renderBossIntro(gameEngine);
         break;
       case 'playing':
         this.renderGame(gameEngine);
