@@ -1219,9 +1219,9 @@ window.GameEngine = class GameEngine {
     this.particleSystem.createExplosion(this.player.x, this.player.y, '#ff6b6b', 15);
     this.screenEffects.hitEffect(); // Screen shake + flash
     
-    // Play damage sound
+    // Play damage sound with enhanced crunch effect
     if (window.AudioManager) {
-      window.AudioManager.playSound('player_hit');
+      window.AudioManager.playSound('crunch', { volume: 0.8 });
     }
     
     if (this.lives <= 0) {
