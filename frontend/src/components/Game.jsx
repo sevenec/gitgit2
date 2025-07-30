@@ -20,6 +20,14 @@ const Game = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [highScore, setHighScore] = useState(0);
+  const [selectedFlutterer, setSelectedFlutterer] = useState(null);
+  const [gameStats, setGameStats] = useState({
+    highScore: 0,
+    maxLevel: 1,
+    enemiesDefeated: 0,
+    totalSurvivalTime: 0,
+    bossDefeats: 0
+  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
