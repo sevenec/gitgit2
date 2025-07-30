@@ -3,8 +3,8 @@ from typing import List, Optional
 from datetime import datetime, timedelta
 import uuid
 
-from ..models.user import User, UserCreate, UserUpdate, ScoreSubmission, LeaderboardEntry
-from ..database import get_database
+from models.user import User, UserCreate, UserUpdate, ScoreSubmission, LeaderboardEntry
+from database import get_database
 
 router = APIRouter(prefix="/users", tags=["users"])
 
