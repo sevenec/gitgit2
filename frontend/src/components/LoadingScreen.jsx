@@ -143,18 +143,6 @@ const LoadingScreen = ({ onComplete }) => {
           <p>👑 Defeat the Mother Insect boss on level 15</p>
         </div>
       </div>
-
-      {/* Custom CSS for shimmer effect */}
-      <style jsx>{`
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-        
-        .animate-shimmer {
-          animation: shimmer 2s infinite;
-        }
-      `}</style>
     </div>
   );
 };
