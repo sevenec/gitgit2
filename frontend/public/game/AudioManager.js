@@ -1,11 +1,11 @@
 window.AudioManager = class AudioManager {
   constructor() {
-    // AUDIO COMPLETELY DISABLED BY DEFAULT - USER CAN ENABLE IF DESIRED
-    this.musicDisabled = true; // MUSIC DISABLED TO PREVENT OVERLAP ISSUES
-    this.sfxDisabled = true; // SOUND EFFECTS DISABLED TO PREVENT ANNOYANCE
-    this.musicVolume = 0.0; // Zero volume music
-    this.sfxVolume = 0.0; // Zero volume sound effects
-    this.masterVolume = 0.0; // Zero master volume
+    // BALANCED AUDIO: Music enabled, annoying SFX disabled
+    this.musicDisabled = false; // MUSIC ENABLED - but with overlap prevention
+    this.sfxDisabled = true; // SOUND EFFECTS DISABLED - too annoying
+    this.musicVolume = 0.25; // Quiet background music
+    this.sfxVolume = 0.0; // No sound effects
+    this.masterVolume = 0.6; // Moderate master volume
     
     // Audio context for advanced audio features
     this.audioContext = null;
