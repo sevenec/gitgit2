@@ -33,6 +33,7 @@ const Game = () => {
   const [showLoadingScreen, setShowLoadingScreen] = useState(true);
   const [audioManager, setAudioManager] = useState(null);
   const [highScore, setHighScore] = useState(0);
+  const [gameEngineReady, setGameEngineReady] = useState(false);
   const [gameStats, setGameStats] = useState({
     highScore: 0,
     maxLevel: 1,
