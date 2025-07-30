@@ -1192,7 +1192,10 @@ window.GameEngine = class GameEngine {
       }
     }
     
+    // Enhanced visual effects
     this.createExplosion(this.player.x, this.player.y);
+    this.particleSystem.createExplosion(this.player.x, this.player.y, '#ff6b6b', 15);
+    this.screenEffects.hitEffect(); // Screen shake + flash
     
     // Play damage sound
     if (window.AudioManager) {
@@ -1201,6 +1204,10 @@ window.GameEngine = class GameEngine {
     
     if (this.lives <= 0) {
       this.gameState = 'gameOver';
+      // Boss explosion visual effect for game over
+      this.particleSystem.createExplosion(this.player.x, this.player.y, '#ff0000', 25);
+      this.screenEffects.shake(8, 500); // Strong game over shake
+      
       if (window.AudioManager) {
         window.AudioManager.playSound('game_over');
         window.AudioManager.stopAllAudio();
