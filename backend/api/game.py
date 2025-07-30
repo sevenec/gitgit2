@@ -88,7 +88,7 @@ async def watch_rewarded_ad(user_id: str, ad_type: str = "extra_life", db=Depend
     
     # Update user
     update_data = {
-        "last_rewarded_ad": datetime.utcnow(),
+        "$set": {"last_rewarded_ad": datetime.utcnow()},
         "$inc": {"ad_interactions": 1}
     }
     
