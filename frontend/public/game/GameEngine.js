@@ -457,4 +457,4 @@ window.GameEngine = class GameEngine {
       }, 2000);
     }
   }
-}
+};
