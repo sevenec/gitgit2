@@ -2,7 +2,7 @@ window.GameEngine = class GameEngine {
   constructor(canvas, ctx) {
     this.canvas = canvas;
     this.ctx = ctx;
-    this.gameState = 'menu'; // menu, playing, paused, gameOver, levelComplete
+    this.gameState = 'menu'; // menu, playing, paused, gameOver, levelComplete, bossIntro
     this.currentLevel = 1;
     this.maxLevel = 15;
     this.score = 0;
@@ -16,6 +16,7 @@ window.GameEngine = class GameEngine {
     this.obstacles = [];
     this.powerUps = [];
     this.particles = [];
+    this.projectiles = [];
     this.background = null;
     
     // Game mechanics
@@ -31,8 +32,25 @@ window.GameEngine = class GameEngine {
     // Boss fight
     this.boss = null;
     this.isBossLevel = false;
+    this.bossPhase = 1;
+    this.bossIntroTimer = 0;
+    
+    // Character system
+    this.selectedFlutterer = null;
+    this.gameStats = {
+      highScore: parseInt(localStorage.getItem('butterflyHighScore') || '0'),
+      maxLevel: parseInt(localStorage.getItem('butterflyMaxLevel') || '1'),
+      enemiesDefeated: parseInt(localStorage.getItem('butterflyEnemiesDefeated') || '0'),
+      totalSurvivalTime: parseInt(localStorage.getItem('butterflySurvivalTime') || '0'),
+      bossDefeats: parseInt(localStorage.getItem('butterflyBossDefeats') || '0')
+    };
+    
+    // Enhanced effects
+    this.backgroundEffects = [];
+    this.specialEffects = [];
     
     this.setupEventListeners();
+    this.initializeDefaultFlutterer();
   }
   
   setupEventListeners() {
