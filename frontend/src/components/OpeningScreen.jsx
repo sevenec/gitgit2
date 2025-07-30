@@ -47,6 +47,34 @@ const OpeningScreen = ({ onStartGame, onShowTutorial, onOpenFluttererSelector, o
     if (audioManager) {
       const newMuteState = audioManager.toggleMute();
       setIsMuted(newMuteState);
+      console.log(`🔊 Audio ${newMuteState ? 'muted' : 'unmuted'} from opening screen`);
+    }
+  };
+
+  const handleDailyChallenges = () => {
+    if (audioManager) {
+      audioManager.playSound('sparkles', { volume: 0.5 });
+    }
+    setShowDailyChallenges(true);
+    console.log('📅 Daily Challenges opened');
+  };
+
+  const handleLeaderboard = () => {
+    if (audioManager) {
+      audioManager.playSound('sparkles', { volume: 0.5 });
+    }
+    setShowLeaderboard(true);
+    console.log('🏆 Leaderboard opened');
+  };
+
+  const handleFlutterers = () => {
+    if (audioManager) {
+      audioManager.playSound('sparkles', { volume: 0.5 });
+    }
+    if (onOpenFluttererSelector) {
+      onOpenFluttererSelector();
+    } else {
+      console.log('🦋 Flutterer selector not available');
     }
   };
 
