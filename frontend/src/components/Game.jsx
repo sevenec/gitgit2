@@ -545,177 +545,179 @@ const Game = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-900 via-purple-900 to-pink-900 flex flex-col items-center justify-center p-4">
-      {/* Loading Screen */}
-      {showLoadingScreen && (
-        <PremiumLoadingSystem onComplete={handleLoadingComplete} />
-      )}
+    <EnterpriseErrorBoundary>
+      <div className="min-h-screen bg-gradient-to-b from-indigo-900 via-purple-900 to-pink-900 flex flex-col items-center justify-center p-4">
+        {/* Loading Screen */}
+        {showLoadingScreen && (
+          <PremiumLoadingSystem onComplete={handleLoadingComplete} />
+        )}
 
-      {/* Opening Screen */}
-      {showOpeningScreen && !showLoadingScreen && (
-        <OpeningScreen
-          onStartGame={handleStartGame}
-          onShowTutorial={handleShowTutorial}
-          onOpenFluttererSelector={handleOpenFluttererSelector}
-          onOpenSettings={() => console.log('Settings')}
-          audioManager={audioManager}
-        />
-      )}
+        {/* Opening Screen */}
+        {showOpeningScreen && !showLoadingScreen && (
+          <OpeningScreen
+            onStartGame={handleStartGame}
+            onShowTutorial={handleShowTutorial}
+            onOpenFluttererSelector={handleOpenFluttererSelector}
+            onOpenSettings={() => console.log('Settings')}
+            audioManager={audioManager}
+          />
+        )}
 
-      {/* Tutorial Screen */}
-      {showTutorial && !showOpeningScreen && !showLoadingScreen && (
-        <TutorialScreen
-          onComplete={handleTutorialComplete}
-          onSkip={handleTutorialSkip}
-        />
-      )}
+        {/* Tutorial Screen */}
+        {showTutorial && !showOpeningScreen && !showLoadingScreen && (
+          <TutorialScreen
+            onComplete={handleTutorialComplete}
+            onSkip={handleTutorialSkip}
+          />
+        )}
 
-      {/* Game Screen */}
-      {!showOpeningScreen && !showTutorial && !showLoadingScreen && (
-        <div className="w-full max-w-md">
-          {/* Game Header */}
-          <Card className="mb-4 p-4 bg-black/30 backdrop-blur-sm border-purple-500/50">
-            <div className="flex justify-between items-center mb-2">
-              <div>
-                <h1 className="text-2xl font-bold text-white">
-                  <span className="text-pink-300">Butterfly</span>{' '}
-                  <span className="text-cyan-300">Nebula</span>{' '}
-                  <span className="text-yellow-300">Brawl</span>
-                </h1>
-                {user && (
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-sm text-gray-300">Welcome, {user.username}</span>
-                    <Badge variant="outline" className="bg-yellow-600/30 text-yellow-200 border-yellow-400">
-                      <Coins size={12} className="mr-1" />
-                      {user.cosmic_coins || 0}
-                    </Badge>
-                  </div>
-                )}
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={toggleMute}
-                  className="bg-purple-600/20 border-purple-400 text-white hover:bg-purple-600/40"
-                >
-                  {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
-                </Button>
-                {!userLoading && (
-                  <FluttererSelector
-                    selectedFlutterer={selectedFlutterer}
-                    onSelectFlutterer={handleFluttererSelect}
-                    gameStats={gameStats}
-                    onPurchase={handlePurchase}
-                  />
-                )}
-                {gameState === 'playing' && (
+        {/* Game Screen */}
+        {!showOpeningScreen && !showTutorial && !showLoadingScreen && (
+          <div className="w-full max-w-md">
+            {/* Game Header */}
+            <Card className="mb-4 p-4 bg-black/30 backdrop-blur-sm border-purple-500/50">
+              <div className="flex justify-between items-center mb-2">
+                <div>
+                  <h1 className="text-2xl font-bold text-white">
+                    <span className="text-pink-300">Butterfly</span>{' '}
+                    <span className="text-cyan-300">Nebula</span>{' '}
+                    <span className="text-yellow-300">Brawl</span>
+                  </h1>
+                  {user && (
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-sm text-gray-300">Welcome, {user.username}</span>
+                      <Badge variant="outline" className="bg-yellow-600/30 text-yellow-200 border-yellow-400">
+                        <Coins size={12} className="mr-1" />
+                        {user.cosmic_coins || 0}
+                      </Badge>
+                    </div>
+                  )}
+                </div>
+                <div className="flex gap-2">
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={togglePause}
+                    onClick={toggleMute}
                     className="bg-purple-600/20 border-purple-400 text-white hover:bg-purple-600/40"
                   >
-                    {isPaused ? <Play size={16} /> : <Pause size={16} />}
+                    {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
                   </Button>
-                )}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={restartGame}
-                  className="bg-purple-600/20 border-purple-400 text-white hover:bg-purple-600/40"
-                >
-                  <RotateCcw size={16} />
-                </Button>
-              </div>
-            </div>
-            
-            {/* Game Stats */}
-            <div className="flex justify-between items-center text-sm">
-              <div className="flex gap-4">
-                <Badge variant="secondary" className="bg-blue-600/30 text-blue-200">
-                  Score: {score.toLocaleString()}
-                </Badge>
-                <Badge variant="secondary" className="bg-green-600/30 text-green-200">
-                  Level: {level}
-                </Badge>
-                <Badge variant="secondary" className="bg-red-600/30 text-red-200">
-                  Lives: {lives}
-                </Badge>
-              </div>
-              <Badge variant="outline" className="bg-yellow-600/30 text-yellow-200 border-yellow-400">
-                Best: {user?.game_stats?.high_score?.toLocaleString() || 0}
-              </Badge>
-            </div>
-          </Card>
-
-          {/* Game Canvas */}
-          <Card className="relative overflow-hidden bg-black border-purple-500/50">
-            <canvas
-              ref={canvasRef}
-              className="block mx-auto"
-              style={{ touchAction: 'none' }}
-            />
-          </Card>
-
-          {/* Game Controls Info */}
-          <Card className="mt-4 p-4 bg-black/30 backdrop-blur-sm border-purple-500/50">
-            <div className="text-center text-white">
-              <h3 className="font-bold mb-2">Power-Ups Guide</h3>
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="text-green-400">⚡</span>
-                  <span>Speed Boost</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-cyan-400">🛡</span>
-                  <span>Shield Protection</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-orange-400">💥</span>
-                  <span>Blaster Mode</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-pink-400">❤</span>
-                  <span>Health Restore</span>
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          {/* Social Sharing & Rewards */}
-          {(gameState === 'gameOver' || gameState === 'gameComplete') && score > 0 && (
-            <Card className="mt-4 p-4 bg-black/30 backdrop-blur-sm border-purple-500/50">
-              <div className="text-center space-y-3">
-                <h3 className="text-white font-bold mb-2">🎉 Great Game!</h3>
-                <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                  {!userLoading && (
+                    <FluttererSelector
+                      selectedFlutterer={selectedFlutterer}
+                      onSelectFlutterer={handleFluttererSelect}
+                      gameStats={gameStats}
+                      onPurchase={handlePurchase}
+                    />
+                  )}
+                  {gameState === 'playing' && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={togglePause}
+                      className="bg-purple-600/20 border-purple-400 text-white hover:bg-purple-600/40"
+                    >
+                      {isPaused ? <Play size={16} /> : <Pause size={16} />}
+                    </Button>
+                  )}
                   <Button
-                    onClick={handleShareScore}
-                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-2 px-6 rounded-full"
-                  >
-                    Share Score: {score.toLocaleString()}
-                  </Button>
-                  <Button
-                    onClick={handleRewardedAd}
                     variant="outline"
-                    className="bg-green-600/20 border-green-400 text-green-200 hover:bg-green-600/40"
+                    size="sm"
+                    onClick={restartGame}
+                    className="bg-purple-600/20 border-purple-400 text-white hover:bg-purple-600/40"
                   >
-                    🎬 Watch Ad for Coins
+                    <RotateCcw size={16} />
                   </Button>
+                </div>
+              </div>
+              
+              {/* Game Stats */}
+              <div className="flex justify-between items-center text-sm">
+                <div className="flex gap-4">
+                  <Badge variant="secondary" className="bg-blue-600/30 text-blue-200">
+                    Score: {score.toLocaleString()}
+                  </Badge>
+                  <Badge variant="secondary" className="bg-green-600/30 text-green-200">
+                    Level: {level}
+                  </Badge>
+                  <Badge variant="secondary" className="bg-red-600/30 text-red-200">
+                    Lives: {lives}
+                  </Badge>
+                </div>
+                <Badge variant="outline" className="bg-yellow-600/30 text-yellow-200 border-yellow-400">
+                  Best: {user?.game_stats?.high_score?.toLocaleString() || 0}
+                </Badge>
+              </div>
+            </Card>
+
+            {/* Game Canvas */}
+            <Card className="relative overflow-hidden bg-black border-purple-500/50">
+              <canvas
+                ref={canvasRef}
+                className="block mx-auto"
+                style={{ touchAction: 'none' }}
+              />
+            </Card>
+
+            {/* Game Controls Info */}
+            <Card className="mt-4 p-4 bg-black/30 backdrop-blur-sm border-purple-500/50">
+              <div className="text-center text-white">
+                <h3 className="font-bold mb-2">Power-Ups Guide</h3>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-400">⚡</span>
+                    <span>Speed Boost</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-cyan-400">🛡</span>
+                    <span>Shield Protection</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-orange-400">💥</span>
+                    <span>Blaster Mode</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-pink-400">❤</span>
+                    <span>Health Restore</span>
+                  </div>
                 </div>
               </div>
             </Card>
-          )}
 
-          {/* Developer Credits */}
-          <div className="mt-6 text-center text-gray-400 text-xs">
-            <p>Butterfly Nebula Brawl v1.0</p>
-            <p>Built with React & HTML5 Canvas</p>
+            {/* Social Sharing & Rewards */}
+            {(gameState === 'gameOver' || gameState === 'gameComplete') && score > 0 && (
+              <Card className="mt-4 p-4 bg-black/30 backdrop-blur-sm border-purple-500/50">
+                <div className="text-center space-y-3">
+                  <h3 className="text-white font-bold mb-2">🎉 Great Game!</h3>
+                  <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                    <Button
+                      onClick={handleShareScore}
+                      className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-2 px-6 rounded-full"
+                    >
+                      Share Score: {score.toLocaleString()}
+                    </Button>
+                    <Button
+                      onClick={handleRewardedAd}
+                      variant="outline"
+                      className="bg-green-600/20 border-green-400 text-green-200 hover:bg-green-600/40"
+                    >
+                      🎬 Watch Ad for Coins
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            )}
+
+            {/* Developer Credits */}
+            <div className="mt-6 text-center text-gray-400 text-xs">
+              <p>Butterfly Nebula Brawl v1.0</p>
+              <p>Built with React & HTML5 Canvas</p>
+            </div>
           </div>
-        </div>
-      )}
-      <Toaster />
-    </div>
+        )}
+        <Toaster />
+      </div>
+    </EnterpriseErrorBoundary>
   );
 };
 
