@@ -34,7 +34,9 @@ const Game = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // Set canvas size for mobile
+    // Generate session ID
+    setSessionId(`session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+
     const resizeCanvas = () => {
       const container = canvas.parentElement;
       const rect = container.getBoundingClientRect();
@@ -42,14 +44,12 @@ const Game = () => {
       canvas.width = Math.min(400, rect.width - 40);
       canvas.height = Math.min(600, window.innerHeight - 200);
       
-      // Initialize game engine and renderer
       const ctx = canvas.getContext('2d');
       
-      // Wait for game classes to load and add debugging
       const initializeGame = () => {
         console.log('Attempting to initialize game...', { GameEngine: !!window.GameEngine, GameRenderer: !!window.GameRenderer });
         
-        if (gameEngineRef.current && gameRendererRef.current) {
+        if (window.GameEngine && window.GameRenderer) {
           try {
             gameEngineRef.current = new window.GameEngine(canvas, ctx);
             gameRendererRef.current = new window.GameRenderer(canvas, ctx);
@@ -66,39 +66,15 @@ const Game = () => {
           }
         } else {
           console.log('Game classes not yet loaded, retrying...');
-          // Retry after a short delay
           setTimeout(initializeGame, 100);
         }
       };
       
-      // Give a small delay to ensure scripts are loaded
       setTimeout(initializeGame, 500);
     };
 
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
-
-    // Load high score and game stats from localStorage
-    const savedHighScore = localStorage.getItem('butterflyNebulaHighScore');
-    const savedMaxLevel = localStorage.getItem('butterflyMaxLevel');
-    const savedEnemiesDefeated = localStorage.getItem('butterflyEnemiesDefeated');
-    const savedSurvivalTime = localStorage.getItem('butterflySurvivalTime');
-    const savedBossDefeats = localStorage.getItem('butterflyBossDefeats');
-    
-    if (savedHighScore) {
-      setHighScore(parseInt(savedHighScore));
-    }
-    
-    setGameStats({
-      highScore: parseInt(savedHighScore || '0'),
-      maxLevel: parseInt(savedMaxLevel || '1'),
-      enemiesDefeated: parseInt(savedEnemiesDefeated || '0'),
-      totalSurvivalTime: parseInt(savedSurvivalTime || '0'),
-      bossDefeats: parseInt(savedBossDefeats || '0')
-    });
-    
-    // Set default flutterer
-    setSelectedFlutterer(FLUTTERERS[0]); // Basic Cosmic Flutter
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
@@ -106,7 +82,15 @@ const Game = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, []);
+  }, [selectedFlutterer]);
+
+  // Set default flutterer when user loads
+  useEffect(() => {
+    if (user && !selectedFlutterer) {
+      const userFlutterer = FLUTTERERS.find(f => f.id === user.selected_flutterer) || FLUTTERERS[0];
+      setSelectedFlutterer(userFlutterer);
+    }
+  }, [user, selectedFlutterer]);
 
   const startGameLoop = () => {
     const gameLoop = (currentTime) => {
