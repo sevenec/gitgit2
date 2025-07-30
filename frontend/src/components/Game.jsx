@@ -22,15 +22,13 @@ const Game = () => {
   const [lives, setLives] = useState(3);
   const [isPaused, setIsPaused] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [highScore, setHighScore] = useState(0);
   const [selectedFlutterer, setSelectedFlutterer] = useState(null);
-  const [gameStats, setGameStats] = useState({
-    highScore: 0,
-    maxLevel: 1,
-    enemiesDefeated: 0,
-    totalSurvivalTime: 0,
-    bossDefeats: 0
-  });
+  const [sessionId, setSessionId] = useState(null);
+  
+  // Backend integration hooks
+  const { user, loading: userLoading, submitScore, selectFlutterer, unlockFlutterer } = useUser();
+  const { gameConfig, flutterers, trackEvent, shareScore: shareScoreAPI } = useGame();
+  const { toast } = useToast();
 
   useEffect(() => {
     const canvas = canvasRef.current;
