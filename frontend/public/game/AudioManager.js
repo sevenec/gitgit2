@@ -205,12 +205,11 @@ window.AudioManager = class AudioManager {
     return !this.musicDisabled;
   }
   
-  // Simple sound effects (fallback for power-ups, collisions, etc.)
+  // Enhanced sound effects with sparkles, crunch, buzz/explosions
   playSound(type, options = {}) {
     if (!options.volume) options.volume = this.sfxVolume;
     
-    // Simple beep-based sound effects for now
-    // Can be enhanced with real SFX files later
+    // Enhanced sound effects using Web Audio API
     if (!this.audioContext) return;
     
     try {
@@ -220,35 +219,165 @@ window.AudioManager = class AudioManager {
       oscillator.connect(gainNode);
       gainNode.connect(this.audioContext.destination);
       
-      // Different sounds for different events
+      // Enhanced sound effects for different game events
       switch (type) {
         case 'powerup':
-          oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime);
-          oscillator.frequency.exponentialRampToValueAtTime(1200, this.audioContext.currentTime + 0.2);
+        case 'sparkles':
+          // Magical sparkle sound - ascending notes
+          this.createSparkleEffect(oscillator, gainNode, options);
           break;
+          
         case 'collision':
-          oscillator.frequency.setValueAtTime(150, this.audioContext.currentTime);
-          oscillator.frequency.exponentialRampToValueAtTime(50, this.audioContext.currentTime + 0.3);
+        case 'crunch':
+          // Crunchy collision sound - harsh descending tone
+          this.createCrunchEffect(oscillator, gainNode, options);
           break;
+          
+        case 'boss_attack':
+        case 'buzz':
+          // Buzzing boss attack - menacing buzz
+          this.createBuzzEffect(oscillator, gainNode, options);
+          break;
+          
+        case 'explosion':
+          // Explosive sound - white noise burst
+          this.createExplosionEffect(oscillator, gainNode, options);
+          break;
+          
+        case 'level_start':
+          // Level start fanfare
+          this.createFanfareEffect(oscillator, gainNode, options);
+          break;
+          
         case 'victory':
-          oscillator.frequency.setValueAtTime(400, this.audioContext.currentTime);
-          oscillator.frequency.setValueAtTime(600, this.audioContext.currentTime + 0.1);
-          oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime + 0.2);
+          // Victory celebration
+          this.createVictoryEffect(oscillator, gainNode, options);
           break;
+          
         default:
+          // Default beep
           oscillator.frequency.setValueAtTime(440, this.audioContext.currentTime);
+          oscillator.type = 'sine';
+          gainNode.gain.setValueAtTime(options.volume * this.masterVolume, this.audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
       }
       
-      oscillator.type = 'sine';
-      gainNode.gain.setValueAtTime(options.volume * this.masterVolume, this.audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + (options.duration || 0.3));
-      
+      const duration = options.duration || 0.5;
       oscillator.start(this.audioContext.currentTime);
-      oscillator.stop(this.audioContext.currentTime + (options.duration || 0.3));
+      oscillator.stop(this.audioContext.currentTime + duration);
       
     } catch (e) {
       console.warn('Sound effect failed:', e);
     }
+  }
+  
+  createSparkleEffect(oscillator, gainNode, options) {
+    // Magical ascending sparkle - like collecting stars
+    oscillator.type = 'sine';
+    const startFreq = 800;
+    const endFreq = 1600;
+    const currentTime = this.audioContext.currentTime;
+    
+    oscillator.frequency.setValueAtTime(startFreq, currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(endFreq, currentTime + 0.3);
+    
+    // Shimmering volume envelope
+    gainNode.gain.setValueAtTime(0, currentTime);
+    gainNode.gain.linearRampToValueAtTime(options.volume * this.masterVolume, currentTime + 0.05);
+    gainNode.gain.linearRampToValueAtTime(options.volume * this.masterVolume * 0.7, currentTime + 0.15);
+    gainNode.gain.linearRampToValueAtTime(options.volume * this.masterVolume, currentTime + 0.25);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + 0.4);
+  }
+  
+  createCrunchEffect(oscillator, gainNode, options) {
+    // Harsh crunchy collision - like hitting an asteroid
+    oscillator.type = 'sawtooth';
+    const startFreq = 200;
+    const endFreq = 50;
+    const currentTime = this.audioContext.currentTime;
+    
+    oscillator.frequency.setValueAtTime(startFreq, currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(endFreq, currentTime + 0.2);
+    
+    // Sharp attack, quick decay
+    gainNode.gain.setValueAtTime(0, currentTime);
+    gainNode.gain.linearRampToValueAtTime(options.volume * this.masterVolume, currentTime + 0.01);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + 0.25);
+  }
+  
+  createBuzzEffect(oscillator, gainNode, options) {
+    // Menacing boss attack buzz - like insect wings
+    oscillator.type = 'sawtooth';
+    const baseFreq = 120;
+    const currentTime = this.audioContext.currentTime;
+    
+    // Rapid frequency modulation for buzzing effect
+    oscillator.frequency.setValueAtTime(baseFreq, currentTime);
+    
+    // Create tremolo effect
+    const tremolo = this.audioContext.createOscillator();
+    const tremoloGain = this.audioContext.createGain();
+    
+    tremolo.frequency.setValueAtTime(15, currentTime); // 15Hz tremolo
+    tremolo.connect(tremoloGain);
+    tremoloGain.connect(gainNode.gain);
+    tremoloGain.gain.setValueAtTime(0.5, currentTime);
+    
+    tremolo.start(currentTime);
+    tremolo.stop(currentTime + 0.6);
+    
+    gainNode.gain.setValueAtTime(options.volume * this.masterVolume * 0.8, currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + 0.6);
+  }
+  
+  createExplosionEffect(oscillator, gainNode, options) {
+    // Explosive burst - white noise simulation
+    oscillator.type = 'sawtooth';
+    const currentTime = this.audioContext.currentTime;
+    
+    // Rapid frequency sweep for explosion effect
+    oscillator.frequency.setValueAtTime(300, currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(60, currentTime + 0.1);
+    oscillator.frequency.exponentialRampToValueAtTime(30, currentTime + 0.3);
+    
+    // Sharp attack, medium decay
+    gainNode.gain.setValueAtTime(0, currentTime);
+    gainNode.gain.linearRampToValueAtTime(options.volume * this.masterVolume, currentTime + 0.005);
+    gainNode.gain.exponentialRampToValueAtTime(options.volume * this.masterVolume * 0.3, currentTime + 0.1);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + 0.4);
+  }
+  
+  createFanfareEffect(oscillator, gainNode, options) {
+    // Level start fanfare - triumphant ascending notes
+    oscillator.type = 'triangle';
+    const currentTime = this.audioContext.currentTime;
+    
+    // Musical fanfare sequence
+    oscillator.frequency.setValueAtTime(440, currentTime);        // A
+    oscillator.frequency.setValueAtTime(523, currentTime + 0.15); // C
+    oscillator.frequency.setValueAtTime(659, currentTime + 0.3);  // E
+    
+    gainNode.gain.setValueAtTime(0, currentTime);
+    gainNode.gain.linearRampToValueAtTime(options.volume * this.masterVolume * 0.7, currentTime + 0.05);
+    gainNode.gain.setValueAtTime(options.volume * this.masterVolume * 0.7, currentTime + 0.45);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + 0.6);
+  }
+  
+  createVictoryEffect(oscillator, gainNode, options) {
+    // Victory celebration - major chord arpeggio
+    oscillator.type = 'sine';
+    const currentTime = this.audioContext.currentTime;
+    
+    // Victory arpeggio: C-E-G-C
+    oscillator.frequency.setValueAtTime(523, currentTime);        // C
+    oscillator.frequency.setValueAtTime(659, currentTime + 0.1);  // E  
+    oscillator.frequency.setValueAtTime(784, currentTime + 0.2);  // G
+    oscillator.frequency.setValueAtTime(1047, currentTime + 0.3); // C (octave)
+    
+    gainNode.gain.setValueAtTime(0, currentTime);
+    gainNode.gain.linearRampToValueAtTime(options.volume * this.masterVolume * 0.8, currentTime + 0.05);
+    gainNode.gain.setValueAtTime(options.volume * this.masterVolume * 0.8, currentTime + 0.35);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + 0.8);
   }
   
   // Get current music info
