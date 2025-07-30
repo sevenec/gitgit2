@@ -104,37 +104,7 @@ window.AudioManager = class AudioManager {
         });
     }
   }
-      
-      // Handle loading and playback
-      audio.addEventListener('canplaythrough', () => {
-        console.log('Intro music ready to play');
-      });
-      
-      audio.addEventListener('error', (e) => {
-        console.error(`Failed to load intro music: ${introMusicPath}`, e);
-      });
-      
-      // Store reference and play
-      this.currentTrack = audio;
-      
-      // Play intro music (modern browsers require user interaction)
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            console.log('✅ Intro music started successfully - SINGLE TRACK ONLY');
-          })
-          .catch(error => {
-            console.warn('Intro music needs user interaction:', error);
-            // Store for later playback after user interaction
-            document.addEventListener('click', () => {
-              this.resumeMusic();
-            }, { once: true });
-          });
-      }
-    }, 100); // 100ms delay for cleanup
-  }
-  
+
   // Play background music for specific level - ENHANCED OVERLAP PREVENTION
   playLevelMusic(level) {
     if (this.musicDisabled) {
