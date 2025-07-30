@@ -1338,6 +1338,18 @@ window.GameRenderer = class GameRenderer {
           this.ctx.fill();
           break;
           
+        case 'floating_text':
+          this.ctx.translate(effect.x, effect.y);
+          this.ctx.fillStyle = effect.color;
+          this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
+          this.ctx.lineWidth = 3;
+          this.ctx.font = 'bold 14px Arial';
+          this.ctx.textAlign = 'center';
+          // Outline for readability
+          this.ctx.strokeText(effect.text, 0, 0);
+          this.ctx.fillText(effect.text, 0, 0);
+          break;
+          
         case 'beam_warning':
           this.ctx.fillStyle = effect.color;
           this.ctx.globalAlpha = 0.3;
