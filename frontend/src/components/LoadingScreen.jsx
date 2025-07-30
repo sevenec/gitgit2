@@ -16,6 +16,8 @@ const LoadingScreen = ({ onComplete }) => {
   ];
 
   useEffect(() => {
+    console.log('🔄 LoadingScreen started');
+    
     const loadingInterval = setInterval(() => {
       setProgress(prev => {
         const newProgress = prev + (Math.random() * 5 + 2);
@@ -31,8 +33,16 @@ const LoadingScreen = ({ onComplete }) => {
         
         if (newProgress >= 100) {
           clearInterval(loadingInterval);
+          console.log('✅ LoadingScreen completed - calling onComplete');
           setTimeout(() => {
-            onComplete();
+            try {
+              onComplete();
+              console.log('✅ onComplete callback executed successfully');
+            } catch (error) {
+              console.error('❌ Error in onComplete callback:', error);
+              // Force complete anyway
+              onComplete();
+            }
           }, 500);
           return 100;
         }
@@ -41,7 +51,23 @@ const LoadingScreen = ({ onComplete }) => {
       });
     }, 100);
 
-    return () => clearInterval(loadingInterval);
+    // Failsafe: Force completion after maximum time (12 seconds)
+    const failsafeTimer = setTimeout(() => {
+      console.log('⚠️ LoadingScreen failsafe triggered - forcing completion');
+      clearInterval(loadingInterval);
+      setProgress(100);
+      try {
+        onComplete();
+        console.log('✅ Failsafe onComplete executed');
+      } catch (error) {
+        console.error('❌ Error in failsafe onComplete:', error);
+      }
+    }, 12000);
+
+    return () => {
+      clearInterval(loadingInterval);
+      clearTimeout(failsafeTimer);
+    };
   }, [onComplete]);
 
   return (
