@@ -473,16 +473,17 @@ metadata:
 
 test_plan:
   current_focus:
-    - "OpeningScreen component error resolution"
-    - "React app loading failure fix"
-    - "Frontend JavaScript error debugging"
-  stuck_tasks:
+    - "Visual Polish - Particle System Integration"
+    - "Visual Polish - Screen Effects Integration"
+    - "Mobile Optimization - Touch Input Handler"
+    - "Visual Polish - Enhanced Power-up Rendering"
+    - "Visual Polish - Performance Statistics Display"
     - "Initial gameplay speed enhancement"
-    - "Music system improvement"
     - "Collision damage for brownish obstacles"
     - "Health bar implementation"
+  stuck_tasks: []
   test_all: false
-  test_priority: "critical_first"
+  test_priority: "high_first"
 
 agent_communication:
   - agent: "main"
