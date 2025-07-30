@@ -108,7 +108,7 @@ window.AudioManager = class AudioManager {
     }, 100); // 100ms delay for cleanup
   }
   
-  // Play background music for specific level
+  // Play background music for specific level - ENHANCED OVERLAP PREVENTION
   playLevelMusic(level) {
     if (this.musicDisabled) {
       console.log('Music is disabled - no music will play');
@@ -121,17 +121,28 @@ window.AudioManager = class AudioManager {
       return;
     }
     
-    console.log(`🎵 Starting music for Level ${level}: ${musicPath}`);
+    // PREVENT SAME TRACK OVERLAP - Check if this exact track is already playing
+    if (this.currentTrack && this.currentTrack.src && this.currentTrack.src.includes(musicPath.split('/').pop())) {
+      console.log(`🎵 Level ${level} music already playing - skipping to prevent overlap`);
+      return;
+    }
     
-    // ENHANCED STOP: Ensure ALL previous audio is stopped
-    this.stopAllAudio();
+    console.log(`🎵 Starting NEW music for Level ${level}: ${musicPath}`);
     
-    // Small delay to ensure cleanup is complete
+    // FORCE STOP ALL AUDIO MULTIPLE TIMES for safety
+    this.forceStopAllAudio();
+    this.forceStopAllAudio(); // Double-stop for extra safety
+    
+    // Longer delay to ensure complete cleanup
     setTimeout(() => {
+      // Final safety check before creating new audio
+      this.forceStopAllAudio();
+      
       // Create new audio element
       const audio = new Audio(musicPath);
       audio.volume = this.musicVolume * this.masterVolume;
       audio.loop = true; // Loop background music
+      audio.preload = 'auto'; // Ensure audio is loaded
       
       // Handle loading and playback
       audio.addEventListener('loadstart', () => {
