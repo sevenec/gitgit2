@@ -53,20 +53,19 @@ const OpeningScreen = ({ onStartGame, onShowTutorial, onOpenFluttererSelector, o
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 via-pink-900 to-orange-900 relative overflow-hidden">
-      {/* Animated Background Elements */}
+      {/* Simplified Background */}
       <div className="absolute inset-0">
-        {/* Floating Stars */}
+        {/* Simple Stars */}
         {showParticles && (
           <div className="absolute inset-0">
-            {[...Array(50)].map((_, i) => (
+            {[...Array(20)].map((_, i) => (
               <div
                 key={i}
                 className="absolute animate-pulse"
                 style={{
                   left: `${Math.random() * 100}%`,
                   top: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 3}s`,
-                  animationDuration: `${2 + Math.random() * 3}s`
+                  animationDelay: `${Math.random() * 3}s`
                 }}
               >
                 <div className="w-1 h-1 bg-white rounded-full opacity-60" />
@@ -74,13 +73,6 @@ const OpeningScreen = ({ onStartGame, onShowTutorial, onOpenFluttererSelector, o
             ))}
           </div>
         )}
-        
-        {/* Animated Nebula Clouds */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-radial from-purple-500/20 via-pink-500/10 to-transparent rounded-full animate-pulse" style={{animationDuration: '4s'}} />
-          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-radial from-cyan-500/20 via-blue-500/10 to-transparent rounded-full animate-pulse" style={{animationDuration: '5s', animationDelay: '1s'}} />
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-radial from-yellow-500/15 via-orange-500/8 to-transparent rounded-full animate-pulse" style={{animationDuration: '6s', animationDelay: '2s'}} />
-        </div>
       </div>
 
       {/* Main Content */}
