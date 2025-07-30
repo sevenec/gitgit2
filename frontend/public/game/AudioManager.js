@@ -55,12 +55,32 @@ window.AudioManager = class AudioManager {
     }
   }
   
-  // Play intro music immediately when game opens
+  // Play intro music with COMPLETE OVERLAP PREVENTION
   playIntroMusic() {
     if (this.musicDisabled) {
-      console.log('🔇 ALL AUDIO DISABLED - No intro music will play (prevents overlap issues)');
+      console.log('🔇 Music disabled - no intro music');
       return;
     }
+    
+    const introMusicPath = this.levelMusicMap['intro'];
+    if (!introMusicPath) {
+      console.warn('No intro music configured');
+      return;
+    }
+    
+    console.log('🎵 Starting QUIET intro music with overlap prevention');
+    
+    // FORCE STOP any existing audio
+    this.forceStopAllAudio();
+    
+    // Small delay for cleanup
+    setTimeout(async () => {
+      await this.forceStopAllAudio(); // Double-check cleanup
+      
+      // Create new audio for intro
+      const audio = new Audio(introMusicPath);
+      audio.volume = this.musicVolume * this.masterVolume * 0.7; // Extra quiet for intro
+      audio.loop = true;
     
     const introMusicPath = this.levelMusicMap['intro'];
     if (!introMusicPath) {
