@@ -270,12 +270,60 @@ backend:
         comment: "Database persistence working correctly. User data, coins, game stats, and flutterer progress all persist properly. MongoDB indexes created for optimal performance."
 
 frontend:
+  - task: "Initial gameplay speed enhancement"
+    implemented: false
+    working: false
+    file: "/app/frontend/public/game/GameEngine.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "Initial gameplay speed is too slow and needs to be increased for better user engagement. Current Level 1 speed of 2.2 feels sluggish."
+
+  - task: "Music system improvement"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/audio/AudioManager.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "Current music is described as 'redundant' and 'awful'. User wants relaxing background music that changes between levels without layering issues."
+
+  - task: "Collision damage for brownish obstacles"
+    implemented: false
+    working: false
+    file: "/app/frontend/public/game/GameEngine.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "Brownish collision object (asteroid type) currently doesn't damage player on collision. User wants it to damage player like other obstacles."
+
+  - task: "Health bar implementation"
+    implemented: false
+    working: false
+    file: "/app/frontend/public/game/GameRenderer.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "Health bar needs to be implemented and visible during gameplay screen to show player's current health status."
+
   - task: "Visual variety for butterfly flutterers"
     implemented: true
     working: true
     file: "/app/frontend/public/game/GameRenderer.js"
     stuck_count: 0
-    priority: "high"
+    priority: "medium"
     needs_retesting: false
     status_history:
       - working: false
@@ -290,7 +338,7 @@ frontend:
     working: true
     file: "/app/frontend/src/components/Game.jsx"
     stuck_count: 0
-    priority: "high"
+    priority: "medium"
     needs_retesting: false
     status_history:
       - working: false
@@ -305,7 +353,7 @@ frontend:
     working: true
     file: "/app/frontend/src/audio/AudioManager.js"
     stuck_count: 0
-    priority: "high"
+    priority: "medium"
     needs_retesting: false
     status_history:
       - working: false
