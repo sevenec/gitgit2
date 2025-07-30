@@ -42,8 +42,8 @@ window.AudioManager = class AudioManager {
     
     // Initialize audio context
     this.initializeAudioContext();
-    console.log('🔇 AudioManager initialized with ALL AUDIO DISABLED to prevent overlap issues!');
-    console.log('🔇 User can enable audio via Sound button if desired');
+    console.log('🎵 AudioManager initialized with QUIET MUSIC ENABLED, SFX DISABLED');
+    console.log('🎵 Music: ON (quiet), Sound Effects: OFF (annoying sounds disabled)');
   }
   
   initializeAudioContext() {
