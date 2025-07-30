@@ -224,55 +224,43 @@ class AudioManager {
     console.log(`🎵 Relaxing ambient music started: ${track.name} (${levelMusic.style})`);
   }
   
-  getLevelMusicConfig(level) {
+  getRelaxingMusicConfig(level) {
     const configs = {
       1: {
-        style: 'Gentle Cosmic',
-        harmony: [220, 275, 330], // A3, C#4, E4
-        melody: [440, 550, 660, 550, 440, 330, 275, 330],
-        waveType: 'sine',
-        melodyWave: 'triangle',
-        tempo: 1200
+        style: 'Soft Cosmic Breeze',
+        harmony: [130, 164, 196], // C3, E3, G3 - lower, softer
+        melody: [261, 329, 392, 329, 261, 196, 164, 196],
+        tempo: 2000 // Much slower tempo for relaxation
       },
       2: {
-        style: 'Energetic Space',
-        harmony: [247, 311, 370], // B3, D#4, F#4
-        melody: [494, 622, 740, 622, 494, 370, 311, 370],
-        waveType: 'sine',
-        melodyWave: 'sawtooth',
-        tempo: 1000
+        style: 'Gentle Space Drift',
+        harmony: [146, 185, 220], // D3, F#3, A3
+        melody: [293, 370, 440, 370, 293, 220, 185, 220],
+        tempo: 2200
       },
       3: {
-        style: 'Mysterious Void',
-        harmony: [196, 247, 294], // G3, B3, D4
-        melody: [392, 466, 554, 466, 392, 330, 294, 330],
-        waveType: 'triangle',
-        melodyWave: 'square',
-        tempo: 1400
+        style: 'Serene Aurora',
+        harmony: [123, 155, 185], // B2, D#3, F#3
+        melody: [246, 311, 370, 311, 246, 185, 155, 185],
+        tempo: 2400
       },
       4: {
-        style: 'Intense Nebula',
-        harmony: [262, 330, 392], // C4, E4, G4
-        melody: [523, 659, 784, 659, 523, 440, 392, 440],
-        waveType: 'sawtooth',
-        melodyWave: 'triangle',
-        tempo: 900
+        style: 'Peaceful Nebula',
+        harmony: [110, 138, 165], // A2, C#3, E3
+        melody: [220, 277, 330, 277, 220, 165, 138, 165],
+        tempo: 2600
       },
       5: {
-        style: 'Driving Stellar',
-        harmony: [294, 370, 440], // D4, F#4, A4
-        melody: [587, 740, 880, 740, 587, 494, 440, 494],
-        waveType: 'sine',
-        melodyWave: 'sawtooth',
-        tempo: 800
+        style: 'Tranquil Starfield',
+        harmony: [98, 123, 147], // G2, B2, D3
+        melody: [196, 247, 294, 247, 196, 147, 123, 147],
+        tempo: 2800
       },
       15: {
-        style: 'Epic Boss Battle',
-        harmony: [147, 196, 262], // D3, G3, C4 (darker, more ominous)
-        melody: [294, 370, 466, 370, 294, 262, 220, 262],
-        waveType: 'sawtooth',
-        melodyWave: 'square',
-        tempo: 600
+        style: 'Ambient Boss Encounter',
+        harmony: [73, 92, 110], // D2, F#2, A2 - very deep and ambient
+        melody: [146, 185, 220, 185, 146, 110, 92, 110],
+        tempo: 3000
       }
     };
     
