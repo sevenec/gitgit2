@@ -541,6 +541,7 @@ const Game = () => {
             <p>Butterfly Nebula Brawl v1.0</p>
             <p>Built with React & HTML5 Canvas</p>
           </div>
+          </div>
         </div>
       )}
       <Toaster />
