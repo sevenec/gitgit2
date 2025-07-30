@@ -26,13 +26,13 @@ class AudioManager {
       
       this.musicGain = this.audioContext.createGain();
       this.musicGain.connect(this.masterGain);
-      this.musicGain.gain.value = this.musicVolume;
+      this.musicGain.gain.value = 0; // MUSIC DISABLED
       
       this.sfxGain = this.audioContext.createGain();
       this.sfxGain.connect(this.masterGain);
       this.sfxGain.gain.value = this.sfxVolume;
       
-      console.log('🎼 High-Quality AudioManager initialized');
+      console.log('🎼 Minimal AudioManager initialized (Music DISABLED)');
     } catch (error) {
       console.warn('Web Audio API not supported:', error);
       this.useHTMLAudio = true;
