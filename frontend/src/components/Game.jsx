@@ -580,6 +580,52 @@ const Game = () => {
           />
         )}
 
+        {/* Flutterer Selector Modal */}
+        {showFluttererModal && (
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+            <Card className="bg-gradient-to-br from-purple-900/90 to-pink-800/90 border-purple-400 p-6 max-w-lg mx-4 backdrop-blur-sm">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-bold text-purple-200 flex items-center">
+                  <Star className="mr-2" size={24} />
+                  Choose Your Flutterer
+                </h2>
+                <Button
+                  onClick={() => setShowFluttererModal(false)}
+                  variant="outline"
+                  size="sm"
+                  className="bg-red-600/20 border-red-400 text-red-200 hover:bg-red-600/40"
+                >
+                  ✕
+                </Button>
+              </div>
+              
+              <div className="mb-4">
+                <FluttererSelector
+                  selectedFlutterer={selectedFlutterer}
+                  onSelectFlutterer={(flutterer) => {
+                    handleFluttererSelect(flutterer);
+                    setShowFluttererModal(false); // Close modal after selection
+                  }}
+                  gameStats={gameStats}
+                  onPurchase={handlePurchase}
+                />
+              </div>
+              
+              <div className="text-center">
+                <p className="text-purple-200 text-sm mb-3">
+                  Each flutterer has unique abilities! Choose wisely for your cosmic adventure.
+                </p>
+                <Button
+                  onClick={() => setShowFluttererModal(false)}
+                  className="bg-purple-600 hover:bg-purple-700"
+                >
+                  Continue with {selectedFlutterer?.name || 'Current Flutterer'}
+                </Button>
+              </div>
+            </Card>
+          </div>
+        )}
+
         {/* Game Screen */}
         {!showOpeningScreen && !showTutorial && !showLoadingScreen && (
           <div className="w-full max-w-md">
