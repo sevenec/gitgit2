@@ -5,6 +5,9 @@ import { ArrowLeft, ArrowRight, Target, Zap, Shield, Heart, Star, Crown } from '
 
 const TutorialScreen = ({ onComplete, onSkip }) => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [butterflyPosition, setButterflyPosition] = useState({ x: 50, y: 50 });
+  const [isInteracting, setIsInteracting] = useState(false);
+  const demoAreaRef = useRef(null);
 
   const tutorialSteps = [
     {
