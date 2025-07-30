@@ -131,35 +131,23 @@ window.AudioManager = class AudioManager {
       return;
     }
     
-    console.log(`🎵 Starting NEW music for Level ${level}: ${musicPath}`);
+    console.log(`🎵 LEVEL TRANSITION: Stopping all music and starting Level ${level}: ${musicPath}`);
     
-    // FORCE STOP ALL AUDIO MULTIPLE TIMES for safety
-    this.forceStopAllAudio();
-    this.forceStopAllAudio(); // Double-stop for extra safety
+    // AGGRESSIVE MUSIC STOPPING FOR CLEAN TRANSITIONS
+    this.stopAllAudio();
     
-    // Longer delay to ensure complete cleanup
+    // Extra delay for level transitions to ensure complete cleanup
     setTimeout(async () => {
-      // Final safety check before creating new audio
+      // Double-check cleanup
       await this.forceStopAllAudio();
+      
+      console.log(`🎵 Starting NEW level ${level} music: ${musicPath}`);
       
       // Create new audio element
       const audio = new Audio(musicPath);
       audio.volume = this.musicVolume * this.masterVolume;
       audio.loop = true; // Loop background music
-      audio.preload = 'auto'; // Ensure audio is loaded
-      
-      // Handle loading and playback
-      audio.addEventListener('loadstart', () => {
-        console.log(`Loading music: ${musicPath}`);
-      });
-      
-      audio.addEventListener('canplaythrough', () => {
-        console.log(`Music ready to play: ${musicPath}`);
-      });
-      
-      audio.addEventListener('error', (e) => {
-        console.error(`Failed to load music: ${musicPath}`, e);
-      });
+      audio.preload = 'auto';
       
       // Store reference and play
       this.currentTrack = audio;
