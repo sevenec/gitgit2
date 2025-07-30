@@ -233,9 +233,6 @@ const Game = () => {
     console.log('🎮 Game loop started successfully!');
   };
 
-    animationFrameRef.current = requestAnimationFrame(gameLoop);
-  };
-
   const handleLoadingComplete = () => {
     setShowLoadingScreen(false);
     setShowOpeningScreen(true);
