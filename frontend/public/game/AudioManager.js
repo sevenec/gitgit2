@@ -48,7 +48,7 @@ window.AudioManager = class AudioManager {
     
     // Initialize audio context
     this.initializeAudioContext();
-    console.log('🎵 AudioManager initialized with QUIET MUSIC ENABLED, SFX DISABLED');
+    console.log('🎵 AudioManager initialized with SINGLE AUDIO ELEMENT - no overlap possible!');
     console.log('🎵 Music: ON (quiet), Sound Effects: OFF (annoying sounds disabled)');
   }
   
