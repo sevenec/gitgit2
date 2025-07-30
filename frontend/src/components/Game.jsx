@@ -11,7 +11,8 @@ import { useUser } from '../hooks/useUser';
 import { useGame } from '../hooks/useGame';
 import { useToast } from '../hooks/use-toast';
 import { Toaster } from './ui/toaster';
-import LoadingScreen from './LoadingScreen';
+import PremiumLoadingSystem from './PremiumLoadingSystem';
+import EnterpriseErrorBoundary from './EnterpriseErrorBoundary';
 
 const Game = () => {
   const canvasRef = useRef(null);
