@@ -204,6 +204,72 @@ class AudioManager {
       this.playWebAudioSound(sound, volume);
     }
   }
+
+  playSFX(soundName, options = {}) {
+    if (this.isMuted) {
+      console.log(`🔇 SFX ${soundName} muted - not playing`);
+      return;
+    }
+    
+    const { volume = 0.5, pitch = 1.0 } = options;
+    
+    console.log(`🔊 Playing SFX: ${soundName} (volume: ${volume})`);
+    
+    // Play placeholder synthetic sound for different SFX types
+    this.playPlaceholderSFX(soundName, volume, pitch);
+  }
+  
+  playPlaceholderSFX(soundName, volume, pitch) {
+    if (!this.audioContext) {
+      console.log('🔇 Audio context not available for SFX');
+      return;
+    }
+    
+    const oscillator = this.audioContext.createOscillator();
+    const gainNode = this.audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(this.sfxGain);
+    
+    // Different sounds for different SFX types
+    let frequency, duration, waveType;
+    
+    switch (soundName) {
+      case 'game_start':
+        frequency = 523; // C5 note
+        duration = 0.6;
+        waveType = 'triangle';
+        // Create a rising tone for game start
+        oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(frequency * 1.5, this.audioContext.currentTime + duration);
+        break;
+      case 'powerup_collect':
+        frequency = 880; // A5 note
+        duration = 0.3;
+        waveType = 'square';
+        break;
+      case 'collision':
+        frequency = 200; // Low frequency for impact
+        duration = 0.2;
+        waveType = 'sawtooth';
+        break;
+      default:
+        frequency = 440; // A4 note
+        duration = 0.2;
+        waveType = 'sine';
+    }
+    
+    oscillator.type = waveType;
+    oscillator.frequency.value = frequency * pitch;
+    
+    gainNode.gain.setValueAtTime(volume * 0.1, this.audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+    
+    oscillator.start(this.audioContext.currentTime);
+    oscillator.stop(this.audioContext.currentTime + duration);
+    
+    console.log(`🔊 Playing ${waveType} wave ${soundName} at ${frequency}Hz for ${duration}s`);
+  }
   
   playHTMLAudio(url, loop = false, volume = 1.0) {
     // Create placeholder synthetic audio instead of trying to load missing files
