@@ -354,9 +354,15 @@ window.AudioManager = class AudioManager {
     return !this.musicDisabled;
   }
   
-  // Enhanced sound effects with sparkles, crunch, buzz/explosions
+  // Enhanced sound effects with sparkles, crunch, buzz/explosions - NOW COMPLETELY DISABLED BY DEFAULT
   playSound(type, options = {}) {
-    if (!options.volume) options.volume = this.sfxVolume;
+    if (this.sfxDisabled) {
+      console.log(`🔇 SOUND EFFECTS DISABLED - Not playing ${type} (prevents annoying sounds)`);
+      return;
+    }
+    
+    // If somehow enabled, play at very low volume
+    if (!options.volume) options.volume = this.sfxVolume * 0.1;
     
     // Enhanced sound effects using Web Audio API
     if (!this.audioContext) return;
