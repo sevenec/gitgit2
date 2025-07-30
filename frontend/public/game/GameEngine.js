@@ -1033,12 +1033,7 @@ window.GameEngine = class GameEngine {
   shootProjectile(targetX, targetY) {
     const currentTime = Date.now();
     
-    // Check cooldown based on blaster level
-    const cooldownTime = this.player.blasterLevel === 3 ? 100 : 200; // Laser beam shoots faster
-    if (currentTime - this.player.lastShotTime < cooldownTime) {
-      return; // Still in cooldown
-    }
-    
+    // Update last shot time
     this.player.lastShotTime = currentTime;
     
     switch (this.player.blasterLevel) {
