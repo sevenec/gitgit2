@@ -133,17 +133,55 @@ const TutorialScreen = ({ onComplete, onSkip }) => {
       
       case 'movement_demo':
         return (
-          <div className="h-40 bg-gradient-to-br from-indigo-900 to-purple-900 rounded-lg relative overflow-hidden">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center text-white">
-                <div className="mb-2">👆</div>
-                <p className="text-sm">Try dragging here!</p>
+          <div 
+            ref={demoAreaRef}
+            className="h-40 bg-gradient-to-br from-indigo-900 to-purple-900 rounded-lg relative overflow-hidden cursor-pointer select-none"
+            onMouseDown={handleDemoStart}
+            onMouseMove={handleDemoMove}
+            onMouseUp={handleDemoEnd}
+            onMouseLeave={handleDemoEnd}
+            onTouchStart={handleDemoStart}
+            onTouchMove={handleDemoMove}
+            onTouchEnd={handleDemoEnd}
+            style={{ touchAction: 'none' }}
+          >
+            {/* Interactive butterfly */}
+            <div 
+              className="absolute w-8 h-8 transition-all duration-200 ease-out z-10"
+              style={{
+                left: `${butterflyPosition.x}%`,
+                top: `${butterflyPosition.y}%`,
+                transform: 'translate(-50%, -50%)',
+              }}
+            >
+              🦋
+            </div>
+            
+            {/* Instructions */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="text-center text-white/80">
+                {!isInteracting && (
+                  <>
+                    <div className="mb-2">👆</div>
+                    <p className="text-sm">Click/tap and drag to move the butterfly!</p>
+                  </>
+                )}
+                {isInteracting && (
+                  <p className="text-sm text-green-300">Great! Keep moving around!</p>
+                )}
               </div>
             </div>
-            {/* Animated movement trail */}
-            <div className="absolute top-1/2 left-1/4 w-1 h-8 bg-pink-400 rounded-full animate-pulse transform -translate-y-1/2" />
-            <div className="absolute top-1/3 left-1/2 w-1 h-8 bg-cyan-400 rounded-full animate-pulse transform -translate-x-1/2" style={{animationDelay: '0.3s'}} />
-            <div className="absolute top-2/3 right-1/4 w-1 h-8 bg-yellow-400 rounded-full animate-pulse" style={{animationDelay: '0.6s'}} />
+            
+            {/* Animated trail effect */}
+            <div 
+              className="absolute w-2 h-2 bg-pink-400/60 rounded-full transition-all duration-500"
+              style={{
+                left: `${butterflyPosition.x}%`,
+                top: `${butterflyPosition.y}%`,
+                transform: 'translate(-50%, -50%) scale(2)',
+                opacity: isInteracting ? 0.8 : 0.3
+              }}
+            />
           </div>
         );
       
