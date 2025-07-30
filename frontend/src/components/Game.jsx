@@ -380,7 +380,34 @@ const Game = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-900 via-purple-900 to-pink-900 flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md">
+      {/* Opening Screen */}
+      {showOpeningScreen && (
+        <OpeningScreen
+          onStartGame={handleStartGame}
+          onShowTutorial={handleShowTutorial}
+          onOpenFluttererSelector={handleOpenFluttererSelector}
+          onOpenSettings={() => console.log('Settings')}
+          audioManager={audioManager}
+        />
+      )}
+
+      {/* Tutorial Screen */}
+      {showTutorial && !showOpeningScreen && (
+        <TutorialScreen
+          onComplete={handleTutorialComplete}
+          onSkip={handleTutorialSkip}
+        />
+      )}
+
+      {/* Game Screen */}
+      {!showOpeningScreen && !showTutorial && (
+        <>
+          <div className="w-full max-w-md">{/* Rest of game UI */}</div>
+        </>
+      )}
+      <Toaster />
+    </div>
+  );
         {/* Game Header */}
         <Card className="mb-4 p-4 bg-black/30 backdrop-blur-sm border-purple-500/50">
           <div className="flex justify-between items-center mb-2">
