@@ -3,9 +3,9 @@ from typing import List, Dict
 from datetime import datetime, timedelta
 import uuid
 
-from ..models.game import GameConfig, AdInteraction, Analytics, Event
-from ..models.user import Purchase
-from ..database import get_database
+from models.game import GameConfig, AdInteraction, Analytics, Event
+from models.user import Purchase
+from database import get_database
 
 router = APIRouter(prefix="/game", tags=["game"])
 
