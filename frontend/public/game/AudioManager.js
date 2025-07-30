@@ -12,25 +12,28 @@ window.AudioManager = class AudioManager {
     this.currentTrack = null;
     this.fadeTimeout = null;
     
-    // Level music mapping
+    // Level music mapping - 10 UNIQUE TRACKS with strategic boss placement
     this.levelMusicMap = {
-      1: '/sounds/level1-space-epic-cinematic.mp3',
-      2: '/sounds/level2-traveling-through-space.mp3', 
-      3: '/sounds/level3-lost-in-space.mp3',
-      4: '/sounds/level4-space-music.mp3',
-      5: '/sounds/level5-space-clouds-velvet.mp3',
-      // Levels 6-10 will cycle through available tracks
-      6: '/sounds/level1-space-epic-cinematic.mp3',
-      7: '/sounds/level2-traveling-through-space.mp3',
-      8: '/sounds/level3-lost-in-space.mp3',
-      9: '/sounds/level4-space-music.mp3',
-      10: '/sounds/level5-space-clouds-velvet.mp3',
-      // Levels 11-15 (including boss levels) get more intense tracks
-      11: '/sounds/level1-space-epic-cinematic.mp3', // More epic for later levels
-      12: '/sounds/level2-traveling-through-space.mp3',
-      13: '/sounds/level3-lost-in-space.mp3', 
-      14: '/sounds/level4-space-music.mp3',
-      15: '/sounds/level1-space-epic-cinematic.mp3'  // Epic finale music
+      // EXPLORATION PHASE (Levels 1-5) - Original uploads
+      1: '/sounds/level1-space-epic-cinematic.mp3',        // Epic opening
+      2: '/sounds/level2-traveling-through-space.mp3',     // Journey begins
+      3: '/sounds/level3-lost-in-space.mp3',               // Mystery & danger
+      4: '/sounds/level4-space-music.mp3',                 // Cosmic ambience
+      5: '/sounds/level5-space-clouds-velvet.mp3',         // Ethereal beauty
+      
+      // ADVENTURE PHASE (Levels 6-10) - New uploads  
+      6: '/sounds/level6-space-travel.mp3',                // Space travel adventure
+      7: '/sounds/level7-space-flight.mp3',                // Dynamic flight
+      8: '/sounds/level8-calm-space-music.mp3',            // Calm before storm
+      9: '/sounds/level9-ambient-space-arpeggio.mp3',      // Building tension
+      10: '/sounds/level10-space-ambient.mp3',             // Deep space mystery
+      
+      // FINAL PHASE (Levels 11-15) - Epic boss preparation & finale
+      11: '/sounds/level1-space-epic-cinematic.mp3',       // Return to epic
+      12: '/sounds/level7-space-flight.mp3',               // Intense flight
+      13: '/sounds/level3-lost-in-space.mp3',              // Pre-boss tension  
+      14: '/sounds/level1-space-epic-cinematic.mp3',       // Final preparation
+      15: '/sounds/level5-space-clouds-velvet.mp3'         // MOTHER INSECT BOSS - Most ethereal/epic track
     };
     
     // Initialize audio context
