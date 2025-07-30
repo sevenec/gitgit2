@@ -481,15 +481,17 @@ window.GameEngine = class GameEngine {
   }
   
   updatePowerUps(deltaTime) {
-    this.powerUps.forEach((powerUp, index) => {
+    // Update power-ups (use reverse iteration to safely remove elements)
+    for (let i = this.powerUps.length - 1; i >= 0; i--) {
+      const powerUp = this.powerUps[i];
       powerUp.y += this.gameSpeed * 0.7;
       powerUp.rotation += 0.05;
       
       // Remove power-ups that are off screen
       if (powerUp.y > this.canvas.height + powerUp.height) {
-        this.powerUps.splice(index, 1);
+        this.powerUps.splice(i, 1);
       }
-    });
+    }
   }
   
   updateParticles(deltaTime) {
