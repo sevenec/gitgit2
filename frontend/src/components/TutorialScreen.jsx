@@ -9,6 +9,38 @@ const TutorialScreen = ({ onComplete, onSkip }) => {
   const [isInteracting, setIsInteracting] = useState(false);
   const demoAreaRef = useRef(null);
 
+  // Interactive demo handlers
+  const handleDemoInteraction = (e) => {
+    if (!demoAreaRef.current) return;
+    
+    const rect = demoAreaRef.current.getBoundingClientRect();
+    const x = ((e.clientX || e.touches?.[0]?.clientX || 0) - rect.left) / rect.width * 100;
+    const y = ((e.clientY || e.touches?.[0]?.clientY || 0) - rect.top) / rect.height * 100;
+    
+    setButterflyPosition({
+      x: Math.max(5, Math.min(95, x)),
+      y: Math.max(5, Math.min(95, y))
+    });
+    setIsInteracting(true);
+  };
+
+  const handleDemoStart = (e) => {
+    e.preventDefault();
+    setIsInteracting(true);
+    handleDemoInteraction(e);
+  };
+
+  const handleDemoEnd = () => {
+    setIsInteracting(false);
+  };
+
+  const handleDemoMove = (e) => {
+    if (isInteracting) {
+      e.preventDefault();
+      handleDemoInteraction(e);
+    }
+  };
+
   const tutorialSteps = [
     {
       title: "Welcome to the Nebula!",
