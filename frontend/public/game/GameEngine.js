@@ -694,9 +694,22 @@ window.GameEngine = class GameEngine {
     
     // Check obstacle collisions
     this.obstacles.forEach((obstacle, index) => {
+      // Special handling for homing projectiles
+      if (obstacle.type === 'boss_homing') {
+        const dx = this.player.x - obstacle.x;
+        const dy = this.player.y - obstacle.y;
+        obstacle.vx += dx * obstacle.homingSpeed;
+        obstacle.vy += dy * obstacle.homingSpeed;
+      }
+      
       if (this.isColliding(this.player, obstacle)) {
         if (!this.player.hasShield) {
           this.playerHit();
+        } else {
+          // Shield deflects projectiles
+          if (obstacle.type.includes('boss_')) {
+            this.createParticles(obstacle.x, obstacle.y, '#00FFFF');
+          }
         }
         this.createExplosion(obstacle.x, obstacle.y);
         this.obstacles.splice(index, 1);
@@ -707,14 +720,46 @@ window.GameEngine = class GameEngine {
     this.powerUps.forEach((powerUp, index) => {
       if (this.isColliding(this.player, powerUp)) {
         this.collectPowerUp(powerUp);
+        this.createPowerUpEffect(powerUp.x, powerUp.y, powerUp.type);
         this.powerUps.splice(index, 1);
       }
     });
     
-    // Check boss collision
-    if (this.boss && this.isColliding(this.player, this.boss)) {
-      if (!this.player.hasShield) {
-        this.playerHit();
+    // Check player projectile vs obstacle collisions
+    this.projectiles.forEach((projectile, pIndex) => {
+      if (projectile.type !== 'player') return;
+      
+      this.obstacles.forEach((obstacle, oIndex) => {
+        if (this.isColliding(projectile, obstacle)) {
+          this.createExplosion(obstacle.x, obstacle.y);
+          this.obstacles.splice(oIndex, 1);
+          this.projectiles.splice(pIndex, 1);
+          this.score += 25; // Bonus for shooting enemies
+        }
+      });
+    });
+    
+    // Check player projectile vs boss collisions
+    if (this.boss) {
+      this.projectiles.forEach((projectile, pIndex) => {
+        if (projectile.type === 'player' && this.isColliding(projectile, this.boss)) {
+          this.boss.health -= projectile.damage || 25;
+          this.createParticles(projectile.x, projectile.y, '#FF6600');
+          this.projectiles.splice(pIndex, 1);
+          
+          // Boss flash when hit
+          this.boss.invulnerable = true;
+          setTimeout(() => {
+            if (this.boss) this.boss.invulnerable = false;
+          }, 100);
+        }
+      });
+      
+      // Check boss collision with player
+      if (this.isColliding(this.player, this.boss)) {
+        if (!this.player.hasShield) {
+          this.playerHit();
+        }
       }
     }
   }
