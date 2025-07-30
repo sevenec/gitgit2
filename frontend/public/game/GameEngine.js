@@ -231,12 +231,12 @@ window.GameEngine = class GameEngine {
   }
   
   getLevelConfig(level) {
-    // Enhanced level configurations with slower initial speeds
+    // Enhanced level configurations with improved initial speeds
     const configs = {
       1: { 
-        difficulty: { gameSpeed: 2.2, obstacleSpawnRate: 0.025, powerUpSpawnRate: 0.012 }, // Much faster initial gameplay
+        difficulty: { gameSpeed: 3.2, obstacleSpawnRate: 0.028, powerUpSpawnRate: 0.012 }, // Increased speed for better engagement
         theme: 'starry',
-        duration: 40000 // Shorter for faster progression
+        duration: 35000 // Shorter for faster progression
       },
       2: { 
         difficulty: { gameSpeed: 2.5, obstacleSpawnRate: 0.028, powerUpSpawnRate: 0.013 },
