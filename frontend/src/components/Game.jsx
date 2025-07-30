@@ -10,7 +10,7 @@ import { FLUTTERERS } from '../data/flutterers';
 import { useUser } from '../hooks/useUser';
 import { useGame } from '../hooks/useGame';
 import { useToast } from '../hooks/use-toast';
-import { Toaster } from './ui/toaster';
+import LoadingScreen from './LoadingScreen';
 
 const Game = () => {
   const canvasRef = useRef(null);
