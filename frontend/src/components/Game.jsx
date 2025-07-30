@@ -105,6 +105,7 @@ const Game = () => {
         }
       };
       
+      // Initialize game immediately instead of waiting for flutterer selection
       setTimeout(initializeGame, 500);
     };
 
@@ -117,7 +118,7 @@ const Game = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [selectedFlutterer]);
+  }, []); // Remove selectedFlutterer dependency to initialize immediately
 
   // Initialize audio manager
   useEffect(() => {
