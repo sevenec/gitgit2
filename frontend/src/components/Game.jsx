@@ -156,23 +156,20 @@ const Game = () => {
     
     const initializeAudio = async () => {
       try {
-        // Import and create AudioManager instance
-        const AudioManagerModule = await import('../audio/AudioManager');
-        const AudioManagerClass = AudioManagerModule.default;
-        
-        if (AudioManagerClass) {
-          console.log('✅ AudioManager class imported successfully');
+        // Use the window.AudioManager class directly
+        if (window.AudioManager) {
+          console.log('✅ AudioManager class found on window');
           
           // Create new instance of AudioManager
-          const audioManagerInstance = new AudioManagerClass();
+          const audioManagerInstance = new window.AudioManager();
           setAudioManager(audioManagerInstance);
           
-          // Make it globally available for testing
+          // Make it globally available for game engine and testing
           window.audioManager = audioManagerInstance;
           
-          console.log('🎵 AudioManager instantiated and ready');
+          console.log('🎵 AudioManager instantiated and ready with real music!');
         } else {
-          console.error('❌ Failed to import AudioManager');
+          console.error('❌ AudioManager class not found on window');
         }
       } catch (error) {
         console.error('❌ AudioManager initialization failed:', error);
