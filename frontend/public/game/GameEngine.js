@@ -967,8 +967,8 @@ window.GameEngine = class GameEngine {
   
   spawnEnemySwarm() {
     // Play menacing buzz sound for swarm attack
-    if (window.AudioManager) {
-      window.AudioManager.playSound('buzz', { volume: 0.8, duration: 0.8 });
+    if (window.audioManager) {
+      window.audioManager.playSound('buzz', { volume: 0.8, duration: 0.8 });
     }
     
     // Spawn small enemy insects
@@ -989,8 +989,8 @@ window.GameEngine = class GameEngine {
   
   spawnRageBeam() {
     // Play explosive sound for rage beam attack
-    if (window.AudioManager) {
-      window.AudioManager.playSound('explosion', { volume: 0.9, duration: 1.0 });
+    if (window.audioManager) {
+      window.audioManager.playSound('explosion', { volume: 0.9, duration: 1.0 });
     }
     
     // Create a warning indicator first
