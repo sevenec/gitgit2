@@ -1,9 +1,9 @@
 class AudioManager {
   constructor() {
     this.audioContext = null;
-    this.masterVolume = 0.7;
-    this.musicVolume = 0.6;
-    this.sfxVolume = 0.8;
+    this.masterVolume = 0.5; // Reduced for relaxation
+    this.musicVolume = 0.3; // Significantly reduced for background ambience
+    this.sfxVolume = 0.6; // Slightly reduced but still audible
     this.currentMusic = null;
     this.musicTracks = {};
     this.soundEffects = {};
