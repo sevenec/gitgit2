@@ -751,7 +751,7 @@ class AudioManager {
     
     let melodyIndex = 0;
     let counterMelodyIndex = 0;
-    let currentMelodyNodes = [];
+    const currentMelodyNodes = []; // Fixed: Declare in proper scope
     
     const playProfessionalMelody = () => {
       if (this.isMuted || !this.audioContext || !this.currentMusic) return;
@@ -760,20 +760,20 @@ class AudioManager {
       currentMelodyNodes.forEach(node => {
         try { if (node.stop) node.stop(); } catch(e) {}
       });
-      currentMelodyNodes = [];
+      currentMelodyNodes.length = 0; // Clear array
       
       // === MAIN MELODY LINE ===
-      this.createMelodyVoice(config, melodyIndex, 'lead');
+      this.createMelodyVoice(config, melodyIndex, 'lead', currentMelodyNodes);
       
       // === COUNTER MELODY (if configured) ===
       if (config.hasCounterMelody && config.counterMelody) {
-        this.createMelodyVoice(config, counterMelodyIndex, 'counter');
+        this.createMelodyVoice(config, counterMelodyIndex, 'counter', currentMelodyNodes);
         counterMelodyIndex++;
       }
       
       // === ARPEGGIATED ACCOMPANIMENT ===
       if (config.hasArpeggio) {
-        this.createArpeggioPattern(config, melodyIndex);
+        this.createArpeggioPattern(config, melodyIndex, currentMelodyNodes);
       }
       
       melodyIndex++;
@@ -806,7 +806,7 @@ class AudioManager {
     this.melodyTimeout = setTimeout(playProfessionalMelody, 1500);
   }
 
-  createMelodyVoice(config, noteIndex, voiceType) {
+  createMelodyVoice(config, noteIndex, voiceType, nodeArray) {
     const isLead = voiceType === 'lead';
     const melody = isLead ? config.melody : config.counterMelody;
     if (!melody) return;
@@ -882,11 +882,11 @@ class AudioManager {
     osc1.stop(currentTime + noteLength);
     osc2.stop(currentTime + noteLength);
     
-    currentMelodyNodes.push(osc1);
-    currentMelodyNodes.push(osc2);
+    nodeArray.push(osc1);
+    nodeArray.push(osc2);
   }
 
-  createArpeggioPattern(config, noteIndex) {
+  createArpeggioPattern(config, noteIndex, nodeArray) {
     // Create beautiful arpeggiated accompaniment
     const chords = [config.harmony, config.secondaryHarmony, config.tertiaryHarmony].filter(Boolean);
     if (chords.length === 0) return;
@@ -921,7 +921,7 @@ class AudioManager {
     arpOsc.start(currentTime);
     arpOsc.stop(currentTime + arpLength);
     
-    currentMelodyNodes.push(arpOsc);
+    nodeArray.push(arpOsc);
   }
 
   createDelayNode(delayTime, feedback) {
