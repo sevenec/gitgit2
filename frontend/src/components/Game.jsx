@@ -170,7 +170,45 @@ const Game = () => {
     animationFrameRef.current = requestAnimationFrame(gameLoop);
   };
 
-  const handleGameEnd = async () => {
+  const handleStartGame = () => {
+    setShowOpeningScreen(false);
+    
+    // Check if tutorial should be shown
+    const hasCompletedTutorial = localStorage.getItem('butterflyTutorialCompleted');
+    if (!hasCompletedTutorial) {
+      setShowTutorial(true);
+    } else {
+      startActualGame();
+    }
+  };
+
+  const handleTutorialComplete = () => {
+    localStorage.setItem('butterflyTutorialCompleted', 'true');
+    setShowTutorial(false);
+    startActualGame();
+  };
+
+  const handleTutorialSkip = () => {
+    localStorage.setItem('butterflyTutorialCompleted', 'true');
+    setShowTutorial(false);
+    startActualGame();
+  };
+
+  const startActualGame = () => {
+    if (gameEngineRef.current) {
+      gameEngineRef.current.startGame();
+      setIsPaused(false);
+    }
+  };
+
+  const handleShowTutorial = () => {
+    setShowTutorial(true);
+  };
+
+  const handleOpenFluttererSelector = () => {
+    // This will be handled by the FluttererSelector button in the game UI
+    console.log('Opening flutterer selector from menu');
+  };
     if (!user?.user_id || !gameEngineRef.current) return;
 
     try {
