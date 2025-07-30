@@ -1169,4 +1169,18 @@ window.GameEngine = class GameEngine {
       damage: 25
     });
   }
+  
+  createFloatingText(x, y, text, color, duration = 2000) {
+    // Add floating text effect to special effects
+    this.specialEffects.push({
+      type: 'floating_text',
+      x: x,
+      y: y,
+      text: text,
+      color: color,
+      life: duration,
+      maxLife: duration,
+      vy: -1.5 // Float upward
+    });
+  }
 };
