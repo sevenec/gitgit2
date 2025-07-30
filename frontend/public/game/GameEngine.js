@@ -466,16 +466,18 @@ window.GameEngine = class GameEngine {
   }
   
   updateObstacles(deltaTime) {
-    this.obstacles.forEach((obstacle, index) => {
+    // Update obstacles (use reverse iteration to safely remove elements)
+    for (let i = this.obstacles.length - 1; i >= 0; i--) {
+      const obstacle = this.obstacles[i];
       obstacle.y += this.gameSpeed;
       obstacle.rotation += obstacle.rotationSpeed;
       
       // Remove obstacles that are off screen
       if (obstacle.y > this.canvas.height + obstacle.height) {
-        this.obstacles.splice(index, 1);
+        this.obstacles.splice(i, 1);
         this.score += 10; // Score for surviving
       }
-    });
+    }
   }
   
   updatePowerUps(deltaTime) {
