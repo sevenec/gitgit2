@@ -984,6 +984,66 @@ window.GameEngine = class GameEngine {
     }
   }
   
+  shootProjectile(targetX, targetY) {
+    const currentTime = Date.now();
+    
+    // Check cooldown based on blaster level
+    const cooldownTime = this.player.blasterLevel === 3 ? 100 : 200; // Laser beam shoots faster
+    if (currentTime - this.player.lastShotTime < cooldownTime) {
+      return; // Still in cooldown
+    }
+    
+    this.player.lastShotTime = currentTime;
+    
+    switch (this.player.blasterLevel) {
+      case 1: // Single shot
+        this.createPlayerProjectile(this.player.x, this.player.y - 10, targetX, targetY, 'single');
+        break;
+        
+      case 2: // Dual shot
+        this.createPlayerProjectile(this.player.x - 10, this.player.y - 10, targetX, targetY, 'dual');
+        this.createPlayerProjectile(this.player.x + 10, this.player.y - 10, targetX, targetY, 'dual');
+        break;
+        
+      case 3: // Laser beam
+        this.createPlayerProjectile(this.player.x, this.player.y - 10, targetX, targetY, 'laser');
+        break;
+    }
+    
+    // Play shooting sound effect
+    if (typeof window !== 'undefined' && window.audioManager) {
+      window.audioManager.playSFX('blaster_shoot', { volume: 0.4 });
+    }
+  }
+  
+  createPlayerProjectile(startX, startY, targetX, targetY, shotType) {
+    // Calculate direction
+    const dx = targetX - startX;
+    const dy = targetY - startY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    
+    // Normalize direction
+    const speed = shotType === 'laser' ? 15 : 12;
+    const vx = (dx / distance) * speed;
+    const vy = (dy / distance) * speed;
+    
+    const projectile = {
+      x: startX,
+      y: startY,
+      width: shotType === 'laser' ? 8 : 6,
+      height: shotType === 'laser' ? 20 : 12,
+      vx: vx,
+      vy: vy,
+      type: 'player',
+      shotType: shotType,
+      damage: shotType === 'laser' ? 40 : shotType === 'dual' ? 20 : 25,
+      life: 3000, // 3 seconds
+      color: shotType === 'laser' ? '#FF0080' : '#00FFFF'
+    };
+    
+    this.projectiles.push(projectile);
+  }
+
   updateProjectiles(deltaTime) {
     this.projectiles.forEach((projectile, index) => {
       projectile.x += projectile.vx;
