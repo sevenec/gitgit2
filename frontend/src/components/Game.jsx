@@ -80,6 +80,7 @@ const Game = () => {
             }
             
             console.log('Game initialized successfully');
+            setGameEngineReady(true);
             startGameLoop();
           } catch (error) {
             console.error('Error initializing game:', error);
