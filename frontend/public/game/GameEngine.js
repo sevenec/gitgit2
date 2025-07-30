@@ -869,10 +869,15 @@ window.GameEngine = class GameEngine {
     }
     
     this.score += 50;
+    
+    // Play enhanced power-up sounds
+    if (window.AudioManager) {
+      window.AudioManager.playPowerUpSound(powerUp.type);
+    }
   }
   
   createPowerUpEffect(x, y, type) {
-    // Enhanced power-up collection effect
+    // Enhanced power-up collection effect with more particles
     const colors = {
       'speed': '#00FF00',
       'shield': '#00FFFF', 
@@ -880,31 +885,32 @@ window.GameEngine = class GameEngine {
       'health': '#FF69B4'
     };
     
-    // Create sparkle burst
-    for (let i = 0; i < 8; i++) {
+    // Create larger sparkle burst
+    for (let i = 0; i < 12; i++) {
       this.particles.push({
-        x: x + (Math.random() - 0.5) * 20,
-        y: y + (Math.random() - 0.5) * 20,
-        vx: (Math.random() - 0.5) * 8,
-        vy: (Math.random() - 0.5) * 8,
+        x: x + (Math.random() - 0.5) * 30,
+        y: y + (Math.random() - 0.5) * 30,
+        vx: (Math.random() - 0.5) * 10,
+        vy: (Math.random() - 0.5) * 10,
         color: colors[type] || '#FFD700',
-        life: 1000,
-        maxLife: 1000,
+        life: 1200,
+        maxLife: 1200,
         alpha: 1,
-        size: 3 + Math.random() * 3
+        size: 2 + Math.random() * 4
       });
     }
     
-    // Add special effect
+    // Add floating "+50" text effect
     this.specialEffects.push({
       type: 'power_up_collect',
       x: x,
       y: y,
       scale: 1,
-      life: 1000,
-      maxLife: 1000,
+      life: 1500,
+      maxLife: 1500,
       alpha: 1,
-      color: colors[type] || '#FFD700'
+      color: colors[type] || '#FFD700',
+      text: '+50'
     });
   }
   
