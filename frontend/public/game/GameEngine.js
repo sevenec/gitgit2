@@ -1230,8 +1230,8 @@ window.GameEngine = class GameEngine {
     this.screenEffects.hitEffect(); // Screen shake + flash
     
     // Play damage sound with enhanced crunch effect
-    if (window.AudioManager) {
-      window.AudioManager.playSound('crunch', { volume: 0.8 });
+    if (window.audioManager) {
+      window.audioManager.playSound('crunch', { volume: 0.8 });
     }
     
     if (this.lives <= 0) {
