@@ -1240,9 +1240,9 @@ window.GameEngine = class GameEngine {
       this.particleSystem.createExplosion(this.player.x, this.player.y, '#ff0000', 25);
       this.screenEffects.shake(8, 500); // Strong game over shake
       
-      if (window.AudioManager) {
-        window.AudioManager.playSound('game_over');
-        window.AudioManager.stopAllAudio();
+      if (window.audioManager) {
+        window.audioManager.playSound('game_over');
+        window.audioManager.stopAllAudio();
       }
     }
   }
