@@ -65,6 +65,239 @@ window.GameEngine = class GameEngine {
     this.initializeDefaultFlutterer();
   }
   
+  // Initialize enhanced visual and mobile systems
+  async initializeEnhancedSystems() {
+    try {
+      // Import and initialize enhanced systems dynamically
+      if (typeof window !== 'undefined') {
+        // Initialize systems using window global for GameEngine compatibility
+        this.initializeParticleSystem();
+        this.initializeScreenEffects();
+        this.initializeMobileInput();
+        this.optimizeForDevice();
+        
+        console.log('🎮 Enhanced visual and mobile systems initialized');
+      }
+    } catch (error) {
+      console.warn('Could not initialize enhanced systems, using basic fallbacks:', error);
+      this.useBasicSystems();
+    }
+  }
+  
+  initializeParticleSystem() {
+    // Simple particle system for GameEngine
+    this.particleSystem = {
+      particles: [],
+      maxParticles: 300,
+      
+      createExplosion: (x, y, color = '#ff6b6b', count = 12) => {
+        for (let i = 0; i < count; i++) {
+          const angle = (Math.PI * 2 * i) / count;
+          const speed = 2 + Math.random() * 3;
+          this.particleSystem.particles.push({
+            x, y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            size: 2 + Math.random() * 3,
+            color, life: 1.0, decay: 0.02,
+            type: 'explosion'
+          });
+        }
+      },
+      
+      createSparkles: (x, y, color = '#ffd700', count = 15) => {
+        for (let i = 0; i < count; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 1 + Math.random() * 2;
+          this.particleSystem.particles.push({
+            x, y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            size: 1 + Math.random() * 2,
+            color, life: 1.0, decay: 0.015,
+            type: 'sparkle'
+          });
+        }
+      },
+      
+      createButterflyTrail: (x, y, color = '#ff69b4') => {
+        if (Math.random() < 0.4) {
+          this.particleSystem.particles.push({
+            x: x + (Math.random() - 0.5) * 8,
+            y: y + (Math.random() - 0.5) * 8,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: 0.5,
+            size: 1 + Math.random(),
+            color, life: 1.0, decay: 0.01,
+            type: 'trail'
+          });
+        }
+      },
+      
+      update: () => {
+        for (let i = this.particleSystem.particles.length - 1; i >= 0; i--) {
+          const p = this.particleSystem.particles[i];
+          p.x += p.vx; p.y += p.vy; p.life -= p.decay;
+          
+          if (p.type === 'trail') { p.vy += 0.05; p.vx *= 0.98; }
+          else if (p.type === 'explosion') { p.vy += 0.05; p.vx *= 0.95; }
+          
+          if (p.life <= 0) this.particleSystem.particles.splice(i, 1);
+        }
+        
+        if (this.particleSystem.particles.length > this.particleSystem.maxParticles) {
+          this.particleSystem.particles.splice(0, this.particleSystem.particles.length - this.particleSystem.maxParticles);
+        }
+      },
+      
+      render: (ctx) => {
+        ctx.save();
+        for (const p of this.particleSystem.particles) {
+          ctx.globalAlpha = p.life;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    };
+  }
+  
+  initializeScreenEffects() {
+    this.screenEffects = {
+      shakeIntensity: 0, shakeDuration: 0, shakeX: 0, shakeY: 0,
+      flashAlpha: 0, flashColor: '#ffffff', flashDecay: 0,
+      tintAlpha: 0, tintColor: '#ff0000', tintDecay: 0,
+      
+      shake: (intensity = 5, duration = 300) => {
+        this.screenEffects.shakeIntensity = Math.min(intensity, 8);
+        this.screenEffects.shakeDuration = duration;
+      },
+      
+      flash: (color = '#ffffff', intensity = 0.3, duration = 150) => {
+        this.screenEffects.flashColor = color;
+        this.screenEffects.flashAlpha = Math.min(intensity, 1);
+        this.screenEffects.flashDecay = this.screenEffects.flashAlpha / (duration / 16.67);
+      },
+      
+      hitEffect: () => {
+        this.screenEffects.shake(3, 200);
+        this.screenEffects.flash('#ff4444', 0.2, 100);
+      },
+      
+      powerUpEffect: () => {
+        this.screenEffects.shake(2, 150);
+        this.screenEffects.flash('#ffd700', 0.3, 200);
+      },
+      
+      update: (deltaTime = 16.67) => {
+        if (this.screenEffects.shakeDuration > 0) {
+          this.screenEffects.shakeDuration -= deltaTime;
+          const progress = Math.max(0, this.screenEffects.shakeDuration / 300);
+          const intensity = this.screenEffects.shakeIntensity * progress;
+          this.screenEffects.shakeX = (Math.random() - 0.5) * intensity * 2;
+          this.screenEffects.shakeY = (Math.random() - 0.5) * intensity * 2;
+          
+          if (this.screenEffects.shakeDuration <= 0) {
+            this.screenEffects.shakeIntensity = 0;
+            this.screenEffects.shakeX = 0; this.screenEffects.shakeY = 0;
+          }
+        }
+        
+        if (this.screenEffects.flashAlpha > 0) {
+          this.screenEffects.flashAlpha = Math.max(0, this.screenEffects.flashAlpha - this.screenEffects.flashDecay);
+        }
+      },
+      
+      applyShake: (ctx) => {
+        if (this.screenEffects.shakeIntensity > 0) {
+          ctx.translate(this.screenEffects.shakeX, this.screenEffects.shakeY);
+        }
+      },
+      
+      renderEffects: (ctx, canvas) => {
+        if (this.screenEffects.flashAlpha > 0) {
+          ctx.save();
+          ctx.globalAlpha = this.screenEffects.flashAlpha;
+          ctx.fillStyle = this.screenEffects.flashColor;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.restore();
+        }
+      }
+    };
+  }
+  
+  initializeMobileInput() {
+    this.mobileInput = {
+      isTouch: 'ontouchstart' in window,
+      touches: new Map(),
+      smoothedInput: { x: 0, y: 0 },
+      inputHistory: [],
+      touchIndicator: { x: 0, y: 0, visible: false, size: 0, alpha: 0 },
+      
+      getInput: () => {
+        if (this.mobileInput.touches.size === 0) return null;
+        return { x: this.mobileInput.smoothedInput.x, y: this.mobileInput.smoothedInput.y };
+      },
+      
+      isActive: () => this.mobileInput.touches.size > 0,
+      
+      updateSmoothedInput: (rawX, rawY) => {
+        this.mobileInput.inputHistory.push({ x: rawX, y: rawY });
+        if (this.mobileInput.inputHistory.length > 5) this.mobileInput.inputHistory.shift();
+        
+        let avgX = 0, avgY = 0;
+        for (const input of this.mobileInput.inputHistory) {
+          avgX += input.x; avgY += input.y;
+        }
+        this.mobileInput.smoothedInput.x = avgX / this.mobileInput.inputHistory.length;
+        this.mobileInput.smoothedInput.y = avgY / this.mobileInput.inputHistory.length;
+      },
+      
+      renderTouchIndicator: (ctx) => {
+        if (!this.mobileInput.touchIndicator.visible || this.mobileInput.touchIndicator.alpha <= 0) return;
+        
+        ctx.save();
+        ctx.globalAlpha = this.mobileInput.touchIndicator.alpha * 0.3;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(this.mobileInput.touchIndicator.x, this.mobileInput.touchIndicator.y, 30, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+    };
+  }
+  
+  optimizeForDevice() {
+    // Detect device capabilities and optimize accordingly
+    const userAgent = navigator.userAgent;
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(userAgent);
+    const isLowEnd = /Android.*Chrome.*[1-4]\d\.|iPhone|iPad.*OS [1-9]_/.test(userAgent);
+    
+    if (isMobile || isLowEnd) {
+      this.performanceOptimized = true;
+      this.particleSystem.maxParticles = 150; // Reduce particles on mobile
+      console.log('🔧 Mobile performance optimizations applied');
+    }
+  }
+  
+  useBasicSystems() {
+    // Fallback to basic systems if enhanced ones fail
+    this.particleSystem = { 
+      createExplosion: () => {}, createSparkles: () => {}, createButterflyTrail: () => {},
+      update: () => {}, render: () => {} 
+    };
+    this.screenEffects = { 
+      shake: () => {}, flash: () => {}, hitEffect: () => {}, powerUpEffect: () => {},
+      update: () => {}, applyShake: () => {}, renderEffects: () => {} 
+    };
+    this.mobileInput = { 
+      getInput: () => null, isActive: () => false, renderTouchIndicator: () => {} 
+    };
+  }
+  
   
   initializeDefaultFlutterer() {
     // Set default flutterer (Basic Cosmic Flutter)
