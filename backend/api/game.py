@@ -170,7 +170,7 @@ async def share_score(user_id: str, score: int, platform: str, db=Depends(get_da
 async def get_flutterer_catalog():
     """Get all available flutterers with pricing"""
     # This would typically come from database, but for now return static data
-    from ..data.flutterers import FLUTTERERS, RARITY_PRICES, STARTER_PACK
+    from data.flutterers import FLUTTERERS, RARITY_PRICES, STARTER_PACK
     
     return {
         "flutterers": FLUTTERERS,
