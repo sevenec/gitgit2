@@ -1,0 +1,133 @@
+{
+  "app": {
+    "name": "Butterfly Nebula Brawl",
+    "id": "com.butterflynebulagames.brawl",
+    "version": "1.0.0",
+    "description": "Epic cosmic adventure - pilot your butterfly through nebulae, collect power-ups, and defeat the Mother Insect boss!",
+    "author": "Butterfly Nebula Games",
+    "homepage": "https://butterflynebulagames.com",
+    "keywords": ["butterfly", "space", "nebula", "cosmic", "adventure", "dodge", "arcade", "boss battle", "power-ups", "premium"]
+  },
+  "build": {
+    "android": {
+      "minSdkVersion": 22,
+      "targetSdkVersion": 33,
+      "compileSdkVersion": 33,
+      "orientation": "portrait",
+      "fullscreen": true,
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.VIBRATE",
+        "com.android.vending.BILLING"
+      ],
+      "signing": {
+        "keystore": "butterfly-release-key.keystore",
+        "alias": "butterfly-key",
+        "storePassword": "CHANGE_THIS_PASSWORD",
+        "keyPassword": "CHANGE_THIS_PASSWORD"
+      }
+    },
+    "ios": {
+      "minVersion": "12.0",
+      "targetVersion": "16.0",
+      "orientation": "portrait",
+      "fullscreen": true,
+      "bundleId": "com.butterflynebulagames.brawl",
+      "teamId": "YOUR_APPLE_TEAM_ID"
+    }
+  },
+  "performance": {
+    "targetFPS": 60,
+    "maxMemoryMB": 100,
+    "batteryOptimized": true,
+    "hardwareAcceleration": true,
+    "audioOptimization": true
+  },
+  "monetization": {
+    "googlePlayBilling": {
+      "products": [
+        {
+          "id": "cosmic_coins_small",
+          "type": "consumable",
+          "price": "$0.99",
+          "description": "500 Cosmic Coins"
+        },
+        {
+          "id": "cosmic_coins_medium", 
+          "type": "consumable",
+          "price": "$1.99",
+          "description": "1200 Cosmic Coins"
+        },
+        {
+          "id": "cosmic_coins_large",
+          "type": "consumable", 
+          "price": "$4.99",
+          "description": "2500 Cosmic Coins"
+        },
+        {
+          "id": "starter_pack",
+          "type": "consumable",
+          "price": "$5.99", 
+          "description": "Cosmic Starter Pack - Epic flutterer + 1000 coins"
+        },
+        {
+          "id": "flutterer_epic_blaster",
+          "type": "non_consumable",
+          "price": "$2.99",
+          "description": "Epic Blaster Wing Flutterer"
+        },
+        {
+          "id": "flutterer_legendary_guardian",
+          "type": "non_consumable", 
+          "price": "$4.99",
+          "description": "Legendary Nebula Guardian Flutterer"
+        }
+      ]
+    },
+    "admob": {
+      "appId": "ca-app-pub-YOUR_ADMOB_APP_ID~YOUR_APP_ID",
+      "rewardedAdUnit": "ca-app-pub-YOUR_ADMOB_APP_ID/YOUR_REWARDED_AD_UNIT",
+      "interstitialAdUnit": "ca-app-pub-YOUR_ADMOB_APP_ID/YOUR_INTERSTITIAL_AD_UNIT",
+      "bannerAdUnit": "ca-app-pub-YOUR_ADMOB_APP_ID/YOUR_BANNER_AD_UNIT"
+    }
+  },
+  "analytics": {
+    "firebase": {
+      "projectId": "butterfly-nebula-brawl",
+      "trackingEvents": [
+        "game_start",
+        "level_complete", 
+        "boss_defeat",
+        "purchase_completed",
+        "ad_watched",
+        "social_share",
+        "flutterer_selected"
+      ]
+    }
+  },
+  "aso": {
+    "primaryKeywords": [
+      "butterfly brawl dodge game",
+      "cosmic adventure",
+      "space butterfly", 
+      "nebula game",
+      "butterfly dodge",
+      "space arcade"
+    ],
+    "secondaryKeywords": [
+      "cosmic brawl",
+      "butterfly space adventure",
+      "nebula dodge game", 
+      "space insect boss battle",
+      "cosmic butterfly premium",
+      "butterfly arcade game"
+    ],
+    "categories": [
+      "Arcade",
+      "Adventure", 
+      "Casual",
+      "Action"
+    ]
+  }
+}
