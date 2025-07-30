@@ -617,8 +617,12 @@ window.GameRenderer = class GameRenderer {
     return visualConfigs[flutterer.id] || visualConfigs['basic_cosmic'];
   }
   
-  drawEnhancedWings(colors, visualProps, flutterer) {
+  drawEnhancedWings(colors, visualProps, flutterer, wingFlap = 1) {
     const { upperWingSize, lowerWingSize, wingShape, pattern } = visualProps;
+    
+    // Apply wing flapping animation
+    this.ctx.save();
+    this.ctx.scale(1, wingFlap);
     
     // Upper wings with shape variations
     this.ctx.fillStyle = colors.wing1;
@@ -655,7 +659,9 @@ window.GameRenderer = class GameRenderer {
         this.drawStandardWings(upperWingSize, lowerWingSize, colors);
     }
     
-    // Add wing patterns
+    this.ctx.restore();
+    
+    // Add wing patterns (outside the flap animation to keep them stable)
     this.drawWingPatterns(pattern, colors, visualProps, flutterer);
   }
   
