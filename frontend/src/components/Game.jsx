@@ -2,9 +2,12 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Pause, Play, RotateCcw, Volume2, VolumeX, Star } from 'lucide-react';
+import { Pause, Play, RotateCcw, Volume2, VolumeX, Star, Coins } from 'lucide-react';
 import FluttererSelector from './FluttererSelector';
 import { FLUTTERERS } from '../data/flutterers';
+import { useUser } from '../hooks/useUser';
+import { useGame } from '../hooks/useGame';
+import { useToast } from '../hooks/use-toast';
 
 const Game = () => {
   const canvasRef = useRef(null);
