@@ -58,7 +58,7 @@ window.AudioManager = class AudioManager {
   // Play intro music immediately when game opens
   playIntroMusic() {
     if (this.musicDisabled) {
-      console.log('Music is disabled - no intro music will play');
+      console.log('🔇 ALL AUDIO DISABLED - No intro music will play (prevents overlap issues)');
       return;
     }
     
