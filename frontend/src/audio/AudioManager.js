@@ -225,50 +225,304 @@ class AudioManager {
       return;
     }
     
+    // Different sophisticated sounds for different SFX types
+    switch (soundName) {
+      case 'game_start':
+        this.createGameStartSound(volume);
+        break;
+      case 'powerup_collect':
+        this.createPowerUpSound(volume);
+        break;
+      case 'collision':
+        this.createCollisionSound(volume);
+        break;
+      case 'boss_attack':
+        this.createBossAttackSound(volume);
+        break;
+      case 'level_complete':
+        this.createLevelCompleteSound(volume);
+        break;
+      case 'butterfly_flap':
+        this.createButterflyFlapSound(volume);
+        break;
+      case 'shield_activate':
+        this.createShieldSound(volume);
+        break;
+      case 'blaster_shoot':
+        this.createBlasterSound(volume);
+        break;
+      default:
+        this.createDefaultSound(soundName, volume, pitch);
+    }
+  }
+  
+  createGameStartSound(volume) {
+    // Uplifting game start chord progression
+    const frequencies = [261, 329, 392, 523]; // C major chord
+    
+    frequencies.forEach((freq, index) => {
+      const oscillator = this.audioContext.createOscillator();
+      const gainNode = this.audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(this.sfxGain);
+      
+      oscillator.type = 'triangle';
+      oscillator.frequency.value = freq;
+      
+      const startTime = this.audioContext.currentTime + (index * 0.1);
+      const duration = 0.8;
+      
+      gainNode.gain.setValueAtTime(0, startTime);
+      gainNode.gain.linearRampToValueAtTime(volume * 0.15, startTime + 0.1);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+      
+      oscillator.start(startTime);
+      oscillator.stop(startTime + duration);
+    });
+    
+    console.log('🎵 Playing uplifting game start sound');
+  }
+  
+  createPowerUpSound(volume) {
+    // Magical sparkle sound
+    const oscillator = this.audioContext.createOscillator();
+    const gainNode = this.audioContext.createGain();
+    const filter = this.audioContext.createBiquadFilter();
+    
+    oscillator.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(this.sfxGain);
+    
+    oscillator.type = 'sine';
+    
+    // Rising sparkle effect
+    const startTime = this.audioContext.currentTime;
+    const duration = 0.5;
+    
+    oscillator.frequency.setValueAtTime(440, startTime);
+    oscillator.frequency.exponentialRampToValueAtTime(1760, startTime + duration);
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(800, startTime);
+    filter.frequency.exponentialRampToValueAtTime(3200, startTime + duration);
+    
+    gainNode.gain.setValueAtTime(0, startTime);
+    gainNode.gain.linearRampToValueAtTime(volume * 0.2, startTime + 0.05);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+    
+    oscillator.start(startTime);
+    oscillator.stop(startTime + duration);
+    
+    console.log('✨ Playing magical power-up sparkle sound');
+  }
+  
+  createCollisionSound(volume) {
+    // Dramatic impact sound
+    const noiseBuffer = this.audioContext.createBuffer(1, this.audioContext.sampleRate * 0.3, this.audioContext.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    
+    // Generate noise
+    for (let i = 0; i < output.length; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+    
+    const noiseSource = this.audioContext.createBufferSource();
+    const gainNode = this.audioContext.createGain();
+    const filter = this.audioContext.createBiquadFilter();
+    
+    noiseSource.buffer = noiseBuffer;
+    noiseSource.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(this.sfxGain);
+    
+    filter.type = 'lowpass';
+    filter.frequency.value = 400;
+    
+    const startTime = this.audioContext.currentTime;
+    gainNode.gain.setValueAtTime(volume * 0.4, startTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.3);
+    
+    noiseSource.start(startTime);
+    
+    console.log('💥 Playing dramatic collision impact');
+  }
+  
+  createBossAttackSound(volume) {
+    // Menacing boss attack with low rumble
+    const oscillator = this.audioContext.createOscillator();
+    const gainNode = this.audioContext.createGain();
+    const filter = this.audioContext.createBiquadFilter();
+    
+    oscillator.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(this.sfxGain);
+    
+    oscillator.type = 'sawtooth';
+    
+    const startTime = this.audioContext.currentTime;
+    const duration = 1.0;
+    
+    // Deep menacing rumble that rises
+    oscillator.frequency.setValueAtTime(40, startTime);
+    oscillator.frequency.exponentialRampToValueAtTime(80, startTime + duration * 0.5);
+    oscillator.frequency.exponentialRampToValueAtTime(200, startTime + duration);
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(200, startTime);
+    filter.frequency.exponentialRampToValueAtTime(800, startTime + duration);
+    
+    gainNode.gain.setValueAtTime(0, startTime);
+    gainNode.gain.linearRampToValueAtTime(volume * 0.3, startTime + 0.1);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+    
+    oscillator.start(startTime);
+    oscillator.stop(startTime + duration);
+    
+    console.log('👹 Playing menacing boss attack sound');
+  }
+  
+  createLevelCompleteSound(volume) {
+    // Triumphant level completion fanfare
+    const notes = [523, 659, 784, 1047]; // C5, E5, G5, C6
+    
+    notes.forEach((freq, index) => {
+      const oscillator = this.audioContext.createOscillator();
+      const gainNode = this.audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(this.sfxGain);
+      
+      oscillator.type = 'triangle';
+      oscillator.frequency.value = freq;
+      
+      const startTime = this.audioContext.currentTime + (index * 0.15);
+      const duration = 0.6;
+      
+      gainNode.gain.setValueAtTime(0, startTime);
+      gainNode.gain.linearRampToValueAtTime(volume * 0.2, startTime + 0.05);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+      
+      oscillator.start(startTime);
+      oscillator.stop(startTime + duration);
+    });
+    
+    console.log('🏆 Playing triumphant level complete fanfare');
+  }
+  
+  createButterflyFlapSound(volume) {
+    // Gentle flutter sound
     const oscillator = this.audioContext.createOscillator();
     const gainNode = this.audioContext.createGain();
     
     oscillator.connect(gainNode);
     gainNode.connect(this.sfxGain);
     
-    // Different sounds for different SFX types
-    let frequency, duration, waveType;
+    oscillator.type = 'sine';
     
-    switch (soundName) {
-      case 'game_start':
-        frequency = 523; // C5 note
-        duration = 0.6;
-        waveType = 'triangle';
-        // Create a rising tone for game start
-        oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(frequency * 1.5, this.audioContext.currentTime + duration);
-        break;
-      case 'powerup_collect':
-        frequency = 880; // A5 note
-        duration = 0.3;
-        waveType = 'square';
-        break;
-      case 'collision':
-        frequency = 200; // Low frequency for impact
-        duration = 0.2;
-        waveType = 'sawtooth';
-        break;
-      default:
-        frequency = 440; // A4 note
-        duration = 0.2;
-        waveType = 'sine';
-    }
+    const startTime = this.audioContext.currentTime;
+    const duration = 0.2;
     
-    oscillator.type = waveType;
-    oscillator.frequency.value = frequency * pitch;
+    oscillator.frequency.setValueAtTime(800, startTime);
+    oscillator.frequency.linearRampToValueAtTime(1200, startTime + duration * 0.5);
+    oscillator.frequency.linearRampToValueAtTime(600, startTime + duration);
     
-    gainNode.gain.setValueAtTime(volume * 0.1, this.audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+    gainNode.gain.setValueAtTime(0, startTime);
+    gainNode.gain.linearRampToValueAtTime(volume * 0.05, startTime + 0.02);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
     
-    oscillator.start(this.audioContext.currentTime);
-    oscillator.stop(this.audioContext.currentTime + duration);
+    oscillator.start(startTime);
+    oscillator.stop(startTime + duration);
     
-    console.log(`🔊 Playing ${waveType} wave ${soundName} at ${frequency}Hz for ${duration}s`);
+    console.log('🦋 Playing gentle butterfly flutter');
+  }
+  
+  createShieldSound(volume) {
+    // Protective energy shield activation
+    const oscillator = this.audioContext.createOscillator();
+    const gainNode = this.audioContext.createGain();
+    const filter = this.audioContext.createBiquadFilter();
+    
+    oscillator.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(this.sfxGain);
+    
+    oscillator.type = 'sine';
+    
+    const startTime = this.audioContext.currentTime;
+    const duration = 0.7;
+    
+    oscillator.frequency.setValueAtTime(220, startTime);
+    oscillator.frequency.exponentialRampToValueAtTime(880, startTime + duration * 0.3);
+    oscillator.frequency.exponentialRampToValueAtTime(440, startTime + duration);
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(1000, startTime);
+    filter.frequency.exponentialRampToValueAtTime(2000, startTime + duration);
+    
+    gainNode.gain.setValueAtTime(0, startTime);
+    gainNode.gain.linearRampToValueAtTime(volume * 0.15, startTime + 0.1);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+    
+    oscillator.start(startTime);
+    oscillator.stop(startTime + duration);
+    
+    console.log('🛡️ Playing protective shield activation');
+  }
+  
+  createBlasterSound(volume) {
+    // Futuristic blaster shot
+    const oscillator = this.audioContext.createOscillator();
+    const gainNode = this.audioContext.createGain();
+    const filter = this.audioContext.createBiquadFilter();
+    
+    oscillator.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(this.sfxGain);
+    
+    oscillator.type = 'square';
+    
+    const startTime = this.audioContext.currentTime;
+    const duration = 0.25;
+    
+    oscillator.frequency.setValueAtTime(1200, startTime);
+    oscillator.frequency.exponentialRampToValueAtTime(300, startTime + duration);
+    
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1500, startTime);
+    filter.frequency.exponentialRampToValueAtTime(500, startTime + duration);
+    
+    gainNode.gain.setValueAtTime(0, startTime);
+    gainNode.gain.linearRampToValueAtTime(volume * 0.2, startTime + 0.02);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+    
+    oscillator.start(startTime);
+    oscillator.stop(startTime + duration);
+    
+    console.log('🔫 Playing futuristic blaster shot');
+  }
+  
+  createDefaultSound(soundName, volume, pitch) {
+    const oscillator = this.audioContext.createOscillator();
+    const gainNode = this.audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(this.sfxGain);
+    
+    oscillator.type = 'sine';
+    oscillator.frequency.value = 440 * pitch;
+    
+    const startTime = this.audioContext.currentTime;
+    const duration = 0.2;
+    
+    gainNode.gain.setValueAtTime(0, startTime);
+    gainNode.gain.linearRampToValueAtTime(volume * 0.1, startTime + 0.05);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+    
+    oscillator.start(startTime);
+    oscillator.stop(startTime + duration);
+    
+    console.log(`🔊 Playing default sound for ${soundName}`);
   }
   
   playHTMLAudio(url, loop = false, volume = 1.0) {
