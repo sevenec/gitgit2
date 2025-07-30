@@ -993,18 +993,18 @@ window.GameEngine = class GameEngine {
   handleAutomaticShooting(deltaTime) {
     const currentTime = Date.now();
     
-    // Different firing rates based on blaster level
+    // Different firing rates based on blaster level (made slower and less aggressive)
     let fireRate;
     switch (this.player.blasterLevel) {
-      case 1: fireRate = 400; break; // Single shot every 400ms
-      case 2: fireRate = 300; break; // Dual shot every 300ms  
-      case 3: fireRate = 150; break; // Laser beam every 150ms (rapid fire)
+      case 1: fireRate = 800; break; // Single shot every 800ms (was 400ms)
+      case 2: fireRate = 600; break; // Dual shot every 600ms (was 300ms)
+      case 3: fireRate = 400; break; // Laser beam every 400ms (was 150ms)
       default: return;
     }
     
     if (currentTime - this.player.lastShotTime >= fireRate) {
-      // Auto-target the nearest obstacle or shoot straight up
-      const target = this.findNearestObstacle() || { x: this.player.x, y: this.player.y - 100 };
+      // Auto-target the nearest obstacle or shoot straight up (less aggressive targeting)
+      const target = this.findNearestObstacle() || { x: this.player.x, y: this.player.y - 150 };
       this.shootProjectile(target.x, target.y);
     }
   }
@@ -1014,13 +1014,13 @@ window.GameEngine = class GameEngine {
     let nearestDistance = Infinity;
     
     this.obstacles.forEach(obstacle => {
-      // Only target obstacles that are above or at same level as player
-      if (obstacle.y <= this.player.y) {
+      // Only target obstacles that are above player and within a reasonable range
+      if (obstacle.y <= this.player.y - 50) { // Must be at least 50 pixels above
         const dx = obstacle.x - this.player.x;
         const dy = obstacle.y - this.player.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         
-        if (distance < nearestDistance && distance < 200) { // Within 200 pixels
+        if (distance < nearestDistance && distance < 150) { // Reduced from 200 to 150 pixels
           nearestDistance = distance;
           nearestObstacle = obstacle;
         }
