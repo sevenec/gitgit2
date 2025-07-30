@@ -68,19 +68,42 @@ window.AudioManager = class AudioManager {
       return;
     }
     
-    console.log('🎵 Starting QUIET intro music with overlap prevention');
+    console.log('🎵 Starting intro music with modern browser support');
     
     // FORCE STOP any existing audio
     this.forceStopAllAudio();
     
-    // Small delay for cleanup
-    setTimeout(async () => {
-      await this.forceStopAllAudio(); // Double-check cleanup
-      
-      // Create new audio for intro
-      const audio = new Audio(introMusicPath);
-      audio.volume = this.musicVolume * this.masterVolume * 0.7; // Extra quiet for intro
-      audio.loop = true;
+    // Create audio immediately (no delay for intro music)
+    const audio = new Audio(introMusicPath);
+    audio.volume = this.musicVolume * this.masterVolume * 0.7; // Extra quiet for intro
+    audio.loop = true;
+    audio.preload = 'auto';
+    
+    // Handle loading and errors
+    audio.addEventListener('canplaythrough', () => {
+      console.log('✅ Intro music loaded and ready to play');
+    });
+    
+    audio.addEventListener('error', (e) => {
+      console.error('❌ Failed to load intro music:', e);
+    });
+    
+    // Store reference and attempt to play
+    this.currentTrack = audio;
+    
+    // Try to play immediately
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          console.log('✅ INTRO MUSIC STARTED SUCCESSFULLY on app open!');
+        })
+        .catch(error => {
+          console.warn('⚠️ Intro music blocked by browser - needs user interaction:', error);
+          console.log('🎵 Will try to start intro music on first user click');
+        });
+    }
+  }
       
       // Handle loading and playback
       audio.addEventListener('canplaythrough', () => {
