@@ -331,7 +331,7 @@ const Game = () => {
           audioManager.resumeAudioContext();
           
           // Start level music (level 1 gets upbeat music)
-          audioManager.playMusic(1);
+          audioManager.playLevelMusic(1);
           
           // Play game start confirmation sound
           audioManager.playSFX('game_start', { volume: 0.5 });
