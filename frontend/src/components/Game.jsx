@@ -365,8 +365,11 @@ const Game = () => {
   };
 
   const handleOpenFluttererSelector = () => {
-    // This will be handled by the FluttererSelector button in the game UI
-    console.log('Opening flutterer selector from menu');
+    console.log('🦋 Opening flutterer selector modal');
+    setShowFluttererModal(true);
+    if (audioManager) {
+      audioManager.playSound('sparkles', { volume: 0.6 });
+    }
   };
 
   const handleGameEnd = async () => {
