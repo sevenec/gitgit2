@@ -1606,4 +1606,38 @@ window.GameEngine = class GameEngine {
       vy: -1.5 // Float upward
     });
   }
+  
+  // Performance optimization method for low-end devices
+  optimizeForLowPerformance() {
+    console.log('🔧 Applying low-performance optimizations');
+    this.performanceOptimized = true;
+    
+    // Reduce particle count
+    if (this.particleSystem) {
+      this.particleSystem.maxParticles = 100;
+    }
+    
+    // Reduce spawn rates
+    this.obstacleSpawnRate *= 0.8;
+    this.powerUpSpawnRate *= 0.8;
+    
+    // Reduce special effects
+    this.backgroundEffects = this.backgroundEffects.slice(0, 3);
+    
+    // Clear some particles
+    if (this.particles.length > 50) {
+      this.particles = this.particles.slice(-50);
+    }
+  }
+  
+  // Get performance stats
+  getPerformanceStats() {
+    return {
+      fps: this.fps,
+      particles: this.particleSystem ? this.particleSystem.particles.length : 0,
+      obstacles: this.obstacles.length,
+      projectiles: this.projectiles.length,
+      optimized: this.performanceOptimized
+    };
+  }
 };
