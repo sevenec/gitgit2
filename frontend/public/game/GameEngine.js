@@ -1294,8 +1294,8 @@ window.GameEngine = class GameEngine {
     this.screenEffects.powerUpEffect();
     
     // Play sparkle sound effect for power-up collection
-    if (window.AudioManager) {
-      window.AudioManager.playSound('sparkles', { volume: 0.7 });
+    if (window.audioManager) {
+      window.audioManager.playSound('sparkles', { volume: 0.7 });
     }
   }
   
