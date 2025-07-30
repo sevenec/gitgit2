@@ -103,10 +103,11 @@
 #====================================================================================================
 
 user_problem_statement: |
-  User has identified three main issues with the Butterfly Nebula Brawl game after previewing:
-  1. Butterflies (flutterers) look too similar - only differ by color, need more visual variety
-  2. Game goes to tutorial but doesn't play actual gameplay afterward
-  3. No music is playing during the game
+  User has identified multiple issues with the Butterfly Nebula Brawl game:
+  1. Initial gameplay speed is too slow and needs to be increased
+  2. Music system needs improvement - current music is described as "redundant" and "awful", user wants relaxing background music that changes between levels
+  3. Brownish collision object (asteroid type) currently doesn't damage player on collision - needs to implement proper collision damage
+  4. Health bar system needs to be implemented and visible during gameplay
 
 backend:
   - task: "User Management API - Registration"
