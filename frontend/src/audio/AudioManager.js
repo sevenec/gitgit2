@@ -141,9 +141,14 @@ class AudioManager {
   }
   
   playMusic(level) {
-    if (this.isMuted) return;
+    if (this.isMuted) {
+      console.log('🔇 Music muted - not playing');
+      return;
+    }
     
     const track = this.musicTracks[level] || this.musicTracks.menu;
+    
+    console.log(`🎵 Starting music for level ${level}: ${track.name} (${track.mood})`);
     
     // Stop current music with fade out
     if (this.currentMusic) {
@@ -153,7 +158,7 @@ class AudioManager {
     // Start new music with fade in
     this.fadeInMusic(track, 1500);
     
-    console.log(`🎵 Playing: ${track.name} (${track.mood})`);
+    console.log(`🎵 Now Playing: ${track.name} (${track.mood})`);
   }
   
   fadeInMusic(track, duration = 1500) {
