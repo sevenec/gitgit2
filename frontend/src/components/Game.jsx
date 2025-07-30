@@ -209,6 +209,8 @@ const Game = () => {
     // This will be handled by the FluttererSelector button in the game UI
     console.log('Opening flutterer selector from menu');
   };
+
+  const handleGameEnd = async () => {
     if (!user?.user_id || !gameEngineRef.current) return;
 
     try {
