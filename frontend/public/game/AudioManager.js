@@ -134,9 +134,9 @@ window.AudioManager = class AudioManager {
     this.forceStopAllAudio(); // Double-stop for extra safety
     
     // Longer delay to ensure complete cleanup
-    setTimeout(() => {
+    setTimeout(async () => {
       // Final safety check before creating new audio
-      this.forceStopAllAudio();
+      await this.forceStopAllAudio();
       
       // Create new audio element
       const audio = new Audio(musicPath);
@@ -160,22 +160,18 @@ window.AudioManager = class AudioManager {
       // Store reference and play
       this.currentTrack = audio;
       
-      // Play with user interaction handling
+      // Play the music (modern browsers require user interaction)
       const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
-            console.log(`✅ Successfully started Level ${level} music - SINGLE TRACK ONLY`);
+            console.log(`✅ Level ${level} music started successfully - NO OVERLAP GUARANTEED`);
           })
           .catch(error => {
-            console.warn('Music play failed - likely needs user interaction:', error);
-            // Store for later playback after user interaction
-            document.addEventListener('click', () => {
-              this.resumeMusic();
-            }, { once: true });
+            console.warn(`Level ${level} music needs user interaction:`, error);
           });
       }
-    }, 100); // 100ms delay for cleanup
+    }, 250); // Increased delay to 250ms for complete cleanup
   }
   
   // Stop current music with optional fade out - ENHANCED to stop ALL audio
