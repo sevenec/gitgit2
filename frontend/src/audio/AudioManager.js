@@ -2,17 +2,18 @@ class AudioManager {
   constructor() {
     this.audioContext = null;
     this.masterVolume = 0.7; 
-    this.musicVolume = 0.6; 
+    this.musicVolume = 0.0; // MUSIC DISABLED BY DEFAULT
     this.sfxVolume = 0.8; 
     this.currentMusic = null;
     this.currentMusicAudio = null;
     this.musicTracks = {};
     this.soundEffects = {};
     this.isMuted = false;
+    this.musicDisabled = true; // MUSIC COMPLETELY DISABLED
     this.currentMusicNodes = [];
     
     this.initializeAudio();
-    this.loadHighQualityAudioAssets();
+    this.loadBasicAudioAssets();
   }
   
   initializeAudio() {
