@@ -212,8 +212,8 @@ async def get_user_rank(user_id: str, db) -> int:
 
 async def generate_daily_challenges(user_id: str, db):
     """Generate daily challenges for user"""
-    from ..models.game import DailyChallengeTemplate
-    from ..models.user import DailyChallenge
+    from models.game import DailyChallengeTemplate
+    from models.user import DailyChallenge
     
     # Sample challenge templates
     templates = [
