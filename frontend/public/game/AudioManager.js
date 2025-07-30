@@ -53,6 +53,58 @@ window.AudioManager = class AudioManager {
     }
   }
   
+  // Play intro music immediately when game opens
+  playIntroMusic() {
+    if (this.musicDisabled) {
+      console.log('Music is disabled - no intro music will play');
+      return;
+    }
+    
+    const introMusicPath = this.levelMusicMap['intro'];
+    if (!introMusicPath) {
+      console.warn('No intro music configured');
+      return;
+    }
+    
+    console.log(`Starting intro music: ${introMusicPath}`);
+    
+    // Stop any current music
+    this.stopMusic();
+    
+    // Create intro music element
+    const audio = new Audio(introMusicPath);
+    audio.volume = this.musicVolume * this.masterVolume * 0.8; // Slightly quieter for intro
+    audio.loop = true; // Loop intro music
+    
+    // Handle loading and playback
+    audio.addEventListener('canplaythrough', () => {
+      console.log('Intro music ready to play');
+    });
+    
+    audio.addEventListener('error', (e) => {
+      console.error(`Failed to load intro music: ${introMusicPath}`, e);
+    });
+    
+    // Store reference and play
+    this.currentTrack = audio;
+    
+    // Play intro music (modern browsers require user interaction)
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          console.log('Intro music started successfully');
+        })
+        .catch(error => {
+          console.warn('Intro music needs user interaction:', error);
+          // Store for later playback after user interaction
+          document.addEventListener('click', () => {
+            this.resumeMusic();
+          }, { once: true });
+        });
+    }
+  }
+  
   // Play background music for specific level
   playLevelMusic(level) {
     if (this.musicDisabled) {
