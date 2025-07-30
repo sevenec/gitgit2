@@ -48,10 +48,16 @@ const Game = () => {
       const initializeGame = () => {
         console.log('Attempting to initialize game...', { GameEngine: !!window.GameEngine, GameRenderer: !!window.GameRenderer });
         
-        if (window.GameEngine && window.GameRenderer) {
+        if (gameEngineRef.current && gameRendererRef.current) {
           try {
             gameEngineRef.current = new window.GameEngine(canvas, ctx);
             gameRendererRef.current = new window.GameRenderer(canvas, ctx);
+            
+            // Set selected flutterer in game engine
+            if (selectedFlutterer) {
+              gameEngineRef.current.setSelectedFlutterer(selectedFlutterer);
+            }
+            
             console.log('Game initialized successfully');
             startGameLoop();
           } catch (error) {
