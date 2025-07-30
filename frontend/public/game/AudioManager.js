@@ -208,6 +208,28 @@ window.AudioManager = class AudioManager {
     }
   }
   
+  // Stop ALL audio completely - use before starting new music
+  stopAllAudio() {
+    // Stop current tracked music
+    this.stopMusic();
+    
+    // Stop ALL audio elements on the page
+    try {
+      const allAudioElements = document.querySelectorAll('audio');
+      allAudioElements.forEach(audio => {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.volume = 0;
+      });
+      console.log(`🔇 Stopped ALL audio (${allAudioElements.length} elements)`);
+    } catch (e) {
+      console.warn('Error stopping all audio:', e);
+    }
+    
+    // Clear any references
+    this.currentTrack = null;
+  }
+
   // Resume paused music
   resumeMusic() {
     if (this.currentTrack && this.currentTrack.paused) {
