@@ -213,9 +213,16 @@ window.GameEngine = class GameEngine {
     this.gameSpeed = levelConfig.difficulty.gameSpeed;
     this.obstacleSpawnRate = levelConfig.difficulty.obstacleSpawnRate;
     this.powerUpSpawnRate = levelConfig.difficulty.powerUpSpawnRate;
+    this.levelDuration = levelConfig.duration || 45000;
     
     // Initialize background effects based on level theme
     this.initializeLevelEffects(levelConfig);
+    
+    // Play level-specific music
+    if (window.AudioManager) {
+      window.AudioManager.playMusic(this.currentLevel);
+      window.AudioManager.playSound('level_start');
+    }
   }
   
   getLevelConfig(level) {
