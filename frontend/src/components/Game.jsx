@@ -175,10 +175,11 @@ const Game = () => {
           // Make it globally available for game engine and testing
           window.audioManager = audioManagerInstance;
           
-          // 🔇 NO AUTO-PLAYING MUSIC - User must start game first
-          console.log('🔇 AudioManager ready - no auto-play music to prevent overlap issues');
-          
-          // Music will only start when user actually starts playing the game
+          // 🎵 START INTRO MUSIC IMMEDIATELY when app opens!
+          setTimeout(() => {
+            audioManagerInstance.playIntroMusic();
+            console.log('🎼 Intro music started on app open!');
+          }, 1000); // Small delay to ensure full loading
           
           console.log('🎵 AudioManager instantiated and ready with real music + intro!');
         } else {
