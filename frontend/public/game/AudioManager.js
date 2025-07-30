@@ -68,12 +68,12 @@ window.AudioManager = class AudioManager {
       return;
     }
     
-    console.log('🎵 Starting intro music with modern browser support');
+    console.log('🎵 Starting intro music with browser autoplay handling');
     
     // FORCE STOP any existing audio
     this.forceStopAllAudio();
     
-    // Create audio immediately (no delay for intro music)
+    // Create audio immediately
     const audio = new Audio(introMusicPath);
     audio.volume = this.musicVolume * this.masterVolume * 0.7; // Extra quiet for intro
     audio.loop = true;
@@ -88,10 +88,10 @@ window.AudioManager = class AudioManager {
       console.error('❌ Failed to load intro music:', e);
     });
     
-    // Store reference and attempt to play
+    // Store reference
     this.currentTrack = audio;
     
-    // Try to play immediately
+    // Try to play immediately, but handle browser restrictions
     const playPromise = audio.play();
     if (playPromise !== undefined) {
       playPromise
@@ -99,10 +99,36 @@ window.AudioManager = class AudioManager {
           console.log('✅ INTRO MUSIC STARTED SUCCESSFULLY on app open!');
         })
         .catch(error => {
-          console.warn('⚠️ Intro music blocked by browser - needs user interaction:', error);
-          console.log('🎵 Will try to start intro music on first user click');
+          console.warn('⚠️ Intro music blocked by browser - will start on first user click');
+          // Set up one-time click listener to start music
+          this.setupUserInteractionMusic();
         });
     }
+  }
+  
+  // Setup music to start on first user interaction
+  setupUserInteractionMusic() {
+    const startMusicOnClick = () => {
+      if (this.currentTrack && this.currentTrack.paused) {
+        console.log('🎵 Starting intro music on user interaction');
+        this.currentTrack.play()
+          .then(() => {
+            console.log('✅ Intro music started after user interaction!');
+            // Remove the listener since music has started
+            document.removeEventListener('click', startMusicOnClick);
+            document.removeEventListener('touchstart', startMusicOnClick);
+          })
+          .catch(error => {
+            console.error('❌ Still cannot play intro music:', error);
+          });
+      }
+    };
+    
+    // Listen for both click and touch events
+    document.addEventListener('click', startMusicOnClick, { once: true });
+    document.addEventListener('touchstart', startMusicOnClick, { once: true });
+    
+    console.log('🎵 Music will start on first click/touch anywhere on the page');
   }
 
   // Play background music for specific level - ENHANCED OVERLAP PREVENTION
