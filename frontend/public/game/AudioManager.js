@@ -1,4 +1,4 @@
-class AudioManager {
+window.AudioManager = class AudioManager {
   constructor() {
     // Audio configuration with real music files
     this.musicDisabled = false; // Music is now enabled!
