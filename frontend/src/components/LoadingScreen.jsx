@@ -106,12 +106,9 @@ const LoadingScreen = ({ onComplete }) => {
         <div className="mb-6">
           <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
             <div 
-              className="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 rounded-full transition-all duration-300 ease-out relative"
+              className="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 rounded-full transition-all duration-300 ease-out"
               style={{ width: `${progress}%` }}
-            >
-              {/* Shimmer effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
-            </div>
+            />
           </div>
           <div className="flex justify-between text-xs text-gray-400 mt-2">
             <span>0%</span>
