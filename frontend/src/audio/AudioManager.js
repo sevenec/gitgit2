@@ -387,6 +387,44 @@ class AudioManager {
     return this.isMuted;
   }
 
+  // Individual mute/unmute methods for game compatibility
+  mute() {
+    if (!this.isMuted) {
+      this.toggleMute();
+    }
+  }
+
+  unmute() {
+    if (this.isMuted) {
+      this.toggleMute();
+    }
+  }
+
+  // Alias for playSound to match game expectations
+  playSFX(soundName, options = {}) {
+    return this.playSound(soundName, options);
+  }
+
+  // Power-up specific sound method
+  playPowerUpSound(powerUpType = 'default') {
+    const powerUpSounds = {
+      speed: 'speed_boost',
+      shield: 'shield_activate', 
+      blaster: 'blaster_unlock',
+      default: 'power_up_collect'
+    };
+    
+    const soundName = powerUpSounds[powerUpType] || powerUpSounds.default;
+    this.playSound(soundName);
+  }
+
+  // Audio quality setting (for mobile optimization)
+  setAudioQuality(quality) {
+    console.log(`🎼 Audio quality set to: ${quality}`);
+    // In a real implementation, this would adjust audio parameters
+    // For now, we'll just log it since our fallback system is already optimized
+  }
+
   // Resume audio context for auto-play policies
   resumeAudioContext() {
     if (this.audioContext && this.audioContext.state === 'suspended') {
