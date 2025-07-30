@@ -173,19 +173,6 @@ window.AudioManager = class AudioManager {
           });
       }
     }, 300); // Increased delay to 300ms for complete cleanup
-      
-      // Play the music (modern browsers require user interaction)
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            console.log(`✅ Level ${level} music started successfully - NO OVERLAP GUARANTEED`);
-          })
-          .catch(error => {
-            console.warn(`Level ${level} music needs user interaction:`, error);
-          });
-      }
-    }, 250); // Increased delay to 250ms for complete cleanup
   }
   
   // Stop current music with optional fade out - ENHANCED to stop ALL audio
