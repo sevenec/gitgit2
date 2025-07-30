@@ -493,6 +493,7 @@ const Game = () => {
           <p>Built with React & HTML5 Canvas</p>
         </div>
       </div>
+      <Toaster />
     </div>
   );
 };
