@@ -24,6 +24,14 @@ const Game = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [selectedFlutterer, setSelectedFlutterer] = useState(null);
   const [sessionId, setSessionId] = useState(null);
+  const [highScore, setHighScore] = useState(0);
+  const [gameStats, setGameStats] = useState({
+    highScore: 0,
+    maxLevel: 1,
+    enemiesDefeated: 0,
+    totalSurvivalTime: 0,
+    bossDefeats: 0
+  });
   
   // Backend integration hooks
   const { user, loading: userLoading, submitScore, selectFlutterer, unlockFlutterer } = useUser();
