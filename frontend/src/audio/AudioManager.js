@@ -171,7 +171,7 @@ class AudioManager {
   }
   
   createContinuousMusic(track, fadeTime) {
-    // Stop ALL existing music nodes completely
+    // Stop ALL existing music nodes completely to prevent layering
     if (this.currentMusicNodes && this.currentMusicNodes.length > 0) {
       console.log(`🔇 Stopping ${this.currentMusicNodes.length} existing music nodes`);
       this.currentMusicNodes.forEach(node => {
@@ -183,17 +183,21 @@ class AudioManager {
     }
     this.currentMusicNodes = [];
     
-    // Stop any existing melody loops
+    // Stop any existing melody loops completely
     if (this.melodyTimeout) {
       clearTimeout(this.melodyTimeout);
       this.melodyTimeout = null;
     }
+    if (this.melodyInterval) {
+      clearInterval(this.melodyInterval);
+      this.melodyInterval = null;
+    }
     
-    // Create level-specific music with more variation
-    const levelMusic = this.getLevelMusicConfig(track.level || 1);
-    console.log(`🎼 Creating unique music for ${track.name}: ${levelMusic.style}`);
+    // Create level-specific relaxing music with more variation
+    const levelMusic = this.getRelaxingMusicConfig(track.level || 1);
+    console.log(`🎼 Creating relaxing music: ${levelMusic.style} for level ${track.level || 1}`);
     
-    // Create background harmony with level-specific characteristics
+    // Create soft background harmony with level-specific characteristics
     levelMusic.harmony.forEach((freq, index) => {
       const oscillator = this.audioContext.createOscillator();
       const gainNode = this.audioContext.createGain();
@@ -201,11 +205,11 @@ class AudioManager {
       oscillator.connect(gainNode);
       gainNode.connect(this.musicGain);
       
-      oscillator.type = levelMusic.waveType;
+      oscillator.type = 'sine'; // Always use sine wave for soft sound
       oscillator.frequency.value = freq;
       
-      // Gentle volume with slight variation per voice
-      const volume = 0.03 + (index * 0.01); // Reduced from 0.05
+      // Very gentle volume for relaxing ambient sound
+      const volume = 0.015 + (index * 0.005); // Reduced significantly for relaxation
       gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
       gainNode.gain.linearRampToValueAtTime(volume, this.audioContext.currentTime + fadeTime / 1000);
       
@@ -213,11 +217,11 @@ class AudioManager {
       this.currentMusicNodes.push(oscillator);
     });
     
-    // Create varied melody with level-specific pattern
-    this.createVariedMelody(levelMusic, fadeTime);
+    // Create gentle, relaxing melody with level-specific pattern
+    this.createRelaxingMelody(levelMusic, fadeTime);
     
     this.currentMusic = track;
-    console.log(`🎵 Unique music started: ${track.name} (${levelMusic.style})`);
+    console.log(`🎵 Relaxing ambient music started: ${track.name} (${levelMusic.style})`);
   }
   
   getLevelMusicConfig(level) {
