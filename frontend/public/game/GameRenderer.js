@@ -1573,17 +1573,237 @@ window.GameRenderer = class GameRenderer {
   }
   
   drawBasicObstacle(obstacle) {
-    // Fallback rendering for other obstacle types
+    // Enhanced creative rendering for all other obstacle types
+    const time = Date.now() * 0.001;
     const size = Math.min(obstacle.width, obstacle.height) / 2;
     
-    this.ctx.fillStyle = obstacle.color || '#666';
+    // Determine obstacle variant based on position and properties
+    const variant = Math.floor((obstacle.x + obstacle.y) * 0.01) % 4;
+    
+    switch (variant) {
+      case 0: // Crystal Shard
+        this.drawCrystalShard(obstacle, size, time);
+        break;
+      case 1: // Plasma Core
+        this.drawPlasmaCore(obstacle, size, time);
+        break;
+      case 2: // Space Debris
+        this.drawSpaceDebris(obstacle, size, time);
+        break;
+      case 3: // Energy Anomaly  
+        this.drawEnergyAnomaly(obstacle, size, time);
+        break;
+      default:
+        this.drawPlasmaCore(obstacle, size, time);
+    }
+  }
+
+  drawCrystalShard(obstacle, size, time) {
+    // Rotating crystal shard with prismatic effects
+    this.ctx.rotate(obstacle.rotation + time * 0.3);
+    
+    // Main crystal body with sharp edges
+    const crystalGradient = this.ctx.createLinearGradient(-size, -size, size, size);
+    crystalGradient.addColorStop(0, '#4169E1');
+    crystalGradient.addColorStop(0.3, '#00BFFF');
+    crystalGradient.addColorStop(0.7, '#87CEEB');
+    crystalGradient.addColorStop(1, '#E0F6FF');
+    
+    this.ctx.fillStyle = crystalGradient;
+    this.ctx.beginPath();
+    
+    // Create sharp crystal shape
+    const points = 6;
+    for (let i = 0; i < points; i++) {
+      const angle = (i / points) * Math.PI * 2;
+      const sharpness = (i % 2 === 0) ? 1.0 : 0.6; // Alternating sharp/flat
+      const radius = size * sharpness;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+      
+      if (i === 0) {
+        this.ctx.moveTo(x, y);
+      } else {
+        this.ctx.lineTo(x, y);
+      }
+    }
+    this.ctx.closePath();
+    this.ctx.fill();
+    
+    // Crystal edge highlights
+    this.ctx.strokeStyle = '#87CEEB';
+    this.ctx.lineWidth = 2;
+    this.ctx.stroke();
+    
+    // Inner glow
+    this.ctx.fillStyle = `rgba(255, 255, 255, ${0.5 + Math.sin(time * 4) * 0.3})`;
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, size * 0.3, 0, Math.PI * 2);
+    this.ctx.fill();
+  }
+
+  drawPlasmaCore(obstacle, size, time) {
+    // Pulsing plasma core with energy effects
+    const pulseSize = size * (1 + Math.sin(time * 6) * 0.2);
+    
+    // Outer plasma field
+    const plasmaGradient = this.ctx.createRadialGradient(0, 0, 0, 0, 0, pulseSize);
+    plasmaGradient.addColorStop(0, 'rgba(255, 0, 255, 0.9)');
+    plasmaGradient.addColorStop(0.4, 'rgba(138, 43, 226, 0.7)');
+    plasmaGradient.addColorStop(0.8, 'rgba(75, 0, 130, 0.5)');
+    plasmaGradient.addColorStop(1, 'rgba(75, 0, 130, 0.1)');
+    
+    this.ctx.fillStyle = plasmaGradient;
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, pulseSize, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Core sphere
+    this.ctx.fillStyle = '#FF00FF';
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, size * 0.4, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Energy arcs
+    this.ctx.strokeStyle = `rgba(255, 255, 0, ${0.6 + Math.sin(time * 8) * 0.4})`;
+    this.ctx.lineWidth = 3;
+    
+    for (let i = 0; i < 4; i++) {
+      const arcAngle = (i / 4) * Math.PI * 2 + time * 2;
+      const startRadius = size * 0.5;
+      const endRadius = size * 0.8;
+      
+      const startX = Math.cos(arcAngle) * startRadius;
+      const startY = Math.sin(arcAngle) * startRadius;
+      const endX = Math.cos(arcAngle) * endRadius;
+      const endY = Math.sin(arcAngle) * endRadius;
+      
+      this.ctx.beginPath();
+      this.ctx.moveTo(startX, startY);
+      this.ctx.quadraticCurveTo(
+        startX * 1.5 + Math.sin(time * 5 + i) * 10,
+        startY * 1.5 + Math.cos(time * 5 + i) * 10,
+        endX, endY
+      );
+      this.ctx.stroke();
+    }
+  }
+
+  drawSpaceDebris(obstacle, size, time) {
+    // Metallic space debris with dynamic pieces
+    this.ctx.rotate(obstacle.rotation);
+    
+    // Main debris body
+    const debrisGradient = this.ctx.createLinearGradient(-size, -size, size, size);
+    debrisGradient.addColorStop(0, '#2F4F4F');
+    debrisGradient.addColorStop(0.3, '#696969');
+    debrisGradient.addColorStop(0.7, '#A9A9A9');
+    debrisGradient.addColorStop(1, '#C0C0C0');
+    
+    this.ctx.fillStyle = debrisGradient;
+    
+    // Irregular debris shape
+    this.ctx.beginPath();
+    const debrisPoints = 7;
+    for (let i = 0; i < debrisPoints; i++) {
+      const angle = (i / debrisPoints) * Math.PI * 2;
+      const variance = 0.6 + Math.sin(angle * 4 + time) * 0.4;
+      const radius = size * variance;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+      
+      if (i === 0) {
+        this.ctx.moveTo(x, y);
+      } else {
+        this.ctx.lineTo(x, y);
+      }
+    }
+    this.ctx.closePath();
+    this.ctx.fill();
+    
+    // Metallic scratches and details
+    this.ctx.strokeStyle = '#FFD700';
+    this.ctx.lineWidth = 1;
+    for (let i = 0; i < 3; i++) {
+      const scratchAngle = (i / 3) * Math.PI * 2 + time * 0.1;
+      const scratchLength = size * 0.6;
+      
+      this.ctx.beginPath();
+      this.ctx.moveTo(
+        Math.cos(scratchAngle) * -scratchLength * 0.5,
+        Math.sin(scratchAngle) * -scratchLength * 0.5
+      );
+      this.ctx.lineTo(
+        Math.cos(scratchAngle) * scratchLength * 0.5,
+        Math.sin(scratchAngle) * scratchLength * 0.5
+      );
+      this.ctx.stroke();
+    }
+    
+    // Warning lights
+    this.ctx.fillStyle = `rgba(255, 0, 0, ${0.5 + Math.sin(time * 10) * 0.5})`;
+    this.ctx.beginPath();
+    this.ctx.arc(size * 0.3, size * 0.3, 2, 0, Math.PI * 2);
+    this.ctx.fill();
+  }
+
+  drawEnergyAnomaly(obstacle, size, time) {
+    // Swirling energy anomaly with particle effects
+    const swirl = time * 3;
+    
+    // Background energy field
+    const anomalyGradient = this.ctx.createRadialGradient(0, 0, 0, 0, 0, size);
+    anomalyGradient.addColorStop(0, 'rgba(0, 255, 255, 0.8)');
+    anomalyGradient.addColorStop(0.5, 'rgba(0, 191, 255, 0.6)');
+    anomalyGradient.addColorStop(1, 'rgba(0, 100, 200, 0.2)');
+    
+    this.ctx.fillStyle = anomalyGradient;
     this.ctx.beginPath();
     this.ctx.arc(0, 0, size, 0, Math.PI * 2);
     this.ctx.fill();
     
-    this.ctx.strokeStyle = '#999';
+    // Swirling energy streams
+    this.ctx.strokeStyle = `rgba(0, 255, 255, ${0.7 + Math.sin(time * 6) * 0.3})`;
     this.ctx.lineWidth = 2;
-    this.ctx.stroke();
+    
+    for (let i = 0; i < 5; i++) {
+      const streamAngle = swirl + (i / 5) * Math.PI * 2;
+      const spiral = 4; // Number of spiral arms
+      
+      this.ctx.beginPath();
+      for (let t = 0; t < Math.PI * 2; t += 0.2) {
+        const r = (size * 0.8) * (1 - t / (Math.PI * 2));
+        const a = streamAngle + t * spiral;
+        const x = Math.cos(a) * r;
+        const y = Math.sin(a) * r;
+        
+        if (t === 0) {
+          this.ctx.moveTo(x, y);
+        } else {
+          this.ctx.lineTo(x, y);
+        }
+      }
+      this.ctx.stroke();
+    }
+    
+    // Central anomaly core
+    this.ctx.fillStyle = `rgba(255, 255, 255, ${0.8 + Math.sin(time * 12) * 0.2})`;
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, size * 0.2, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Particle effects around anomaly
+    for (let i = 0; i < 6; i++) {
+      const particleAngle = time * 4 + (i / 6) * Math.PI * 2;
+      const particleRadius = size * 0.6 + Math.sin(time * 8 + i) * size * 0.2;
+      const particleX = Math.cos(particleAngle) * particleRadius;
+      const particleY = Math.sin(particleAngle) * particleRadius;
+      
+      this.ctx.fillStyle = `rgba(255, 255, 0, ${0.6 + Math.sin(time * 10 + i) * 0.4})`;
+      this.ctx.beginPath();
+      this.ctx.arc(particleX, particleY, 1.5, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
   }
   
   drawPowerUp(powerUp) {
