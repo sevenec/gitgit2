@@ -115,7 +115,7 @@ window.AudioManager = class AudioManager {
   // Play background music for specific level - ENHANCED OVERLAP PREVENTION
   playLevelMusic(level) {
     if (this.musicDisabled) {
-      console.log('🔇 ALL AUDIO DISABLED - No level music will play (prevents overlap issues)');
+      console.log('🔇 Music disabled - no level music');
       return;
     }
     
