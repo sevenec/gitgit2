@@ -1,17 +1,23 @@
 window.AudioManager = class AudioManager {
   constructor() {
     // BALANCED AUDIO: Music enabled, annoying SFX disabled
-    this.musicDisabled = false; // MUSIC ENABLED - but with overlap prevention
+    this.musicDisabled = false; // MUSIC ENABLED - but with single audio element
     this.sfxDisabled = true; // SOUND EFFECTS DISABLED - too annoying
     this.musicVolume = 0.25; // Quiet background music
     this.sfxVolume = 0.0; // No sound effects
     this.masterVolume = 0.6; // Moderate master volume
     
+    // SINGLE PERSISTENT AUDIO ELEMENT - the key to preventing overlap!
+    this.audioElement = new Audio();
+    this.audioElement.volume = this.musicVolume * this.masterVolume;
+    this.audioElement.loop = true;
+    this.audioElement.preload = 'auto';
+    
+    // Track current playing track for reference
+    this.currentTrackPath = null;
+    
     // Audio context for advanced audio features
     this.audioContext = null;
-    this.musicTracks = new Map(); // Store loaded music tracks
-    this.currentTrack = null;
-    this.fadeTimeout = null;
     
     // COMPLETE LEVEL MUSIC MAPPING - 15 UNIQUE TRACKS + INTRO (ZERO REPETITION!)
     this.levelMusicMap = {
