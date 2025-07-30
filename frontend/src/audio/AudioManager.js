@@ -366,54 +366,71 @@ class AudioManager {
   }
 
   createOrchestralHarmony(config) {
-    // Create rich orchestral harmony using multiple oscillator types
-    config.harmony.forEach((freq, index) => {
-      // String section simulation
-      const stringOsc = this.audioContext.createOscillator();
-      const stringGain = this.audioContext.createGain();
-      const stringFilter = this.audioContext.createBiquadFilter();
-      
-      // Use sawtooth for rich harmonic content
-      stringOsc.type = 'sawtooth';
-      stringOsc.frequency.value = freq;
-      
-      // Low-pass filter for orchestral warmth
-      stringFilter.type = 'lowpass';
-      stringFilter.frequency.value = 2000 - (index * 200);
-      stringFilter.Q.value = 1;
-      
-      stringOsc.connect(stringFilter);
-      stringFilter.connect(stringGain);
-      stringGain.connect(this.musicGain);
-      
-      // Subtle volume for orchestral blend
-      stringGain.gain.value = 0.015 + (index * 0.005);
-      
-      stringOsc.start();
-      this.currentMusicNodes.push(stringOsc);
-      
-      // Add bassline for foundation
-      if (config.bassline && config.bassline[index]) {
-        const bassOsc = this.audioContext.createOscillator();
-        const bassGain = this.audioContext.createGain();
-        const bassFilter = this.audioContext.createBiquadFilter();
-        
-        bassOsc.type = 'sine';
-        bassOsc.frequency.value = config.bassline[index];
-        
-        bassFilter.type = 'lowpass';
-        bassFilter.frequency.value = 300;
-        
-        bassOsc.connect(bassFilter);
-        bassFilter.connect(bassGain);
-        bassGain.connect(this.musicGain);
-        
-        bassGain.gain.value = 0.02;
-        
-        bassOsc.start();
-        this.currentMusicNodes.push(bassOsc);
+    try {
+      if (!config || !config.harmony || !Array.isArray(config.harmony)) {
+        console.warn('⚠️ Invalid harmony config, skipping orchestral harmony');
+        return;
       }
-    });
+
+      console.log(`🎼 Creating orchestral harmony with ${config.harmony.length} voices`);
+      
+      // Create rich orchestral harmony using multiple oscillator types
+      config.harmony.forEach((freq, index) => {
+        try {
+          // String section simulation
+          const stringOsc = this.audioContext.createOscillator();
+          const stringGain = this.audioContext.createGain();
+          const stringFilter = this.audioContext.createBiquadFilter();
+          
+          // Use sawtooth for rich harmonic content
+          stringOsc.type = 'sawtooth';
+          stringOsc.frequency.value = freq;
+          
+          // Low-pass filter for orchestral warmth
+          stringFilter.type = 'lowpass';
+          stringFilter.frequency.value = 2000 - (index * 200);
+          stringFilter.Q.value = 1;
+          
+          stringOsc.connect(stringFilter);
+          stringFilter.connect(stringGain);
+          stringGain.connect(this.musicGain);
+          
+          // Subtle volume for orchestral blend
+          stringGain.gain.value = 0.015 + (index * 0.005);
+          
+          stringOsc.start();
+          this.currentMusicNodes.push(stringOsc);
+          
+          // Add bassline for foundation
+          if (config.bassline && config.bassline[index]) {
+            const bassOsc = this.audioContext.createOscillator();
+            const bassGain = this.audioContext.createGain();
+            const bassFilter = this.audioContext.createBiquadFilter();
+            
+            bassOsc.type = 'sine';
+            bassOsc.frequency.value = config.bassline[index];
+            
+            bassFilter.type = 'lowpass';
+            bassFilter.frequency.value = 300;
+            
+            bassOsc.connect(bassFilter);
+            bassFilter.connect(bassGain);
+            bassGain.connect(this.musicGain);
+            
+            bassGain.gain.value = 0.02;
+            
+            bassOsc.start();
+            this.currentMusicNodes.push(bassOsc);
+          }
+        } catch (error) {
+          console.warn(`⚠️ Error creating oscillator at index ${index}:`, error);
+        }
+      });
+      
+      console.log(`✅ Orchestral harmony created with ${this.currentMusicNodes.length} active nodes`);
+    } catch (error) {
+      console.error('❌ Critical error in createOrchestralHarmony:', error);
+    }
   }
 
   createElectronicPad(config) {
