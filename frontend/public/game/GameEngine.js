@@ -239,9 +239,9 @@ window.GameEngine = class GameEngine {
         duration: 35000 // Shorter for faster progression
       },
       2: { 
-        difficulty: { gameSpeed: 2.5, obstacleSpawnRate: 0.028, powerUpSpawnRate: 0.013 },
+        difficulty: { gameSpeed: 3.6, obstacleSpawnRate: 0.030, powerUpSpawnRate: 0.013 },
         theme: 'aurora',
-        duration: 38000
+        duration: 35000
       },
       3: { 
         difficulty: { gameSpeed: 2.8, obstacleSpawnRate: 0.032, powerUpSpawnRate: 0.014 },
