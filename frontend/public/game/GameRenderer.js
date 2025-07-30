@@ -126,6 +126,8 @@ window.GameRenderer = class GameRenderer {
     this.ctx.font = 'bold 48px Arial';
     this.ctx.fillText(timeLeft.toString(), this.canvas.width / 2, this.canvas.height / 2 + 80);
   }
+  
+  renderBackground(level) {
     // Create gradient based on level
     let gradient;
     
