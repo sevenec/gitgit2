@@ -270,95 +270,119 @@ class AudioManager {
         name: 'Cosmic Welcome',
         mood: 'ambient_welcome',
         key: 'C',
-        harmony: [261.63, 329.63, 392.00], // C4, E4, G4 - C Major
-        bassline: [130.81, 164.81, 196.00], // C3, E3, G3
-        melody: [523.25, 659.25, 783.99, 659.25, 523.25, 392.00, 329.63],
-        tempo: 1500,
-        atmosphere: 'ambient',
+        // Rich cinematic chord progression: C - Am - F - G
+        harmony: [261.63, 329.63, 392.00], // C Major chord
+        secondaryHarmony: [220.00, 261.63, 329.63], // A Minor chord  
+        tertiaryHarmony: [174.61, 220.00, 261.63], // F Major chord
+        bassline: [130.81, 110.00, 87.31, 98.00], // C - A - F - G bass progression
+        melody: [523.25, 587.33, 659.25, 698.46, 783.99, 659.25, 523.25],
+        tempo: 1800,
+        atmosphere: 'cinematic_ambient',
         hasRhythm: false,
+        hasArpeggio: true,
         electronic: true
       },
       1: { 
         name: 'Starry Awakening',
-        mood: 'upbeat_orchestral',
+        mood: 'epic_adventure',
         key: 'C',
-        harmony: [261.63, 329.63, 392.00], // C4, E4, G4 - C Major
-        bassline: [130.81, 164.81, 196.00], // C3, E3, G3
-        melody: [523.25, 659.25, 783.99, 659.25, 523.25, 392.00, 329.63],
-        tempo: 1200,
-        atmosphere: 'bright',
+        // Epic progression: C - G - Am - F (I-V-vi-IV)
+        harmony: [261.63, 329.63, 392.00], // C Major
+        secondaryHarmony: [196.00, 246.94, 293.66], // G Major
+        tertiaryHarmony: [220.00, 261.63, 329.63], // A Minor
+        quaternaryHarmony: [174.61, 220.00, 261.63], // F Major
+        bassline: [130.81, 98.00, 110.00, 87.31], // C - G - A - F
+        melody: [523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 783.99, 659.25],
+        counterMelody: [392.00, 440.00, 493.88, 523.25, 440.00, 392.00],
+        tempo: 1000,
+        atmosphere: 'heroic_bright',
         hasRhythm: true,
+        hasArpeggio: true,
+        hasCounterMelody: true,
         electronic: true
       },
       2: { 
         name: 'Aurora Dance',
         mood: 'energetic_electronic',
         key: 'D',
-        harmony: [293.66, 369.99, 440.00], // D4, F#4, A4 - D Major
-        bassline: [146.83, 185.00, 220.00],
-        melody: [587.33, 739.99, 880.00, 739.99, 587.33, 440.00, 369.99],
-        tempo: 1000,
-        atmosphere: 'energetic',
+        // Energetic progression: D - Bm - G - A
+        harmony: [293.66, 369.99, 440.00], // D Major
+        secondaryHarmony: [246.94, 293.66, 369.99], // B Minor
+        tertiaryHarmony: [196.00, 246.94, 293.66], // G Major
+        quaternaryHarmony: [220.00, 277.18, 329.63], // A Major
+        bassline: [146.83, 123.47, 98.00, 110.00],
+        melody: [587.33, 659.25, 739.99, 830.61, 880.00, 783.99, 659.25, 587.33],
+        counterMelody: [440.00, 493.88, 554.37, 587.33, 523.25, 440.00],
+        tempo: 800,
+        atmosphere: 'electronic_dance',
         hasRhythm: true,
-        electronic: true
-      },
-      3: { 
-        name: 'Nebula Drift',
-        mood: 'ambient_wonder',
-        key: 'Am',
-        harmony: [220.00, 261.63, 329.63], // A3, C4, E4 - A Minor
-        bassline: [110.00, 130.81, 164.81],
-        melody: [440.00, 523.25, 659.25, 523.25, 440.00, 329.63, 261.63],
-        tempo: 1800,
-        atmosphere: 'mysterious',
-        hasRhythm: false,
+        hasArpeggio: true,
+        hasCounterMelody: true,
         electronic: true
       },
       10: {
         name: 'Void Tension',
-        mood: 'tense_void',
-        key: 'Fm',
-        harmony: [174.61, 220.00, 277.18], // F3, A3, C#4 - F Minor
-        bassline: [87.31, 110.00, 138.59],
-        melody: [349.23, 440.00, 554.37, 440.00, 349.23, 277.18, 220.00],
-        tempo: 2000,
-        atmosphere: 'tense',
+        mood: 'dark_cinematic',
+        key: 'Dm',
+        // Dark progression: Dm - Bb - F - C
+        harmony: [146.83, 185.00, 220.00], // D Minor
+        secondaryHarmony: [116.54, 146.83, 174.61], // Bb Major
+        tertiaryHarmony: [174.61, 220.00, 261.63], // F Major
+        quaternaryHarmony: [130.81, 164.81, 196.00], // C Major
+        bassline: [73.42, 58.27, 87.31, 65.41],
+        melody: [293.66, 349.23, 392.00, 440.00, 466.16, 392.00, 349.23, 293.66],
+        counterMelody: [220.00, 246.94, 277.18, 293.66, 261.63, 220.00],
+        tempo: 1400,
+        atmosphere: 'dark_tension',
         hasRhythm: false,
+        hasArpeggio: true,
+        hasCounterMelody: true,
         electronic: true
       },
       15: {
         name: 'Mother Insect Battle',
-        mood: 'epic_boss_battle',
+        mood: 'epic_boss_orchestral',
         key: 'Dm',
-        harmony: [146.83, 174.61, 220.00], // D3, F3, A3 - D Minor
-        bassline: [73.42, 87.31, 110.00],
-        melody: [293.66, 349.23, 440.00, 523.25, 440.00, 349.23, 293.66],
-        tempo: 800,
-        atmosphere: 'epic',
+        // Epic boss progression: Dm - Gm - A - Dm
+        harmony: [146.83, 185.00, 220.00], // D Minor
+        secondaryHarmony: [98.00, 116.54, 146.83], // G Minor
+        tertiaryHarmony: [110.00, 138.59, 164.81], // A Major
+        quaternaryHarmony: [146.83, 185.00, 220.00], // D Minor (return)
+        bassline: [73.42, 49.00, 55.00, 73.42],
+        melody: [293.66, 349.23, 415.30, 466.16, 523.25, 587.33, 523.25, 466.16],
+        counterMelody: [220.00, 261.63, 311.13, 349.23, 392.00, 349.23, 293.66],
+        epicHarmony: [587.33, 698.46, 830.61], // High octave power chords
+        tempo: 600,
+        atmosphere: 'epic_orchestral',
         hasRhythm: true,
+        hasArpeggio: true,
+        hasCounterMelody: true,
+        hasEpicLayer: true,
         electronic: true
       }
     };
     
-    // Enterprise-grade fallback system
+    // Professional fallback system
     const defaultConfig = {
-      name: 'Cosmic Default',
-      mood: 'ambient_safe',
+      name: 'Professional Default',
+      mood: 'cinematic_safe',
       key: 'C',
       harmony: [261.63, 329.63, 392.00],
-      bassline: [130.81, 164.81, 196.00],
-      melody: [523.25, 659.25, 783.99],
-      tempo: 1500,
-      atmosphere: 'ambient',
-      hasRhythm: false,
+      secondaryHarmony: [220.00, 261.63, 329.63],
+      bassline: [130.81, 110.00],
+      melody: [523.25, 587.33, 659.25, 523.25],
+      tempo: 1200,
+      atmosphere: 'professional',
+      hasRhythm: true,
+      hasArpeggio: true,
       electronic: true
     };
     
     const config = configs[level] || configs[Math.min(Math.max(level, 1), 15)] || defaultConfig;
     
-    // Validate config integrity
+    // Validate all harmonic content
     if (!config.harmony || !config.bassline || !config.melody) {
-      console.warn(`⚠️ Invalid music config for level ${level}, using default`);
+      console.warn(`⚠️ Invalid music config for level ${level}, using professional default`);
       return defaultConfig;
     }
     
