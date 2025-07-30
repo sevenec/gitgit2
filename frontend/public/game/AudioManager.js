@@ -300,14 +300,15 @@ window.AudioManager = class AudioManager {
     console.log(`Master volume set to ${this.masterVolume}`);
   }
   
-  // Toggle music on/off
+  // Toggle music on/off - ENHANCED with proper mute/unmute
   toggleMusic() {
     this.musicDisabled = !this.musicDisabled;
     if (this.musicDisabled) {
-      this.stopMusic();
-      console.log('Music disabled');
+      this.mute();
+      console.log('🔇 Music disabled via toggle');
     } else {
-      console.log('Music enabled');
+      this.unmute();
+      console.log('🔊 Music enabled via toggle');
     }
     return !this.musicDisabled;
   }
