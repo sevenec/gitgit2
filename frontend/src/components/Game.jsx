@@ -178,6 +178,19 @@ const Game = () => {
     }
   };
 
+  const handleFluttererSelect = (flutterer) => {
+    setSelectedFlutterer(flutterer);
+    if (gameEngineRef.current) {
+      gameEngineRef.current.setSelectedFlutterer(flutterer);
+    }
+  };
+  
+  const handlePurchase = (item) => {
+    // In a real implementation, this would handle IAP
+    console.log('Purchase requested for:', item);
+    alert(`Purchase feature coming soon! Item: ${item.name || item.id}`);
+  };
+  
   const toggleMute = () => {
     setIsMuted(!isMuted);
     // In a full implementation, this would control game audio
