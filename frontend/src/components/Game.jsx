@@ -239,12 +239,14 @@ const Game = () => {
   const handleTutorialComplete = () => {
     localStorage.setItem('butterflyTutorialCompleted', 'true');
     setShowTutorial(false);
+    setGameState('playing'); // Set game state to playing to trigger initialization
     startActualGame();
   };
 
   const handleTutorialSkip = () => {
     localStorage.setItem('butterflyTutorialCompleted', 'true');
     setShowTutorial(false);
+    setGameState('playing'); // Set game state to playing to trigger initialization
     startActualGame();
   };
 
