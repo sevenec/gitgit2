@@ -240,6 +240,92 @@ const OpeningScreen = ({ onStartGame, onShowTutorial, onOpenFluttererSelector, o
         </div>
       </div>
 
+      {/* Daily Challenges Modal */}
+      {showDailyChallenges && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <Card className="bg-gradient-to-br from-green-900/90 to-emerald-800/90 border-green-400 p-6 max-w-md mx-4 backdrop-blur-sm">
+            <h2 className="text-2xl font-bold text-green-200 mb-4 flex items-center">
+              <Calendar className="mr-2" size={24} />
+              Daily Challenges
+            </h2>
+            <div className="space-y-3 text-green-100">
+              <div className="flex items-center justify-between p-3 bg-green-800/30 rounded-lg">
+                <span>Complete Level 3</span>
+                <Badge className="bg-green-600">50 Coins</Badge>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-green-800/30 rounded-lg">
+                <span>Collect 10 Power-ups</span>
+                <Badge className="bg-green-600">30 Coins</Badge>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-green-800/30 rounded-lg">
+                <span>Survive 5 Minutes</span>
+                <Badge className="bg-green-600">100 Coins</Badge>
+              </div>
+            </div>
+            <div className="mt-6 text-center">
+              <p className="text-green-200 text-sm mb-3">Play more to unlock daily challenges!</p>
+              <Button
+                onClick={() => setShowDailyChallenges(false)}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                Close
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* Leaderboard Modal */}
+      {showLeaderboard && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <Card className="bg-gradient-to-br from-yellow-900/90 to-amber-800/90 border-yellow-400 p-6 max-w-md mx-4 backdrop-blur-sm">
+            <h2 className="text-2xl font-bold text-yellow-200 mb-4 flex items-center">
+              <Trophy className="mr-2" size={24} />
+              Cosmic Ranks
+            </h2>
+            <div className="space-y-2 text-yellow-100">
+              <div className="flex items-center justify-between p-3 bg-yellow-800/30 rounded-lg">
+                <div className="flex items-center">
+                  <span className="text-yellow-400 font-bold mr-2">1.</span>
+                  <span>CosmicPilot</span>
+                </div>
+                <span className="text-yellow-200">245,750</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-yellow-800/30 rounded-lg">
+                <div className="flex items-center">
+                  <span className="text-gray-300 font-bold mr-2">2.</span>
+                  <span>StarNavigator</span>
+                </div>
+                <span className="text-yellow-200">198,230</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-yellow-800/30 rounded-lg">
+                <div className="flex items-center">
+                  <span className="text-amber-600 font-bold mr-2">3.</span>
+                  <span>NebulaExplorer</span>
+                </div>
+                <span className="text-yellow-200">156,890</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-yellow-800/20 rounded-lg border border-yellow-500">
+                <div className="flex items-center">
+                  <span className="text-yellow-300 font-bold mr-2">--</span>
+                  <span>You</span>
+                </div>
+                <span className="text-yellow-200">{gameStats?.highScore || 0}</span>
+              </div>
+            </div>
+            <div className="mt-6 text-center">
+              <p className="text-yellow-200 text-sm mb-3">Play more to climb the cosmic ranks!</p>
+              <Button
+                onClick={() => setShowLeaderboard(false)}
+                className="bg-yellow-600 hover:bg-yellow-700"
+              >
+                Close
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
+
       {/* Custom CSS for animations */}
       <style jsx>{`
         @keyframes float {
