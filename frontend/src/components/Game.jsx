@@ -386,8 +386,13 @@ const Game = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-900 via-purple-900 to-pink-900 flex flex-col items-center justify-center p-4">
+      {/* Loading Screen */}
+      {showLoadingScreen && (
+        <LoadingScreen onComplete={handleLoadingComplete} />
+      )}
+
       {/* Opening Screen */}
-      {showOpeningScreen && (
+      {showOpeningScreen && !showLoadingScreen && (
         <OpeningScreen
           onStartGame={handleStartGame}
           onShowTutorial={handleShowTutorial}
@@ -398,7 +403,7 @@ const Game = () => {
       )}
 
       {/* Tutorial Screen */}
-      {showTutorial && !showOpeningScreen && (
+      {showTutorial && !showOpeningScreen && !showLoadingScreen && (
         <TutorialScreen
           onComplete={handleTutorialComplete}
           onSkip={handleTutorialSkip}
@@ -406,7 +411,7 @@ const Game = () => {
       )}
 
       {/* Game Screen */}
-      {!showOpeningScreen && !showTutorial && (
+      {!showOpeningScreen && !showTutorial && !showLoadingScreen && (
         <div className="w-full max-w-md">
           {/* Game Header */}
           <Card className="mb-4 p-4 bg-black/30 backdrop-blur-sm border-purple-500/50">
