@@ -1152,10 +1152,10 @@ window.GameEngine = class GameEngine {
           this.obstacles.splice(oIndex, 1);
           this.projectiles.splice(pIndex, 1);
           
-          // Play sound effect
+          // Play explosion sound effect
           try {
-            if (window.audioManager) {
-              window.audioManager.playSound('enemy_explosion');
+            if (window.AudioManager) {
+              window.AudioManager.playSound('explosion', { volume: 0.8 });
             }
           } catch (error) {
             console.warn('Audio error:', error);
