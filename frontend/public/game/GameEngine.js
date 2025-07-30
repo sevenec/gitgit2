@@ -785,6 +785,7 @@ window.GameEngine = class GameEngine {
       case 'speed':
         this.player.speedBoost = true;
         this.player.speedBoostTime = 5000;
+        this.player.speed = this.player.baseSpeed * 1.5;
         break;
       case 'shield':
         this.player.hasShield = true;
@@ -800,7 +801,43 @@ window.GameEngine = class GameEngine {
     }
     
     this.score += 50;
-    this.createParticles(powerUp.x, powerUp.y, '#FFD700');
+  }
+  
+  createPowerUpEffect(x, y, type) {
+    // Enhanced power-up collection effect
+    const colors = {
+      'speed': '#00FF00',
+      'shield': '#00FFFF', 
+      'blaster': '#FF4500',
+      'health': '#FF69B4'
+    };
+    
+    // Create sparkle burst
+    for (let i = 0; i < 8; i++) {
+      this.particles.push({
+        x: x + (Math.random() - 0.5) * 20,
+        y: y + (Math.random() - 0.5) * 20,
+        vx: (Math.random() - 0.5) * 8,
+        vy: (Math.random() - 0.5) * 8,
+        color: colors[type] || '#FFD700',
+        life: 1000,
+        maxLife: 1000,
+        alpha: 1,
+        size: 3 + Math.random() * 3
+      });
+    }
+    
+    // Add special effect
+    this.specialEffects.push({
+      type: 'power_up_collect',
+      x: x,
+      y: y,
+      scale: 1,
+      life: 1000,
+      maxLife: 1000,
+      alpha: 1,
+      color: colors[type] || '#FFD700'
+    });
   }
   
   createExplosion(x, y) {
