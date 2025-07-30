@@ -201,14 +201,15 @@ window.GameRenderer = class GameRenderer {
   }
   
   renderGame(gameEngine) {
-    // Render player
+    // Render player with flutterer customization
     if (gameEngine.player) {
-      this.drawButterfly(
+      this.drawFlutterer(
         gameEngine.player.x, 
         gameEngine.player.y, 
         0,
         1,
-        gameEngine.player.hasShield
+        gameEngine.player.hasShield,
+        gameEngine.selectedFlutterer
       );
     }
     
@@ -216,6 +217,10 @@ window.GameRenderer = class GameRenderer {
     gameEngine.obstacles.forEach(obstacle => {
       if (obstacle.type === 'boss_projectile') {
         this.drawBossProjectile(obstacle);
+      } else if (obstacle.type === 'boss_homing') {
+        this.drawHomingProjectile(obstacle);
+      } else if (obstacle.type === 'rage_beam') {
+        this.drawRageBeam(obstacle);
       } else {
         this.drawObstacle(obstacle);
       }
@@ -226,24 +231,205 @@ window.GameRenderer = class GameRenderer {
       this.drawPowerUp(powerUp);
     });
     
-    // Render particles
+    // Render player projectiles
+    gameEngine.projectiles.forEach(projectile => {
+      if (projectile.type === 'player') {
+        this.drawPlayerProjectile(projectile);
+      }
+    });
+    
+    // Render particles with enhanced effects
     gameEngine.particles.forEach(particle => {
       this.ctx.globalAlpha = particle.alpha;
       this.ctx.fillStyle = particle.color;
       this.ctx.beginPath();
-      this.ctx.arc(particle.x, particle.y, 3, 0, Math.PI * 2);
+      this.ctx.arc(particle.x, particle.y, particle.size || 3, 0, Math.PI * 2);
       this.ctx.fill();
     });
     
     this.ctx.globalAlpha = 1;
     
+    // Render special effects
+    this.renderSpecialEffects(gameEngine.specialEffects);
+    
     // Render boss
     if (gameEngine.boss) {
-      this.drawBoss(gameEngine.boss);
+      this.drawEnhancedBoss(gameEngine.boss);
     }
     
     // Render UI
     this.renderUI(gameEngine);
+  }
+  
+  drawFlutterer(x, y, rotation, scale = 1, hasShield = false, flutterer = null) {
+    this.ctx.save();
+    this.ctx.translate(x, y);
+    this.ctx.rotate(rotation);
+    this.ctx.scale(scale, scale);
+    
+    // Use flutterer colors if available
+    const colors = flutterer?.colors || {
+      body: '#8B4513',
+      wing1: '#FF6B9D',
+      wing2: '#FF8FA3',
+      accent: '#FFFFFF'
+    };
+    
+    // Shield effect
+    if (hasShield) {
+      this.ctx.strokeStyle = '#00FFFF';
+      this.ctx.lineWidth = 3;
+      this.ctx.beginPath();
+      this.ctx.arc(0, 0, 25, 0, Math.PI * 2);
+      this.ctx.stroke();
+    }
+    
+    // Legendary glow effect
+    if (flutterer?.rarity === 'legendary' && flutterer.colors.glow) {
+      this.ctx.shadowColor = flutterer.colors.glow;
+      this.ctx.shadowBlur = 15;
+    }
+    
+    // Butterfly body
+    this.ctx.fillStyle = colors.body;
+    this.ctx.fillRect(-2, -15, 4, 30);
+    
+    // Wings with rarity-based effects
+    this.ctx.fillStyle = colors.wing1;
+    
+    // Upper wings
+    this.ctx.beginPath();
+    this.ctx.ellipse(-10, -8, 8, 12, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.beginPath();
+    this.ctx.ellipse(10, -8, 8, 12, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Lower wings
+    this.ctx.fillStyle = colors.wing2;
+    this.ctx.beginPath();
+    this.ctx.ellipse(-8, 5, 6, 8, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.beginPath();
+    this.ctx.ellipse(8, 5, 6, 8, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Wing patterns
+    this.ctx.fillStyle = colors.accent;
+    this.ctx.beginPath();
+    this.ctx.arc(-10, -8, 3, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.beginPath();
+    this.ctx.arc(10, -8, 3, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Reset shadow
+    this.ctx.shadowBlur = 0;
+    
+    this.ctx.restore();
+  }
+  
+  drawPlayerProjectile(projectile) {
+    this.ctx.save();
+    this.ctx.translate(projectile.x, projectile.y);
+    
+    this.ctx.fillStyle = projectile.color;
+    this.ctx.shadowColor = projectile.color;
+    this.ctx.shadowBlur = 8;
+    
+    this.ctx.beginPath();
+    this.ctx.ellipse(0, 0, projectile.width/2, projectile.height/2, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.restore();
+  }
+  
+  drawHomingProjectile(obstacle) {
+    this.ctx.save();
+    this.ctx.translate(obstacle.x, obstacle.y);
+    this.ctx.rotate(obstacle.rotation);
+    
+    // Pulsing effect for homing projectiles
+    const pulseScale = 1 + Math.sin(Date.now() * 0.01) * 0.2;
+    this.ctx.scale(pulseScale, pulseScale);
+    
+    this.ctx.fillStyle = obstacle.color;
+    this.ctx.shadowColor = obstacle.color;
+    this.ctx.shadowBlur = 12;
+    
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, obstacle.width / 2, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.restore();
+  }
+  
+  drawRageBeam(obstacle) {
+    this.ctx.save();
+    
+    this.ctx.fillStyle = obstacle.color;
+    this.ctx.globalAlpha = 0.8;
+    this.ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+    
+    // Add crackling energy effect
+    this.ctx.strokeStyle = '#FFFFFF';
+    this.ctx.lineWidth = 2;
+    this.ctx.globalAlpha = 0.6;
+    
+    for (let i = 0; i < 5; i++) {
+      const y = obstacle.y + (i * obstacle.height / 5);
+      this.ctx.beginPath();
+      this.ctx.moveTo(obstacle.x, y);
+      this.ctx.lineTo(obstacle.x + obstacle.width, y + (Math.random() - 0.5) * 20);
+      this.ctx.stroke();
+    }
+    
+    this.ctx.restore();
+  }
+  
+  renderSpecialEffects(effects) {
+    effects.forEach(effect => {
+      this.ctx.save();
+      this.ctx.globalAlpha = effect.alpha;
+      
+      switch (effect.type) {
+        case 'power_up_collect':
+          this.ctx.translate(effect.x, effect.y);
+          this.ctx.scale(effect.scale, effect.scale);
+          this.ctx.fillStyle = effect.color;
+          this.ctx.font = 'bold 16px Arial';
+          this.ctx.textAlign = 'center';
+          this.ctx.fillText('+50', 0, 0);
+          break;
+          
+        case 'explosion':
+          this.ctx.translate(effect.x, effect.y);
+          this.ctx.scale(effect.scale, effect.scale);
+          this.ctx.fillStyle = '#FF6600';
+          this.ctx.beginPath();
+          this.ctx.arc(0, 0, 20, 0, Math.PI * 2);
+          this.ctx.fill();
+          break;
+          
+        case 'beam_warning':
+          this.ctx.fillStyle = effect.color;
+          this.ctx.globalAlpha = 0.3;
+          this.ctx.fillRect(effect.x, effect.y, effect.width, effect.height);
+          break;
+          
+        case 'screen_shake':
+          // Screen shake is handled at the canvas level
+          const shakeX = (Math.random() - 0.5) * effect.intensity * effect.alpha;
+          const shakeY = (Math.random() - 0.5) * effect.intensity * effect.alpha;
+          this.ctx.translate(shakeX, shakeY);
+          break;
+      }
+      
+      this.ctx.restore();
+    });
   }
   
   drawButterfly(x, y, rotation, scale = 1, hasShield = false) {
