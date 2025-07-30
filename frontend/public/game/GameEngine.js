@@ -849,7 +849,22 @@ window.GameEngine = class GameEngine {
   }
   
   playerHit() {
-    this.lives--;
+    // Reduce player health first
+    if (this.player) {
+      this.player.health -= 25; // Damage per hit
+      
+      if (this.player.health <= 0) {
+        this.player.health = 0;
+        // Only reduce lives when health reaches zero
+        this.lives--;
+        
+        if (this.lives > 0) {
+          // Restore health if player has lives left
+          this.player.health = this.player.maxHealth;
+        }
+      }
+    }
+    
     this.createExplosion(this.player.x, this.player.y);
     
     // Play damage sound
