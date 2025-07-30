@@ -747,158 +747,197 @@ class AudioManager {
   }
 
   createDynamicMelody(config) {
-    let melodyIndex = 0;
-    let melodyNodes = [];
+    console.log(`🎵 Creating professional melody: ${config.name}`);
     
-    const playAdvancedMelodyNote = () => {
+    let melodyIndex = 0;
+    let counterMelodyIndex = 0;
+    let currentMelodyNodes = [];
+    
+    const playProfessionalMelody = () => {
       if (this.isMuted || !this.audioContext || !this.currentMusic) return;
       
       // Clean up previous notes
-      melodyNodes.forEach(node => {
+      currentMelodyNodes.forEach(node => {
         try { if (node.stop) node.stop(); } catch(e) {}
       });
-      melodyNodes = [];
+      currentMelodyNodes = [];
       
-      // Create ADVANCED MELODIC INSTRUMENT
-      const leadOsc = this.audioContext.createOscillator();
-      const harmOsc = this.audioContext.createOscillator();
-      const melodyGain = this.audioContext.createGain();
-      const melodyFilter = this.audioContext.createBiquadFilter();
-      const melodyReverb = this.createReverbNode();
-      const melodyDelay = this.createDelayNode(0.125, 0.3);
-      const melodyChorus = this.createChorusEffect();
+      // === MAIN MELODY LINE ===
+      this.createMelodyVoice(config, melodyIndex, 'lead');
       
-      // Dual oscillator setup for richer melody
-      const freq = config.melody[melodyIndex % config.melody.length];
-      leadOsc.frequency.value = freq;
-      harmOsc.frequency.value = freq * 1.5; // Perfect fifth harmony
-      
-      // Choose sophisticated waveforms based on atmosphere
-      switch(config.atmosphere) {
-        case 'bright':
-          leadOsc.type = 'triangle';
-          harmOsc.type = 'sine';
-          break;
-        case 'energetic':
-          leadOsc.type = 'sawtooth';
-          harmOsc.type = 'square';
-          break;
-        case 'mysterious':
-          leadOsc.type = 'sine';
-          harmOsc.type = 'triangle';
-          break;
-        case 'tense':
-          leadOsc.type = 'square';
-          harmOsc.type = 'sawtooth';
-          break;
-        case 'epic':
-          leadOsc.type = 'sawtooth';
-          harmOsc.type = 'triangle';
-          break;
-        default:
-          leadOsc.type = 'sine';
-          harmOsc.type = 'triangle';
+      // === COUNTER MELODY (if configured) ===
+      if (config.hasCounterMelody && config.counterMelody) {
+        this.createMelodyVoice(config, counterMelodyIndex, 'counter');
+        counterMelodyIndex++;
       }
       
-      // Advanced filtering with dynamic parameters
-      melodyFilter.type = 'bandpass';
-      melodyFilter.frequency.value = freq * 2 + (Math.sin(Date.now() * 0.001) * 200);
-      melodyFilter.Q.value = 4 + (Math.sin(Date.now() * 0.0007) * 2);
-      
-      // Create sophisticated audio chain
-      const mixer = this.audioContext.createGain();
-      leadOsc.connect(mixer);
-      harmOsc.connect(mixer);
-      mixer.gain.value = 0.7;
-      
-      mixer.connect(melodyFilter);
-      melodyFilter.connect(melodyChorus);
-      melodyChorus.connect(melodyDelay);
-      melodyDelay.connect(melodyReverb);
-      melodyReverb.connect(melodyGain);
-      melodyGain.connect(this.musicGain);
-      
-      // Dynamic envelope for natural phrasing
-      const noteLength = config.tempo * 0.0008;
-      const sustainLevel = 0.02 + (Math.sin(melodyIndex * 0.5) * 0.01);
-      
-      melodyGain.gain.setValueAtTime(0, this.audioContext.currentTime);
-      melodyGain.gain.linearRampToValueAtTime(sustainLevel, this.audioContext.currentTime + 0.1);
-      melodyGain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + noteLength);
-      
-      leadOsc.start(this.audioContext.currentTime);
-      harmOsc.start(this.audioContext.currentTime);
-      leadOsc.stop(this.audioContext.currentTime + noteLength);
-      harmOsc.stop(this.audioContext.currentTime + noteLength);
-      
-      melodyNodes.push(leadOsc);
-      melodyNodes.push(harmOsc);
+      // === ARPEGGIATED ACCOMPANIMENT ===
+      if (config.hasArpeggio) {
+        this.createArpeggioPattern(config, melodyIndex);
+      }
       
       melodyIndex++;
       
-      // Advanced rhythm patterns based on atmosphere
+      // Professional timing with musical phrasing
       let nextNoteDelay = config.tempo;
-      if (config.atmosphere === 'energetic') {
-        nextNoteDelay += Math.sin(melodyIndex * 0.3) * (config.tempo * 0.2);
-      } else if (config.atmosphere === 'mysterious') {
-        nextNoteDelay += (Math.random() - 0.5) * (config.tempo * 0.3);
+      
+      // Add musical expression based on atmosphere
+      switch(config.atmosphere) {
+        case 'heroic_bright':
+          nextNoteDelay *= 0.9; // Slightly faster for heroic energy
+          break;
+        case 'electronic_dance':
+          nextNoteDelay *= 0.8 + Math.sin(melodyIndex * 0.5) * 0.2; // Rhythmic variation
+          break;
+        case 'dark_tension':
+          nextNoteDelay *= 1.2 + Math.random() * 0.3; // Irregular for tension
+          break;
+        case 'epic_orchestral':
+          nextNoteDelay *= 0.7; // Fast and dramatic
+          break;
+        default:
+          nextNoteDelay *= 1.0;
       }
       
-      this.melodyTimeout = setTimeout(playAdvancedMelodyNote, nextNoteDelay);
+      this.melodyTimeout = setTimeout(playProfessionalMelody, nextNoteDelay);
     };
     
-    // Start melody with sophisticated timing
-    this.melodyTimeout = setTimeout(playAdvancedMelodyNote, 1200);
+    // Start with musical entrance timing
+    this.melodyTimeout = setTimeout(playProfessionalMelody, 1500);
   }
 
-  createChorusEffect() {
-    const chorus = this.audioContext.createGain();
-    const delay1 = this.audioContext.createDelay();
-    const delay2 = this.audioContext.createDelay();
-    const delay3 = this.audioContext.createDelay();
+  createMelodyVoice(config, noteIndex, voiceType) {
+    const isLead = voiceType === 'lead';
+    const melody = isLead ? config.melody : config.counterMelody;
+    if (!melody) return;
     
-    const lfo1 = this.audioContext.createOscillator();
-    const lfo2 = this.audioContext.createOscillator();
-    const lfo3 = this.audioContext.createOscillator();
+    const freq = melody[noteIndex % melody.length];
     
-    const lfoGain1 = this.audioContext.createGain();
-    const lfoGain2 = this.audioContext.createGain();
-    const lfoGain3 = this.audioContext.createGain();
+    // Create sophisticated lead instrument
+    const osc1 = this.audioContext.createOscillator();
+    const osc2 = this.audioContext.createOscillator();
+    const gainNode = this.audioContext.createGain();
+    const filter = this.audioContext.createBiquadFilter();
+    const reverb = this.createProfessionalReverb();
+    const chorus = this.createAdvancedChorus();
     
-    // Set up LFOs for chorus modulation
-    lfo1.frequency.value = 0.3;
-    lfo2.frequency.value = 0.4;
-    lfo3.frequency.value = 0.5;
+    // Professional waveform selection based on atmosphere
+    let waveType1, waveType2;
+    switch(config.atmosphere) {
+      case 'heroic_bright':
+        waveType1 = 'sawtooth';
+        waveType2 = 'triangle';
+        break;
+      case 'electronic_dance':
+        waveType1 = 'square';
+        waveType2 = 'sawtooth';
+        break;
+      case 'dark_tension':
+        waveType1 = 'sine';
+        waveType2 = 'triangle';
+        break;
+      case 'epic_orchestral':
+        waveType1 = 'sawtooth';
+        waveType2 = 'sine';
+        break;
+      default:
+        waveType1 = 'triangle';
+        waveType2 = 'sine';
+    }
     
-    lfoGain1.gain.value = 0.002;
-    lfoGain2.gain.value = 0.003;
-    lfoGain3.gain.value = 0.004;
+    osc1.type = waveType1;
+    osc2.type = waveType2;
+    osc1.frequency.value = freq;
+    osc2.frequency.value = freq * (isLead ? 1.005 : 1.003); // Slight detuning for thickness
     
-    delay1.delayTime.value = 0.02;
-    delay2.delayTime.value = 0.025;
-    delay3.delayTime.value = 0.03;
+    // Professional filtering with dynamic parameters
+    filter.type = 'bandpass';
+    filter.frequency.value = freq * 1.5 + (Math.sin(Date.now() * 0.002 + noteIndex) * 300);
+    filter.Q.value = 3 + Math.sin(Date.now() * 0.001) * 1.5; // Dynamic resonance
     
-    // Connect LFOs to delay times
-    lfo1.connect(lfoGain1);
-    lfo2.connect(lfoGain2);
-    lfo3.connect(lfoGain3);
+    // Create professional audio chain
+    const mixer = this.audioContext.createGain();
+    osc1.connect(mixer);
+    osc2.connect(mixer);
+    mixer.connect(filter);
+    filter.connect(chorus);
+    chorus.connect(reverb);
+    reverb.connect(gainNode);
+    gainNode.connect(this.musicGain);
     
-    lfoGain1.connect(delay1.delayTime);
-    lfoGain2.connect(delay2.delayTime);
-    lfoGain3.connect(delay3.delayTime);
+    // Professional envelope shaping with musical phrasing
+    const noteLength = config.tempo * 0.0012;
+    const currentTime = this.audioContext.currentTime;
+    const volume = isLead ? 0.025 : 0.015; // Lead louder than counter-melody
     
-    // Mix delayed signals
-    delay1.connect(chorus);
-    delay2.connect(chorus);
-    delay3.connect(chorus);
+    // Musical attack-decay-sustain-release envelope
+    gainNode.gain.setValueAtTime(0, currentTime);
+    gainNode.gain.linearRampToValueAtTime(volume * 0.7, currentTime + 0.05); // Quick attack
+    gainNode.gain.linearRampToValueAtTime(volume, currentTime + 0.2); // Rise to peak
+    gainNode.gain.setValueAtTime(volume * 0.8, currentTime + noteLength * 0.7); // Sustain
+    gainNode.gain.exponentialRampToValueAtTime(0.001, currentTime + noteLength); // Musical release
     
-    chorus.gain.value = 0.3;
+    osc1.start(currentTime);
+    osc2.start(currentTime);
+    osc1.stop(currentTime + noteLength);
+    osc2.stop(currentTime + noteLength);
     
-    lfo1.start();
-    lfo2.start();
-    lfo3.start();
+    currentMelodyNodes.push(osc1);
+    currentMelodyNodes.push(osc2);
+  }
+
+  createArpeggioPattern(config, noteIndex) {
+    // Create beautiful arpeggiated accompaniment
+    const chords = [config.harmony, config.secondaryHarmony, config.tertiaryHarmony].filter(Boolean);
+    if (chords.length === 0) return;
     
-    return delay1; // Return input node
+    const currentChord = chords[Math.floor(noteIndex / 4) % chords.length];
+    const arpeggioNote = currentChord[noteIndex % currentChord.length];
+    
+    const arpOsc = this.audioContext.createOscillator();
+    const arpGain = this.audioContext.createGain();
+    const arpFilter = this.audioContext.createBiquadFilter();
+    const arpDelay = this.createDelayNode(0.125, 0.15);
+    
+    arpOsc.type = 'triangle';
+    arpOsc.frequency.value = arpeggioNote * 0.5; // Lower octave for accompaniment
+    
+    arpFilter.type = 'bandpass';
+    arpFilter.frequency.value = arpeggioNote + 200;
+    arpFilter.Q.value = 2;
+    
+    arpOsc.connect(arpFilter);
+    arpFilter.connect(arpDelay);
+    arpDelay.connect(arpGain);
+    arpGain.connect(this.musicGain);
+    
+    const currentTime = this.audioContext.currentTime;
+    const arpLength = config.tempo * 0.0006;
+    
+    arpGain.gain.setValueAtTime(0, currentTime);
+    arpGain.gain.linearRampToValueAtTime(0.008, currentTime + 0.02);
+    arpGain.gain.exponentialRampToValueAtTime(0.001, currentTime + arpLength);
+    
+    arpOsc.start(currentTime);
+    arpOsc.stop(currentTime + arpLength);
+    
+    currentMelodyNodes.push(arpOsc);
+  }
+
+  createDelayNode(delayTime, feedback) {
+    const delay = this.audioContext.createDelay();
+    const feedbackGain = this.audioContext.createGain();
+    const wetGain = this.audioContext.createGain();
+    
+    delay.delayTime.value = delayTime;
+    feedbackGain.gain.value = feedback;
+    wetGain.gain.value = 0.25; // Subtle delay mix
+    
+    delay.connect(feedbackGain);
+    feedbackGain.connect(delay);
+    delay.connect(wetGain);
+    
+    return wetGain;
   }
 
   createRhythmSection(config) {
