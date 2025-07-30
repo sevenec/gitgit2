@@ -559,13 +559,39 @@ window.GameRenderer = class GameRenderer {
     this.ctx.restore();
   }
   
-  drawBoss(boss) {
+  drawEnhancedBoss(boss) {
     this.ctx.save();
     this.ctx.translate(boss.x, boss.y);
     
+    // Boss flashing when hit
+    if (boss.invulnerable) {
+      this.ctx.globalAlpha = 0.5;
+    }
+    
+    // Phase-based visual changes
+    let bossColor = '#4B0082';
+    let eyeColor = '#FF0000';
+    let tentacleColor = '#8B008B';
+    
+    switch (boss.phase) {
+      case 2:
+        bossColor = '#8B0000';
+        eyeColor = '#FF4500';
+        tentacleColor = '#B22222';
+        break;
+      case 3:
+        bossColor = '#000000';
+        eyeColor = '#FF0000';
+        tentacleColor = '#DC143C';
+        // Add rage aura
+        this.ctx.shadowColor = '#FF0000';
+        this.ctx.shadowBlur = 20;
+        break;
+    }
+    
     // Boss body (large menacing insect)
-    this.ctx.fillStyle = '#4B0082';
-    this.ctx.strokeStyle = '#8B008B';
+    this.ctx.fillStyle = bossColor;
+    this.ctx.strokeStyle = tentacleColor;
     this.ctx.lineWidth = 3;
     
     this.ctx.beginPath();
@@ -573,8 +599,11 @@ window.GameRenderer = class GameRenderer {
     this.ctx.fill();
     this.ctx.stroke();
     
-    // Boss eyes
-    this.ctx.fillStyle = '#FF0000';
+    // Boss eyes with phase-based glow
+    this.ctx.fillStyle = eyeColor;
+    this.ctx.shadowColor = eyeColor;
+    this.ctx.shadowBlur = boss.phase * 5;
+    
     this.ctx.beginPath();
     this.ctx.arc(-boss.width/4, -boss.height/4, 8, 0, Math.PI * 2);
     this.ctx.fill();
@@ -583,38 +612,54 @@ window.GameRenderer = class GameRenderer {
     this.ctx.arc(boss.width/4, -boss.height/4, 8, 0, Math.PI * 2);
     this.ctx.fill();
     
-    // Boss tentacles/appendages
-    this.ctx.strokeStyle = '#8B008B';
+    // Enhanced tentacles with wiggle animation
+    this.ctx.shadowBlur = 0;
+    this.ctx.strokeStyle = tentacleColor;
     this.ctx.lineWidth = 4;
     
-    for (let i = 0; i < 6; i++) {
-      const angle = (i * Math.PI) / 3;
-      const startX = Math.cos(angle) * boss.width / 3;
-      const startY = Math.sin(angle) * boss.height / 3;
-      const endX = Math.cos(angle) * boss.width / 2;
-      const endY = Math.sin(angle) * boss.height / 2;
-      
-      this.ctx.beginPath();
-      this.ctx.moveTo(startX, startY);
-      this.ctx.lineTo(endX, endY);
-      this.ctx.stroke();
+    if (boss.tentacles) {
+      boss.tentacles.forEach(tentacle => {
+        const baseX = Math.cos(tentacle.angle) * boss.width / 3;
+        const baseY = Math.sin(tentacle.angle) * boss.height / 3;
+        const endX = Math.cos(tentacle.angle + Math.sin(tentacle.wiggleOffset) * 0.3) * tentacle.length;
+        const endY = Math.sin(tentacle.angle + Math.sin(tentacle.wiggleOffset) * 0.3) * tentacle.length;
+        
+        this.ctx.beginPath();
+        this.ctx.moveTo(baseX, baseY);
+        this.ctx.quadraticCurveTo(
+          baseX + endX * 0.5 + Math.sin(tentacle.wiggleOffset) * 10,
+          baseY + endY * 0.5 + Math.cos(tentacle.wiggleOffset) * 10,
+          baseX + endX,
+          baseY + endY
+        );
+        this.ctx.stroke();
+      });
     }
     
-    // Boss health bar
+    // Boss health bar with phase colors
     const barWidth = boss.width;
     const barHeight = 8;
     const barY = -boss.height / 2 - 20;
     
+    this.ctx.shadowBlur = 0;
     this.ctx.fillStyle = '#FF0000';
     this.ctx.fillRect(-barWidth / 2, barY, barWidth, barHeight);
     
-    this.ctx.fillStyle = '#00FF00';
+    // Health bar color based on phase
+    const healthColors = ['#00FF00', '#FFFF00', '#FF4500'];
+    this.ctx.fillStyle = healthColors[boss.phase - 1] || '#00FF00';
     const healthPercent = boss.health / boss.maxHealth;
     this.ctx.fillRect(-barWidth / 2, barY, barWidth * healthPercent, barHeight);
     
     this.ctx.strokeStyle = '#FFFFFF';
     this.ctx.lineWidth = 2;
     this.ctx.strokeRect(-barWidth / 2, barY, barWidth, barHeight);
+    
+    // Phase indicator
+    this.ctx.fillStyle = '#FFFFFF';
+    this.ctx.font = 'bold 12px Arial';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText(`PHASE ${boss.phase}`, 0, barY - 10);
     
     this.ctx.restore();
   }
