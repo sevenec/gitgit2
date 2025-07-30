@@ -325,19 +325,27 @@ window.GameEngine = class GameEngine {
   }
   
   setupEventListeners() {
-    // Touch events for mobile
+    // Enhanced touch events for mobile with smoothing
     this.canvas.addEventListener('touchstart', (e) => {
       e.preventDefault();
       const touch = e.touches[0];
       const rect = this.canvas.getBoundingClientRect();
-      this.touchStartX = touch.clientX - rect.left;
-      this.touchStartY = touch.clientY - rect.top;
+      const x = (touch.clientX - rect.left) * (this.canvas.width / rect.width);
+      const y = (touch.clientY - rect.top) * (this.canvas.height / rect.height);
+      
+      // Update enhanced mobile input
+      this.mobileInput.touches.set(touch.identifier, { x, y });
+      this.mobileInput.touchIndicator = { x, y, visible: true, size: 0, alpha: 1 };
+      this.mobileInput.updateSmoothedInput(x, y);
+      
+      // Legacy support
+      this.touchStartX = x;
+      this.touchStartY = y;
       this.isTouching = true;
       
       if (this.gameState === 'menu' || this.gameState === 'gameOver') {
         this.startGame();
       }
-      // Removed manual shooting - now automatic when power-up is active
     });
     
     this.canvas.addEventListener('touchmove', (e) => {
@@ -345,47 +353,100 @@ window.GameEngine = class GameEngine {
       if (this.isTouching && this.player && this.gameState === 'playing') {
         const touch = e.touches[0];
         const rect = this.canvas.getBoundingClientRect();
-        const touchX = touch.clientX - rect.left;
-        const touchY = touch.clientY - rect.top;
+        const x = (touch.clientX - rect.left) * (this.canvas.width / rect.width);
+        const y = (touch.clientY - rect.top) * (this.canvas.height / rect.height);
         
-        // Move player based on touch position
-        this.player.targetX = touchX;
-        this.player.targetY = touchY;
+        // Update enhanced mobile input with smoothing
+        this.mobileInput.touches.set(touch.identifier, { x, y });
+        this.mobileInput.touchIndicator = { x, y, visible: true, size: 30, alpha: 0.8 };
+        this.mobileInput.updateSmoothedInput(x, y);
+        
+        // Use smoothed input for player movement
+        const smoothedInput = this.mobileInput.getInput();
+        if (smoothedInput) {
+          this.player.targetX = smoothedInput.x;
+          this.player.targetY = smoothedInput.y;
+          
+          // Create butterfly trail effect
+          this.particleSystem.createButterflyTrail(
+            this.player.x, this.player.y, 
+            this.selectedFlutterer.colors.wing1
+          );
+        }
       }
     });
     
     this.canvas.addEventListener('touchend', (e) => {
       e.preventDefault();
+      
+      // Clear enhanced mobile input
+      for (const touch of e.changedTouches) {
+        this.mobileInput.touches.delete(touch.identifier);
+      }
+      if (this.mobileInput.touches.size === 0) {
+        this.mobileInput.touchIndicator.visible = false;
+        this.mobileInput.touchIndicator.alpha = 0;
+      }
+      
       this.isTouching = false;
     });
     
-    // Mouse events for desktop testing
+    // Enhanced mouse events for desktop testing
     this.canvas.addEventListener('mousedown', (e) => {
       const rect = this.canvas.getBoundingClientRect();
-      this.touchStartX = e.clientX - rect.left;
-      this.touchStartY = e.clientY - rect.top;
+      const x = (e.clientX - rect.left) * (this.canvas.width / rect.width);
+      const y = (e.clientY - rect.top) * (this.canvas.height / rect.height);
+      
+      // Update enhanced input
+      this.mobileInput.touches.set('mouse', { x, y });
+      this.mobileInput.touchIndicator = { x, y, visible: true, size: 0, alpha: 1 };
+      this.mobileInput.updateSmoothedInput(x, y);
+      
+      // Legacy support
+      this.touchStartX = x;
+      this.touchStartY = y;
       this.isTouching = true;
       
       if (this.gameState === 'menu' || this.gameState === 'gameOver') {
         this.startGame();
       }
-      // Removed manual shooting - now automatic when power-up is active
     });
     
     this.canvas.addEventListener('mousemove', (e) => {
       if (this.isTouching && this.player && this.gameState === 'playing') {
         const rect = this.canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
+        const x = (e.clientX - rect.left) * (this.canvas.width / rect.width);
+        const y = (e.clientY - rect.top) * (this.canvas.height / rect.height);
         
-        this.player.targetX = mouseX;
-        this.player.targetY = mouseY;
+        // Update enhanced input
+        this.mobileInput.touches.set('mouse', { x, y });
+        this.mobileInput.touchIndicator = { x, y, visible: true, size: 30, alpha: 0.8 };
+        this.mobileInput.updateSmoothedInput(x, y);
+        
+        // Use smoothed input
+        const smoothedInput = this.mobileInput.getInput();
+        if (smoothedInput) {
+          this.player.targetX = smoothedInput.x;
+          this.player.targetY = smoothedInput.y;
+          
+          // Create butterfly trail effect
+          this.particleSystem.createButterflyTrail(
+            this.player.x, this.player.y, 
+            this.selectedFlutterer.colors.wing1
+          );
+        }
       }
     });
     
     this.canvas.addEventListener('mouseup', () => {
+      this.mobileInput.touches.delete('mouse');
+      this.mobileInput.touchIndicator.visible = false;
+      this.mobileInput.touchIndicator.alpha = 0;
       this.isTouching = false;
     });
+    
+    // Prevent context menu
+    this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
   }
   
   startGame() {
