@@ -67,26 +67,40 @@ const Game = () => {
       const ctx = canvas.getContext('2d');
       
       const initializeGame = () => {
-        console.log('Attempting to initialize game...', { GameEngine: !!window.GameEngine, GameRenderer: !!window.GameRenderer });
+        console.log('Attempting to initialize game...');
+        if (!canvasRef.current) {
+          console.log('Canvas not available, retrying in 100ms...');
+          setTimeout(initializeGame, 100);
+          return;
+        }
         
-        if (window.GameEngine && window.GameRenderer) {
-          try {
-            gameEngineRef.current = new window.GameEngine(canvas, ctx);
-            gameRendererRef.current = new window.GameRenderer(canvas, ctx);
-            
-            // Set selected flutterer in game engine
-            if (selectedFlutterer) {
-              gameEngineRef.current.setSelectedFlutterer(selectedFlutterer);
-            }
-            
-            console.log('Game initialized successfully');
-            setGameEngineReady(true);
-            startGameLoop();
-          } catch (error) {
-            console.error('Error initializing game:', error);
-          }
-        } else {
-          console.log('Game classes not yet loaded, retrying...');
+        console.log('Canvas found, attempting to create GameEngine...');
+        
+        // Check if GameEngine is available
+        if (typeof window.GameEngine !== 'function') {
+          console.error('GameEngine not loaded from script!');
+          setTimeout(initializeGame, 100);
+          return;
+        }
+        
+        try {
+          const canvas = canvasRef.current;
+          resizeCanvas();
+          
+          // Create game engine instance
+          console.log('Creating GameEngine instance...');
+          gameEngineRef.current = new window.GameEngine(canvas);
+          
+          // Create enhanced renderer
+          console.log('Creating GameRenderer instance...');
+          const renderer = new window.GameRenderer(canvas);
+          gameEngineRef.current.setRenderer(renderer);
+          
+          console.log('Game initialized successfully');
+          setGameEngineReady(true);
+          startGameLoop();
+        } catch (error) {
+          console.error('Failed to initialize game:', error);
           setTimeout(initializeGame, 100);
         }
       };
