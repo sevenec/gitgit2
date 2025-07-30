@@ -293,15 +293,23 @@ const Game = () => {
   const handleTutorialComplete = () => {
     localStorage.setItem('butterflyTutorialCompleted', 'true');
     setShowTutorial(false);
-    setGameState('playing'); // Set game state to playing to trigger initialization
-    startActualGame();
+    
+    // Add delay to ensure canvas is mounted before setting game state
+    setTimeout(() => {
+      setGameState('playing'); // Set game state to playing to trigger initialization
+      startActualGame();
+    }, 200); // 200ms delay as recommended by troubleshoot agent
   };
 
   const handleTutorialSkip = () => {
     localStorage.setItem('butterflyTutorialCompleted', 'true');
     setShowTutorial(false);
-    setGameState('playing'); // Set game state to playing to trigger initialization
-    startActualGame();
+    
+    // Add delay to ensure canvas is mounted before setting game state
+    setTimeout(() => {
+      setGameState('playing'); // Set game state to playing to trigger initialization
+      startActualGame();
+    }, 200); // 200ms delay as recommended by troubleshoot agent
   };
 
   const startActualGame = () => {
