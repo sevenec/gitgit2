@@ -101,3 +101,65 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: |
+  User has identified three main issues with the Butterfly Nebula Brawl game after previewing:
+  1. Butterflies (flutterers) look too similar - only differ by color, need more visual variety
+  2. Game goes to tutorial but doesn't play actual gameplay afterward
+  3. No music is playing during the game
+
+frontend:
+  - task: "Visual variety for butterfly flutterers"
+    implemented: true
+    working: false
+    file: "/app/frontend/public/game/GameRenderer.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "User reported butterflies look too similar, only different colors. Need more visual differentiation like wing shapes, patterns, sizes, or special effects."
+
+  - task: "Tutorial to gameplay transition"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/components/Game.jsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "Game goes to tutorial but doesn't continue to actual gameplay afterward. Transition from tutorial to game appears broken."
+
+  - task: "Audio system and music playback"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/audio/AudioManager.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "No music is playing during the game. Audio system exists but actual audio files are missing or not loading."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: true
+
+test_plan:
+  current_focus:
+    - "Visual variety for butterfly flutterers"
+    - "Tutorial to gameplay transition"
+    - "Audio system and music playback"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "User reported three main issues after game preview: 1) Butterflies too similar visually, 2) Tutorial doesn't transition to gameplay, 3) No music playing. Beginning systematic fixes for each issue."
