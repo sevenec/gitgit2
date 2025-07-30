@@ -205,6 +205,12 @@ const Game = () => {
     if (gameEngineRef.current) {
       gameEngineRef.current.startGame();
       setIsPaused(false);
+      
+      // Start level music
+      if (audioManager && !isMuted) {
+        audioManager.playMusic(1); // Start with level 1 music
+        audioManager.resumeAudioContext(); // Resume audio context on user interaction
+      }
     }
   };
 
