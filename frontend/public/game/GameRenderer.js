@@ -488,33 +488,399 @@ window.GameRenderer = class GameRenderer {
       this.ctx.shadowBlur = 15;
     }
     
-    // Butterfly body
-    this.ctx.fillStyle = colors.body;
-    this.ctx.fillRect(-2, -15, 4, 30);
+    // Get flutterer-specific visual properties
+    const visualProps = this.getFluttererVisualProperties(flutterer);
     
-    // Wings with rarity-based effects
+    // Butterfly body - vary thickness and length based on flutterer
+    this.ctx.fillStyle = colors.body;
+    const bodyWidth = visualProps.bodyWidth;
+    const bodyHeight = visualProps.bodyHeight;
+    this.ctx.fillRect(-bodyWidth/2, -bodyHeight/2, bodyWidth, bodyHeight);
+    
+    // Wings with rarity and character-based variations
+    this.drawEnhancedWings(colors, visualProps, flutterer);
+    
+    // Special effects based on flutterer type
+    this.drawFluttererSpecialEffects(flutterer, visualProps);
+    
+    // Reset shadow
+    this.ctx.shadowBlur = 0;
+    
+    this.ctx.restore();
+  }
+  
+  getFluttererVisualProperties(flutterer) {
+    if (!flutterer) {
+      return {
+        bodyWidth: 4,
+        bodyHeight: 30,
+        wingScale: 1,
+        wingShape: 'standard',
+        upperWingSize: { width: 8, height: 12 },
+        lowerWingSize: { width: 6, height: 8 },
+        pattern: 'simple',
+        trailEffect: false,
+        sparkles: false
+      };
+    }
+    
+    // Define unique visual properties for each flutterer
+    const visualConfigs = {
+      'basic_cosmic': {
+        bodyWidth: 4, bodyHeight: 30, wingScale: 1, wingShape: 'standard',
+        upperWingSize: { width: 8, height: 12 }, lowerWingSize: { width: 6, height: 8 },
+        pattern: 'simple', trailEffect: false, sparkles: false
+      },
+      'stardust_dancer': {
+        bodyWidth: 3, bodyHeight: 28, wingScale: 1.1, wingShape: 'elongated',
+        upperWingSize: { width: 9, height: 14 }, lowerWingSize: { width: 7, height: 10 },
+        pattern: 'sparkles', trailEffect: true, sparkles: true
+      },
+      'solar_glider': {
+        bodyWidth: 5, bodyHeight: 32, wingScale: 1.2, wingShape: 'broad',
+        upperWingSize: { width: 10, height: 11 }, lowerWingSize: { width: 8, height: 7 },
+        pattern: 'radial', trailEffect: false, sparkles: false
+      },
+      'frost_wing': {
+        bodyWidth: 4, bodyHeight: 30, wingScale: 1.1, wingShape: 'crystalline',
+        upperWingSize: { width: 9, height: 13 }, lowerWingSize: { width: 6, height: 9 },
+        pattern: 'frost', trailEffect: false, sparkles: true
+      },
+      'plasma_striker': {
+        bodyWidth: 5, bodyHeight: 28, wingScale: 0.9, wingShape: 'angular',
+        upperWingSize: { width: 7, height: 11 }, lowerWingSize: { width: 5, height: 7 },
+        pattern: 'electric', trailEffect: false, sparkles: false
+      },
+      'void_phantom': {
+        bodyWidth: 3, bodyHeight: 32, wingScale: 1.3, wingShape: 'ethereal',
+        upperWingSize: { width: 10, height: 15 }, lowerWingSize: { width: 8, height: 11 },
+        pattern: 'ghostly', trailEffect: true, sparkles: false
+      },
+      'epic_blaster_wing': {
+        bodyWidth: 6, bodyHeight: 34, wingScale: 1.2, wingShape: 'armored',
+        upperWingSize: { width: 10, height: 13 }, lowerWingSize: { width: 7, height: 9 },
+        pattern: 'tech', trailEffect: false, sparkles: false
+      },
+      'cosmic_guardian': {
+        bodyWidth: 6, bodyHeight: 36, wingScale: 1.4, wingShape: 'guardian',
+        upperWingSize: { width: 12, height: 14 }, lowerWingSize: { width: 9, height: 10 },
+        pattern: 'shield', trailEffect: false, sparkles: true
+      },
+      'legendary_nebula_guardian': {
+        bodyWidth: 7, bodyHeight: 38, wingScale: 1.5, wingShape: 'majestic',
+        upperWingSize: { width: 13, height: 16 }, lowerWingSize: { width: 10, height: 12 },
+        pattern: 'legendary', trailEffect: true, sparkles: true
+      },
+      'speedy_cosmic_flutter': {
+        bodyWidth: 3, bodyHeight: 26, wingScale: 0.8, wingShape: 'streamlined',
+        upperWingSize: { width: 6, height: 10 }, lowerWingSize: { width: 4, height: 6 },
+        pattern: 'speed', trailEffect: true, sparkles: false
+      }
+    };
+    
+    return visualConfigs[flutterer.id] || visualConfigs['basic_cosmic'];
+  }
+  
+  drawEnhancedWings(colors, visualProps, flutterer) {
+    const { upperWingSize, lowerWingSize, wingShape, pattern } = visualProps;
+    
+    // Upper wings with shape variations
     this.ctx.fillStyle = colors.wing1;
     
-    // Upper wings
+    switch (wingShape) {
+      case 'elongated':
+        this.drawElongatedWings(upperWingSize, lowerWingSize, colors);
+        break;
+      case 'broad':
+        this.drawBroadWings(upperWingSize, lowerWingSize, colors);
+        break;
+      case 'crystalline':
+        this.drawCrystallineWings(upperWingSize, lowerWingSize, colors);
+        break;
+      case 'angular':
+        this.drawAngularWings(upperWingSize, lowerWingSize, colors);
+        break;
+      case 'ethereal':
+        this.drawEtherealWings(upperWingSize, lowerWingSize, colors);
+        break;
+      case 'armored':
+        this.drawArmoredWings(upperWingSize, lowerWingSize, colors);
+        break;
+      case 'guardian':
+        this.drawGuardianWings(upperWingSize, lowerWingSize, colors);
+        break;
+      case 'majestic':
+        this.drawMajesticWings(upperWingSize, lowerWingSize, colors);
+        break;
+      case 'streamlined':
+        this.drawStreamlinedWings(upperWingSize, lowerWingSize, colors);
+        break;
+      default:
+        this.drawStandardWings(upperWingSize, lowerWingSize, colors);
+    }
+    
+    // Add wing patterns
+    this.drawWingPatterns(pattern, colors, visualProps, flutterer);
+  }
+  
+  drawStandardWings(upperSize, lowerSize, colors) {
+    // Standard elliptical wings
+    this.ctx.fillStyle = colors.wing1;
     this.ctx.beginPath();
-    this.ctx.ellipse(-10, -8, 8, 12, 0, 0, Math.PI * 2);
+    this.ctx.ellipse(-10, -8, upperSize.width, upperSize.height, 0, 0, Math.PI * 2);
     this.ctx.fill();
     
     this.ctx.beginPath();
-    this.ctx.ellipse(10, -8, 8, 12, 0, 0, Math.PI * 2);
+    this.ctx.ellipse(10, -8, upperSize.width, upperSize.height, 0, 0, Math.PI * 2);
     this.ctx.fill();
     
-    // Lower wings
     this.ctx.fillStyle = colors.wing2;
     this.ctx.beginPath();
-    this.ctx.ellipse(-8, 5, 6, 8, 0, 0, Math.PI * 2);
+    this.ctx.ellipse(-8, 5, lowerSize.width, lowerSize.height, 0, 0, Math.PI * 2);
     this.ctx.fill();
     
     this.ctx.beginPath();
-    this.ctx.ellipse(8, 5, 6, 8, 0, 0, Math.PI * 2);
+    this.ctx.ellipse(8, 5, lowerSize.width, lowerSize.height, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+  }
+  
+  drawElongatedWings(upperSize, lowerSize, colors) {
+    // Longer, more graceful wings
+    this.ctx.fillStyle = colors.wing1;
+    this.ctx.beginPath();
+    this.ctx.ellipse(-12, -10, upperSize.width, upperSize.height, -0.2, 0, Math.PI * 2);
     this.ctx.fill();
     
-    // Wing patterns
+    this.ctx.beginPath();
+    this.ctx.ellipse(12, -10, upperSize.width, upperSize.height, 0.2, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.fillStyle = colors.wing2;
+    this.ctx.beginPath();
+    this.ctx.ellipse(-10, 6, lowerSize.width, lowerSize.height, -0.1, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.beginPath();
+    this.ctx.ellipse(10, 6, lowerSize.width, lowerSize.height, 0.1, 0, Math.PI * 2);
+    this.ctx.fill();
+  }
+  
+  drawBroadWings(upperSize, lowerSize, colors) {
+    // Broader, more powerful wings
+    this.ctx.fillStyle = colors.wing1;
+    this.ctx.beginPath();
+    this.ctx.ellipse(-11, -6, upperSize.width, upperSize.height, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.beginPath();
+    this.ctx.ellipse(11, -6, upperSize.width, upperSize.height, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.fillStyle = colors.wing2;
+    this.ctx.beginPath();
+    this.ctx.ellipse(-9, 4, lowerSize.width, lowerSize.height, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.beginPath();
+    this.ctx.ellipse(9, 4, lowerSize.width, lowerSize.height, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+  }
+  
+  drawCrystallineWings(upperSize, lowerSize, colors) {
+    // Angular, crystalline wings
+    this.drawAngularShape(-10, -8, upperSize.width, upperSize.height, colors.wing1, 6);
+    this.drawAngularShape(10, -8, upperSize.width, upperSize.height, colors.wing1, 6);
+    this.drawAngularShape(-8, 5, lowerSize.width, lowerSize.height, colors.wing2, 5);
+    this.drawAngularShape(8, 5, lowerSize.width, lowerSize.height, colors.wing2, 5);
+  }
+  
+  drawAngularWings(upperSize, lowerSize, colors) {
+    // Sharp, aggressive wings
+    this.drawTriangularWing(-10, -8, upperSize.width, upperSize.height, colors.wing1, 'left');
+    this.drawTriangularWing(10, -8, upperSize.width, upperSize.height, colors.wing1, 'right');
+    this.drawTriangularWing(-8, 5, lowerSize.width, lowerSize.height, colors.wing2, 'left');
+    this.drawTriangularWing(8, 5, lowerSize.width, lowerSize.height, colors.wing2, 'right');
+  }
+  
+  drawEtherealWings(upperSize, lowerSize, colors) {
+    // Ghostly, semi-transparent wings
+    this.ctx.globalAlpha = 0.7;
+    this.ctx.fillStyle = colors.wing1;
+    this.ctx.beginPath();
+    this.ctx.ellipse(-12, -9, upperSize.width, upperSize.height, -0.3, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.beginPath();
+    this.ctx.ellipse(12, -9, upperSize.width, upperSize.height, 0.3, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.fillStyle = colors.wing2;
+    this.ctx.beginPath();
+    this.ctx.ellipse(-10, 7, lowerSize.width, lowerSize.height, -0.2, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.beginPath();
+    this.ctx.ellipse(10, 7, lowerSize.width, lowerSize.height, 0.2, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.globalAlpha = 1.0;
+  }
+  
+  drawArmoredWings(upperSize, lowerSize, colors) {
+    // Mechanical, armored wings
+    this.drawRectangularWing(-10, -8, upperSize.width, upperSize.height, colors.wing1);
+    this.drawRectangularWing(10, -8, upperSize.width, upperSize.height, colors.wing1);
+    this.drawRectangularWing(-8, 5, lowerSize.width, lowerSize.height, colors.wing2);
+    this.drawRectangularWing(8, 5, lowerSize.width, lowerSize.height, colors.wing2);
+  }
+  
+  drawGuardianWings(upperSize, lowerSize, colors) {
+    // Large, protective wings
+    this.ctx.fillStyle = colors.wing1;
+    this.ctx.beginPath();
+    this.ctx.ellipse(-13, -7, upperSize.width, upperSize.height, -0.1, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.beginPath();
+    this.ctx.ellipse(13, -7, upperSize.width, upperSize.height, 0.1, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.fillStyle = colors.wing2;
+    this.ctx.beginPath();
+    this.ctx.ellipse(-11, 4, lowerSize.width, lowerSize.height, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.beginPath();
+    this.ctx.ellipse(11, 4, lowerSize.width, lowerSize.height, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+  }
+  
+  drawMajesticWings(upperSize, lowerSize, colors) {
+    // Royal, elaborate wings
+    this.ctx.fillStyle = colors.wing1;
+    this.ctx.beginPath();
+    this.ctx.ellipse(-14, -9, upperSize.width, upperSize.height, -0.15, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.beginPath();
+    this.ctx.ellipse(14, -9, upperSize.width, upperSize.height, 0.15, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.fillStyle = colors.wing2;
+    this.ctx.beginPath();
+    this.ctx.ellipse(-12, 3, lowerSize.width, lowerSize.height, -0.1, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.beginPath();
+    this.ctx.ellipse(12, 3, lowerSize.width, lowerSize.height, 0.1, 0, Math.PI * 2);
+    this.ctx.fill();
+  }
+  
+  drawStreamlinedWings(upperSize, lowerSize, colors) {
+    // Sleek, speed-focused wings
+    this.ctx.fillStyle = colors.wing1;
+    this.ctx.beginPath();
+    this.ctx.ellipse(-8, -6, upperSize.width, upperSize.height, -0.4, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.beginPath();
+    this.ctx.ellipse(8, -6, upperSize.width, upperSize.height, 0.4, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.fillStyle = colors.wing2;
+    this.ctx.beginPath();
+    this.ctx.ellipse(-6, 3, lowerSize.width, lowerSize.height, -0.3, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.beginPath();
+    this.ctx.ellipse(6, 3, lowerSize.width, lowerSize.height, 0.3, 0, Math.PI * 2);
+    this.ctx.fill();
+  }
+  
+  drawAngularShape(x, y, width, height, color, sides) {
+    this.ctx.fillStyle = color;
+    this.ctx.beginPath();
+    
+    for (let i = 0; i < sides; i++) {
+      const angle = (i * Math.PI * 2) / sides;
+      const px = x + Math.cos(angle) * width;
+      const py = y + Math.sin(angle) * height;
+      
+      if (i === 0) {
+        this.ctx.moveTo(px, py);
+      } else {
+        this.ctx.lineTo(px, py);
+      }
+    }
+    
+    this.ctx.closePath();
+    this.ctx.fill();
+  }
+  
+  drawTriangularWing(x, y, width, height, color, side) {
+    this.ctx.fillStyle = color;
+    this.ctx.beginPath();
+    
+    if (side === 'left') {
+      this.ctx.moveTo(x + width/2, y - height);
+      this.ctx.lineTo(x - width, y);
+      this.ctx.lineTo(x + width/2, y + height);
+    } else {
+      this.ctx.moveTo(x - width/2, y - height);
+      this.ctx.lineTo(x + width, y);
+      this.ctx.lineTo(x - width/2, y + height);
+    }
+    
+    this.ctx.closePath();
+    this.ctx.fill();
+  }
+  
+  drawRectangularWing(x, y, width, height, color) {
+    this.ctx.fillStyle = color;
+    this.ctx.fillRect(x - width/2, y - height/2, width, height);
+    
+    // Add metallic border
+    this.ctx.strokeStyle = '#C0C0C0';
+    this.ctx.lineWidth = 1;
+    this.ctx.strokeRect(x - width/2, y - height/2, width, height);
+  }
+  
+  drawWingPatterns(pattern, colors, visualProps, flutterer) {
+    switch (pattern) {
+      case 'sparkles':
+        this.drawSparklePattern(colors);
+        break;
+      case 'radial':
+        this.drawRadialPattern(colors);
+        break;
+      case 'frost':
+        this.drawFrostPattern(colors);
+        break;
+      case 'electric':
+        this.drawElectricPattern(colors);
+        break;
+      case 'ghostly':
+        this.drawGhostlyPattern(colors);
+        break;
+      case 'tech':
+        this.drawTechPattern(colors);
+        break;
+      case 'shield':
+        this.drawShieldPattern(colors);
+        break;
+      case 'legendary':
+        this.drawLegendaryPattern(colors, flutterer);
+        break;
+      case 'speed':
+        this.drawSpeedPattern(colors);
+        break;
+      default:
+        this.drawSimplePattern(colors);
+    }
+  }
+  
+  drawSimplePattern(colors) {
+    // Simple wing spots
     this.ctx.fillStyle = colors.accent;
     this.ctx.beginPath();
     this.ctx.arc(-10, -8, 3, 0, Math.PI * 2);
@@ -523,11 +889,228 @@ window.GameRenderer = class GameRenderer {
     this.ctx.beginPath();
     this.ctx.arc(10, -8, 3, 0, Math.PI * 2);
     this.ctx.fill();
+  }
+  
+  drawSparklePattern(colors) {
+    this.ctx.fillStyle = colors.accent;
+    for (let i = 0; i < 6; i++) {
+      const x = -15 + (i % 2) * 30 + (Math.random() - 0.5) * 8;
+      const y = -12 + Math.floor(i / 2) * 8 + (Math.random() - 0.5) * 4;
+      const size = 1 + Math.random() * 2;
+      
+      this.ctx.beginPath();
+      this.ctx.arc(x, y, size, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+  }
+  
+  drawRadialPattern(colors) {
+    this.ctx.strokeStyle = colors.accent;
+    this.ctx.lineWidth = 1;
     
-    // Reset shadow
+    // Left wing radial lines
+    for (let i = 0; i < 3; i++) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(-10, -8);
+      this.ctx.lineTo(-10 - 6 + i * 2, -8 - 8 + i * 4);
+      this.ctx.stroke();
+    }
+    
+    // Right wing radial lines
+    for (let i = 0; i < 3; i++) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(10, -8);
+      this.ctx.lineTo(10 + 6 - i * 2, -8 - 8 + i * 4);
+      this.ctx.stroke();
+    }
+  }
+  
+  drawFrostPattern(colors) {
+    this.ctx.strokeStyle = colors.accent;
+    this.ctx.lineWidth = 1;
+    
+    // Crystalline frost patterns
+    const positions = [[-10, -8], [10, -8], [-8, 5], [8, 5]];
+    positions.forEach(([x, y]) => {
+      for (let i = 0; i < 4; i++) {
+        const angle = (i * Math.PI) / 2;
+        this.ctx.beginPath();
+        this.ctx.moveTo(x, y);
+        this.ctx.lineTo(x + Math.cos(angle) * 4, y + Math.sin(angle) * 4);
+        this.ctx.stroke();
+      }
+    });
+  }
+  
+  drawElectricPattern(colors) {
+    this.ctx.strokeStyle = colors.accent;
+    this.ctx.lineWidth = 2;
+    
+    // Electric zigzag patterns
+    this.ctx.beginPath();
+    this.ctx.moveTo(-12, -10);
+    this.ctx.lineTo(-8, -6);
+    this.ctx.lineTo(-14, -4);
+    this.ctx.lineTo(-6, -2);
+    this.ctx.stroke();
+    
+    this.ctx.beginPath();
+    this.ctx.moveTo(12, -10);
+    this.ctx.lineTo(8, -6);
+    this.ctx.lineTo(14, -4);
+    this.ctx.lineTo(6, -2);
+    this.ctx.stroke();
+  }
+  
+  drawGhostlyPattern(colors) {
+    this.ctx.globalAlpha = 0.3;
+    this.ctx.fillStyle = colors.accent;
+    
+    // Ethereal wispy effects
+    for (let i = 0; i < 8; i++) {
+      const x = -15 + Math.random() * 30;
+      const y = -15 + Math.random() * 25;
+      const size = 2 + Math.random() * 3;
+      
+      this.ctx.beginPath();
+      this.ctx.arc(x, y, size, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+    
+    this.ctx.globalAlpha = 1.0;
+  }
+  
+  drawTechPattern(colors) {
+    this.ctx.strokeStyle = colors.accent;
+    this.ctx.lineWidth = 1;
+    
+    // Tech circuit patterns
+    this.ctx.strokeRect(-12, -10, 4, 4);
+    this.ctx.strokeRect(8, -10, 4, 4);
+    this.ctx.strokeRect(-10, 3, 3, 3);
+    this.ctx.strokeRect(7, 3, 3, 3);
+    
+    // Connection lines
+    this.ctx.beginPath();
+    this.ctx.moveTo(-10, -8);
+    this.ctx.lineTo(-8, -6);
+    this.ctx.stroke();
+    
+    this.ctx.beginPath();
+    this.ctx.moveTo(10, -8);
+    this.ctx.lineTo(8, -6);
+    this.ctx.stroke();
+  }
+  
+  drawShieldPattern(colors) {
+    this.ctx.strokeStyle = colors.accent;
+    this.ctx.lineWidth = 2;
+    
+    // Shield-like geometric patterns
+    this.ctx.beginPath();
+    this.ctx.arc(-10, -8, 5, 0, Math.PI * 2);
+    this.ctx.stroke();
+    
+    this.ctx.beginPath();
+    this.ctx.arc(10, -8, 5, 0, Math.PI * 2);
+    this.ctx.stroke();
+    
+    // Cross pattern inside
+    this.ctx.beginPath();
+    this.ctx.moveTo(-12, -8);
+    this.ctx.lineTo(-8, -8);
+    this.ctx.moveTo(-10, -10);
+    this.ctx.lineTo(-10, -6);
+    this.ctx.stroke();
+    
+    this.ctx.beginPath();
+    this.ctx.moveTo(8, -8);
+    this.ctx.lineTo(12, -8);
+    this.ctx.moveTo(10, -10);
+    this.ctx.lineTo(10, -6);
+    this.ctx.stroke();
+  }
+  
+  drawLegendaryPattern(colors, flutterer) {
+    // Multi-layered legendary effects
+    if (flutterer?.colors?.glow) {
+      this.ctx.shadowColor = flutterer.colors.glow;
+      this.ctx.shadowBlur = 8;
+    }
+    
+    this.ctx.fillStyle = colors.accent;
+    
+    // Ornate patterns
+    for (let i = 0; i < 12; i++) {
+      const angle = (i * Math.PI * 2) / 12;
+      const radius = 6 + Math.sin(Date.now() * 0.005 + i) * 2;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+      
+      this.ctx.beginPath();
+      this.ctx.arc(x, y - 8, 1, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+    
     this.ctx.shadowBlur = 0;
+  }
+  
+  drawSpeedPattern(colors) {
+    this.ctx.strokeStyle = colors.accent;
+    this.ctx.lineWidth = 2;
     
-    this.ctx.restore();
+    // Speed lines/streaks
+    for (let i = 0; i < 3; i++) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(-15 + i * 2, -12 + i * 3);
+      this.ctx.lineTo(-8 + i * 2, -8 + i * 3);
+      this.ctx.stroke();
+      
+      this.ctx.beginPath();
+      this.ctx.moveTo(15 - i * 2, -12 + i * 3);
+      this.ctx.lineTo(8 - i * 2, -8 + i * 3);
+      this.ctx.stroke();
+    }
+  }
+  
+  drawFluttererSpecialEffects(flutterer, visualProps) {
+    if (!flutterer) return;
+    
+    const time = Date.now() * 0.003;
+    
+    // Trail effects for certain flutterers
+    if (visualProps.trailEffect) {
+      this.ctx.globalAlpha = 0.5;
+      this.ctx.fillStyle = flutterer.colors.wing1;
+      
+      for (let i = 0; i < 3; i++) {
+        const offsetY = 15 + i * 8;
+        const size = 3 - i;
+        this.ctx.beginPath();
+        this.ctx.arc(0, offsetY, size, 0, Math.PI * 2);
+        this.ctx.fill();
+      }
+      
+      this.ctx.globalAlpha = 1.0;
+    }
+    
+    // Sparkle effects
+    if (visualProps.sparkles) {
+      this.ctx.fillStyle = '#FFFFFF';
+      
+      for (let i = 0; i < 4; i++) {
+        const x = Math.sin(time + i) * 20;
+        const y = Math.cos(time * 1.5 + i) * 15;
+        const alpha = Math.sin(time * 3 + i) * 0.5 + 0.5;
+        
+        this.ctx.globalAlpha = alpha;
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, 1, 0, Math.PI * 2);
+        this.ctx.fill();
+      }
+      
+      this.ctx.globalAlpha = 1.0;
+    }
   }
   
   drawPlayerProjectile(projectile) {
