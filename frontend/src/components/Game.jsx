@@ -157,16 +157,19 @@ const Game = () => {
       try {
         // Import and create AudioManager instance
         const AudioManagerModule = await import('../audio/AudioManager');
-        const audioManagerInstance = AudioManagerModule.default;
+        const AudioManagerClass = AudioManagerModule.default;
         
-        if (audioManagerInstance) {
-          console.log('✅ AudioManager imported successfully');
+        if (AudioManagerClass) {
+          console.log('✅ AudioManager class imported successfully');
+          
+          // Create new instance of AudioManager
+          const audioManagerInstance = new AudioManagerClass();
           setAudioManager(audioManagerInstance);
           
           // Make it globally available for testing
           window.audioManager = audioManagerInstance;
           
-          console.log('🎵 AudioManager initialized and ready');
+          console.log('🎵 AudioManager instantiated and ready');
         } else {
           console.error('❌ Failed to import AudioManager');
         }
