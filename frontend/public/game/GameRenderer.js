@@ -1614,90 +1614,259 @@ window.GameRenderer = class GameRenderer {
     this.ctx.save();
     this.ctx.translate(boss.x, boss.y);
     
+    const time = Date.now() * 0.001;
+    
     // Boss flashing when hit
     if (boss.invulnerable) {
-      this.ctx.globalAlpha = 0.5;
+      this.ctx.globalAlpha = 0.7 + Math.sin(time * 20) * 0.3;
     }
     
-    // Phase-based visual changes
-    let bossColor = '#4B0082';
-    let eyeColor = '#FF0000';
-    let tentacleColor = '#8B008B';
+    // Advanced Phase-based visual system
+    const phaseConfigs = {
+      1: {
+        bodyColor: '#4B0082', eyeColor: '#FF6B35', tentacleColor: '#8B008B',
+        auraColor: '#9B59B6', size: 1.0, intensity: 0.3
+      },
+      2: {
+        bodyColor: '#8B0000', eyeColor: '#FF4500', tentacleColor: '#B22222',
+        auraColor: '#E74C3C', size: 1.1, intensity: 0.5
+      },
+      3: {
+        bodyColor: '#000000', eyeColor: '#FF0000', tentacleColor: '#DC143C',
+        auraColor: '#FF0000', size: 1.2, intensity: 0.8
+      }
+    };
     
-    switch (boss.phase) {
-      case 2:
-        bossColor = '#8B0000';
-        eyeColor = '#FF4500';
-        tentacleColor = '#B22222';
-        break;
-      case 3:
-        bossColor = '#000000';
-        eyeColor = '#FF0000';
-        tentacleColor = '#DC143C';
-        // Add rage aura
-        this.ctx.shadowColor = '#FF0000';
-        this.ctx.shadowBlur = 20;
-        break;
-    }
+    const config = phaseConfigs[boss.phase] || phaseConfigs[1];
+    const breathe = Math.sin(time * 2) * 0.05 + 1;
     
-    // Boss body (large menacing insect)
-    this.ctx.fillStyle = bossColor;
-    this.ctx.strokeStyle = tentacleColor;
-    this.ctx.lineWidth = 3;
+    // Menacing aura with phase-based intensity
+    this.ctx.save();
+    const auraRadius = (boss.width / 2 + 30) * config.size * breathe;
+    const auraGradient = this.ctx.createRadialGradient(0, 0, boss.width / 3, 0, 0, auraRadius);
+    auraGradient.addColorStop(0, `${config.auraColor}00`);
+    auraGradient.addColorStop(0.7, `${config.auraColor}${Math.floor(config.intensity * 100).toString(16).padStart(2, '0')}`);
+    auraGradient.addColorStop(1, `${config.auraColor}00`);
     
+    this.ctx.fillStyle = auraGradient;
     this.ctx.beginPath();
-    this.ctx.ellipse(0, 0, boss.width / 2, boss.height / 2, 0, 0, Math.PI * 2);
+    this.ctx.arc(0, 0, auraRadius, 0, Math.PI * 2);
+    this.ctx.fill();
+    this.ctx.restore();
+    
+    // Advanced multi-segmented body with organic texture
+    this.ctx.fillStyle = config.bodyColor;
+    this.ctx.strokeStyle = config.tentacleColor;
+    this.ctx.lineWidth = 2;
+    
+    // Main thorax with breathing animation
+    this.ctx.save();
+    this.ctx.scale(breathe, breathe);
+    const bodyGradient = this.ctx.createRadialGradient(0, 0, 0, 0, 0, boss.width / 2);
+    bodyGradient.addColorStop(0, config.bodyColor);
+    bodyGradient.addColorStop(0.6, config.bodyColor + '80');
+    bodyGradient.addColorStop(1, config.tentacleColor);
+    
+    this.ctx.fillStyle = bodyGradient;
+    this.ctx.beginPath();
+    this.ctx.ellipse(0, 0, boss.width / 2.2, boss.height / 2.5, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    this.ctx.stroke();
+    this.ctx.restore();
+    
+    // Upper abdomen segment
+    this.ctx.fillStyle = config.bodyColor + 'CC';
+    this.ctx.beginPath();
+    this.ctx.ellipse(0, -boss.height * 0.25, boss.width / 2.8, boss.height / 3.5, 0, 0, Math.PI * 2);
     this.ctx.fill();
     this.ctx.stroke();
     
-    // Boss eyes with phase-based glow
-    this.ctx.fillStyle = eyeColor;
-    this.ctx.shadowColor = eyeColor;
-    this.ctx.shadowBlur = boss.phase * 5;
-    
+    // Lower abdomen segment with spikes
+    this.ctx.fillStyle = config.bodyColor + 'DD';
     this.ctx.beginPath();
-    this.ctx.arc(-boss.width/4, -boss.height/4, 8, 0, Math.PI * 2);
+    this.ctx.ellipse(0, boss.height * 0.2, boss.width / 3.2, boss.height / 4, 0, 0, Math.PI * 2);
     this.ctx.fill();
+    this.ctx.stroke();
     
-    this.ctx.beginPath();
-    this.ctx.arc(boss.width/4, -boss.height/4, 8, 0, Math.PI * 2);
-    this.ctx.fill();
+    // Defensive spikes around body
+    this.ctx.strokeStyle = config.tentacleColor;
+    this.ctx.lineWidth = 3;
+    for (let i = 0; i < 8; i++) {
+      const angle = (i / 8) * Math.PI * 2 + time * 0.5;
+      const innerRadius = boss.width / 2.5;
+      const outerRadius = innerRadius + 15 + Math.sin(time * 3 + i) * 5;
+      
+      const startX = Math.cos(angle) * innerRadius;
+      const startY = Math.sin(angle) * innerRadius * 0.8;
+      const endX = Math.cos(angle) * outerRadius;
+      const endY = Math.sin(angle) * outerRadius * 0.8;
+      
+      this.ctx.beginPath();
+      this.ctx.moveTo(startX, startY);
+      this.ctx.lineTo(endX, endY);
+      this.ctx.stroke();
+    }
     
-    // Enhanced tentacles with wiggle animation
-    this.ctx.shadowBlur = 0;
-    this.ctx.strokeStyle = tentacleColor;
-    this.ctx.lineWidth = 4;
+    // Advanced compound eyes with hex patterns
+    const eyeSize = 12 + boss.phase * 2;
+    const eyeGlow = 5 + Math.sin(time * 4) * 3;
     
-    if (boss.tentacles) {
-      boss.tentacles.forEach(tentacle => {
-        const baseX = Math.cos(tentacle.angle) * boss.width / 3;
-        const baseY = Math.sin(tentacle.angle) * boss.height / 3;
-        const endX = Math.cos(tentacle.angle + Math.sin(tentacle.wiggleOffset) * 0.3) * tentacle.length;
-        const endY = Math.sin(tentacle.angle + Math.sin(tentacle.wiggleOffset) * 0.3) * tentacle.length;
+    this.ctx.shadowColor = config.eyeColor;
+    this.ctx.shadowBlur = eyeGlow;
+    
+    for (let eye of [{x: -boss.width/3, y: -boss.height/3}, {x: boss.width/3, y: -boss.height/3}]) {
+      // Outer eye glow
+      this.ctx.fillStyle = config.eyeColor + '40';
+      this.ctx.beginPath();
+      this.ctx.arc(eye.x, eye.y, eyeSize + 4, 0, Math.PI * 2);
+      this.ctx.fill();
+      
+      // Main eye
+      this.ctx.fillStyle = config.eyeColor;
+      this.ctx.beginPath();
+      this.ctx.arc(eye.x, eye.y, eyeSize, 0, Math.PI * 2);
+      this.ctx.fill();
+      
+      // Hexagonal compound eye pattern
+      this.ctx.fillStyle = config.eyeColor + '80';
+      for (let h = 0; h < 6; h++) {
+        const hexAngle = (h / 6) * Math.PI * 2;
+        const hexX = eye.x + Math.cos(hexAngle) * 4;
+        const hexY = eye.y + Math.sin(hexAngle) * 4;
         
         this.ctx.beginPath();
-        this.ctx.moveTo(baseX, baseY);
-        this.ctx.quadraticCurveTo(
-          baseX + endX * 0.5 + Math.sin(tentacle.wiggleOffset) * 10,
-          baseY + endY * 0.5 + Math.cos(tentacle.wiggleOffset) * 10,
-          baseX + endX,
-          baseY + endY
-        );
-        this.ctx.stroke();
+        this.ctx.arc(hexX, hexY, 2, 0, Math.PI * 2);
+        this.ctx.fill();
+      }
+      
+      // Central pupil with tracking effect
+      this.ctx.fillStyle = '#000000';
+      this.ctx.beginPath();
+      this.ctx.arc(eye.x, eye.y, 3, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+    
+    // Dynamic organic tentacles with advanced animation
+    this.ctx.shadowBlur = 0;
+    this.ctx.lineWidth = 6;
+    
+    if (boss.tentacles) {
+      boss.tentacles.forEach((tentacle, index) => {
+        const wiggle1 = Math.sin(time * 3 + index * 0.5) * 0.4;
+        const wiggle2 = Math.cos(time * 2 + index * 0.3) * 0.3;
+        
+        const baseX = Math.cos(tentacle.angle) * boss.width / 3.5;
+        const baseY = Math.sin(tentacle.angle) * boss.height / 3.5;
+        
+        const segments = 4;
+        let prevX = baseX;
+        let prevY = baseY;
+        
+        // Create organic tentacle with multiple segments
+        for (let seg = 1; seg <= segments; seg++) {
+          const segmentProgress = seg / segments;
+          const currentWiggle = wiggle1 * (1 - segmentProgress) + wiggle2 * segmentProgress;
+          
+          const segmentAngle = tentacle.angle + currentWiggle;
+          const segmentLength = tentacle.length / segments;
+          
+          const segmentX = prevX + Math.cos(segmentAngle) * segmentLength;
+          const segmentY = prevY + Math.sin(segmentAngle) * segmentLength;
+          
+          // Gradient color for tentacle depth
+          const intensity = 1 - segmentProgress * 0.4;
+          this.ctx.strokeStyle = config.tentacleColor + Math.floor(intensity * 255).toString(16).padStart(2, '0');
+          this.ctx.lineWidth = 6 - segmentProgress * 2;
+          
+          this.ctx.beginPath();
+          this.ctx.moveTo(prevX, prevY);
+          this.ctx.lineTo(segmentX, segmentY);
+          this.ctx.stroke();
+          
+          // Sucker details on tentacles
+          if (seg % 2 === 0) {
+            this.ctx.fillStyle = config.tentacleColor + '80';
+            this.ctx.beginPath();
+            this.ctx.arc(segmentX, segmentY, 2, 0, Math.PI * 2);
+            this.ctx.fill();
+          }
+          
+          prevX = segmentX;
+          prevY = segmentY;
+        }
       });
     }
     
-    // Boss health bar with phase colors
-    const barWidth = boss.width;
-    const barHeight = 8;
-    const barY = -boss.height / 2 - 20;
+    // Organic mandibles/chelicerae
+    this.ctx.strokeStyle = config.tentacleColor;
+    this.ctx.lineWidth = 4;
+    const mandibleMove = Math.sin(time * 6) * 0.2;
     
+    // Left mandible
+    this.ctx.beginPath();
+    this.ctx.arc(-boss.width/4, boss.height/4, 8, -Math.PI/4 + mandibleMove, Math.PI/4 + mandibleMove);
+    this.ctx.stroke();
+    
+    // Right mandible
+    this.ctx.beginPath();
+    this.ctx.arc(boss.width/4, boss.height/4, 8, 3*Math.PI/4 - mandibleMove, 5*Math.PI/4 - mandibleMove);
+    this.ctx.stroke();
+    
+    // Phase 3: Additional rage effects
+    if (boss.phase >= 3) {
+      // Electric/plasma aura
+      this.ctx.strokeStyle = '#00FFFF';
+      this.ctx.lineWidth = 2;
+      for (let i = 0; i < 3; i++) {
+        const electricRadius = boss.width / 2 + 20 + i * 10;
+        const electricOffset = time * (2 + i) + i * Math.PI * 0.7;
+        
+        this.ctx.beginPath();
+        this.ctx.arc(
+          Math.sin(electricOffset) * 5,
+          Math.cos(electricOffset) * 5,
+          electricRadius,
+          0, Math.PI * 2
+        );
+        this.ctx.globalAlpha = 0.3 - i * 0.1;
+        this.ctx.stroke();
+      }
+      this.ctx.globalAlpha = 1;
+    }
+    
+    // Advanced health bar with phase transitions
+    const barWidth = boss.width * 1.2;
+    const barHeight = 10;
+    const barY = -boss.height / 2 - 30;
+    
+    // Health bar background
     this.ctx.shadowBlur = 0;
-    this.ctx.fillStyle = '#FF0000';
+    this.ctx.fillStyle = '#000000';
     this.ctx.fillRect(-barWidth / 2, barY, barWidth, barHeight);
     
-    // Health bar color based on phase
-    const healthColors = ['#00FF00', '#FFFF00', '#FF4500'];
+    // Health bar with gradient based on phase
+    const healthPercent = boss.health / boss.maxHealth;
+    const healthColors = [
+      ['#00FF00', '#7FFF00'], // Phase 1: Green to Yellow-Green
+      ['#FFFF00', '#FF8C00'], // Phase 2: Yellow to Orange  
+      ['#FF4500', '#FF0000']  // Phase 3: Orange to Red
+    ];
+    
+    const phaseColors = healthColors[boss.phase - 1] || healthColors[0];
+    const healthGradient = this.ctx.createLinearGradient(-barWidth/2, 0, barWidth/2, 0);
+    healthGradient.addColorStop(0, phaseColors[0]);
+    healthGradient.addColorStop(1, phaseColors[1]);
+    
+    this.ctx.fillStyle = healthGradient;
+    this.ctx.fillRect(-barWidth / 2, barY, barWidth * healthPercent, barHeight);
+    
+    // Health bar border
+    this.ctx.strokeStyle = config.tentacleColor;
+    this.ctx.lineWidth = 2;
+    this.ctx.strokeRect(-barWidth / 2, barY, barWidth, barHeight);
+    
+    this.ctx.restore();
+  }
     this.ctx.fillStyle = healthColors[boss.phase - 1] || '#00FF00';
     const healthPercent = boss.health / boss.maxHealth;
     this.ctx.fillRect(-barWidth / 2, barY, barWidth * healthPercent, barHeight);
