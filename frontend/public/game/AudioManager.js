@@ -539,21 +539,48 @@ window.AudioManager = class AudioManager {
     this.sfxVolume = Math.max(0, Math.min(1, volume));
   }
 
+  // Toggle mute functionality - properly using mute/unmute methods
   toggleMute() {
-    this.musicDisabled = !this.musicDisabled;
     if (this.musicDisabled) {
-      this.stopMusic();
+      this.unmute();
+      console.log('🔊 Audio unmuted');
+      return false; // Not muted
+    } else {
+      this.mute();
+      console.log('🔇 Audio muted');
+      return true; // Muted
     }
-    return this.musicDisabled;
   }
 
+  // Mute all audio - ENHANCED VERSION
   mute() {
+    this.wasMuted = false; // Track previous state
+    if (this.currentTrack && !this.currentTrack.paused) {
+      this.wasMuted = true;
+      this.pauseMusic();
+    }
+    
+    // Set volumes to 0 but preserve original values
+    this.previousMusicVolume = this.musicVolume;
+    this.previousSfxVolume = this.sfxVolume;
+    this.musicVolume = 0;
+    this.sfxVolume = 0;
     this.musicDisabled = true;
-    this.stopMusic();
+    
+    console.log('🔇 All audio muted');
   }
-
+  
+  // Unmute all audio - ENHANCED VERSION  
   unmute() {
+    // Restore previous volumes or use defaults
+    this.musicVolume = this.previousMusicVolume || 0.4;
+    this.sfxVolume = this.previousSfxVolume || 0.6;
     this.musicDisabled = false;
+    
+    if (this.wasMuted && this.currentTrack) {
+      this.resumeMusic();
+    }
+    console.log('🔊 All audio unmuted');
   }
 
   setAudioQuality(quality) {
