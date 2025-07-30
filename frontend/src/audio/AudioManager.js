@@ -147,8 +147,9 @@ class AudioManager {
     }
     
     const track = this.musicTracks[level] || this.musicTracks.menu;
+    track.level = level; // Add level to track for configuration reference
     
-    console.log(`🎵 Starting music for level ${level}: ${track.name} (${track.mood})`);
+    console.log(`🎵 Starting relaxing music for level ${level}: ${track.name} (${track.mood})`);
     
     // Stop current music with fade out
     if (this.currentMusic) {
@@ -156,9 +157,9 @@ class AudioManager {
     }
     
     // Start new music with fade in
-    this.fadeInMusic(track, 1500);
+    this.fadeInMusic(track, 2000); // Longer fade time for relaxation
     
-    console.log(`🎵 Now Playing: ${track.name} (${track.mood})`);
+    console.log(`🎵 Now Playing: ${track.name} - Soft and Relaxing`);
   }
   
   fadeInMusic(track, fadeTime = 1500) {
