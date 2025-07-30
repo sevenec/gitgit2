@@ -1764,6 +1764,44 @@ window.GameRenderer = class GameRenderer {
     // Lives
     this.ctx.fillText(`Lives: ${gameEngine.lives}`, 20, 100);
     
+    // Health Bar
+    if (gameEngine.player && gameEngine.player.health !== undefined) {
+      const healthPercent = gameEngine.player.health / gameEngine.player.maxHealth;
+      const barWidth = 150;
+      const barHeight = 15;
+      const barX = 20;
+      const barY = 110;
+      
+      // Background
+      this.ctx.fillStyle = '#333333';
+      this.ctx.fillRect(barX, barY, barWidth, barHeight);
+      
+      // Health bar color based on health percentage
+      let healthColor;
+      if (healthPercent > 0.6) {
+        healthColor = '#00FF00'; // Green
+      } else if (healthPercent > 0.3) {
+        healthColor = '#FFFF00'; // Yellow
+      } else {
+        healthColor = '#FF0000'; // Red
+      }
+      
+      this.ctx.fillStyle = healthColor;
+      this.ctx.fillRect(barX, barY, barWidth * healthPercent, barHeight);
+      
+      // Border
+      this.ctx.strokeStyle = '#FFFFFF';
+      this.ctx.lineWidth = 2;
+      this.ctx.strokeRect(barX, barY, barWidth, barHeight);
+      
+      // Health text
+      this.ctx.fillStyle = '#FFFFFF';
+      this.ctx.font = '12px Arial';
+      this.ctx.textAlign = 'center';
+      this.ctx.fillText(`Health: ${gameEngine.player.health}/${gameEngine.player.maxHealth}`, 
+                        barX + barWidth / 2, barY - 5);
+    }
+    
     // Level progress (for non-boss levels)
     if (!gameEngine.isBossLevel) {
       const progress = gameEngine.levelTime / gameEngine.levelDuration;
