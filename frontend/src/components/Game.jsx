@@ -347,7 +347,10 @@ const Game = () => {
   };
 
   const handleShowTutorial = () => {
-    setShowTutorial(true);
+    console.log('📖 Tutorial button clicked - showing tutorial');
+    setShowOpeningScreen(false); // Hide opening screen first
+    setShowTutorial(true); // Show tutorial
+    console.log('Tutorial opened from menu');
   };
 
   const handleOpenFluttererSelector = () => {
