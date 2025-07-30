@@ -462,17 +462,26 @@ const Game = () => {
           </div>
         </Card>
 
-        {/* Social Sharing */}
+        {/* Social Sharing & Rewards */}
         {(gameState === 'gameOver' || gameState === 'gameComplete') && score > 0 && (
           <Card className="mt-4 p-4 bg-black/30 backdrop-blur-sm border-purple-500/50">
-            <div className="text-center">
-              <h3 className="text-white font-bold mb-2">Share Your Score!</h3>
-              <Button
-                onClick={shareScore}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-2 px-6 rounded-full"
-              >
-                Share Score: {score.toLocaleString()}
-              </Button>
+            <div className="text-center space-y-3">
+              <h3 className="text-white font-bold mb-2">🎉 Great Game!</h3>
+              <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                <Button
+                  onClick={handleShareScore}
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-2 px-6 rounded-full"
+                >
+                  Share Score: {score.toLocaleString()}
+                </Button>
+                <Button
+                  onClick={handleRewardedAd}
+                  variant="outline"
+                  className="bg-green-600/20 border-green-400 text-green-200 hover:bg-green-600/40"
+                >
+                  🎬 Watch Ad for Coins
+                </Button>
+              </div>
             </div>
           </Card>
         )}
