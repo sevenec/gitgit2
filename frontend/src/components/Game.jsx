@@ -32,6 +32,7 @@ const Game = () => {
   const [showOpeningScreen, setShowOpeningScreen] = useState(true); // Go directly to opening screen
   const [showTutorial, setShowTutorial] = useState(false);
   const [showLoadingScreen, setShowLoadingScreen] = useState(false); // Skip loading screen for now
+  const [showFluttererModal, setShowFluttererModal] = useState(false); // Flutterer selector modal
   const [audioManager, setAudioManager] = useState(null);
   const [highScore, setHighScore] = useState(0);
   const [gameEngineReady, setGameEngineReady] = useState(false);
