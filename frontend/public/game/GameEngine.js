@@ -529,10 +529,10 @@ window.GameEngine = class GameEngine {
     // Initialize background effects based on level theme
     this.initializeLevelEffects(levelConfig);
     
-    // Play level-specific music
-    if (window.AudioManager) {
-      window.AudioManager.playLevelMusic(this.currentLevel);
-      window.AudioManager.playSound('level_start');
+    // Play level-specific music using the global instance
+    if (window.audioManager) {
+      window.audioManager.playLevelMusic(this.currentLevel);
+      window.audioManager.playSound('level_start');
     }
   }
   
