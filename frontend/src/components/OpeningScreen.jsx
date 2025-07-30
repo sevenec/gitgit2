@@ -25,10 +25,9 @@ const OpeningScreen = ({ onStartGame, onShowTutorial, onOpenFluttererSelector, o
       setCurrentTip((prev) => (prev + 1) % gameTips.length);
     }, 3000);
 
-    // Start menu music
-    if (audioManager) {
-      audioManager.playMusic('menu');
-    }
+    // 🔇 NO AUTO-STARTING MUSIC - prevents overlap issues
+    // Music will only start when user actually starts the game
+    console.log('🔇 Opening screen loaded - no auto-play music');
 
     return () => {
       clearInterval(tipInterval);
