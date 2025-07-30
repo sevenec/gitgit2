@@ -59,7 +59,7 @@ class User(BaseModel):
     # Social Features
     daily_challenges: List[DailyChallenge] = []
     friends: List[str] = []
-    shared_scores: List[str] = []
+    shared_scores: List[SharedScore] = []
     
     # Monetization
     purchases: List[Purchase] = []
