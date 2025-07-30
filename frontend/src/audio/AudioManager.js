@@ -615,9 +615,25 @@ class AudioManager {
   }
   
   resumeAudioContext() {
-    // Resume audio context on user interaction (required by browsers)
     if (this.audioContext && this.audioContext.state === 'suspended') {
-      this.audioContext.resume();
+      console.log('🎵 Resuming suspended audio context...');
+      return this.audioContext.resume().then(() => {
+        console.log('✅ Audio context resumed successfully');
+        // Start playing current music after resuming
+        if (!this.isMuted) {
+          this.playMusic('menu');
+        }
+      }).catch(error => {
+        console.error('❌ Failed to resume audio context:', error);
+      });
+    } else if (this.audioContext && this.audioContext.state === 'running') {
+      console.log('✅ Audio context already running');
+      // Make sure we're playing music
+      if (!this.isMuted && !this.currentMusic) {
+        this.playMusic('menu');
+      }
+    } else {
+      console.log('🔇 No audio context available');
     }
   }
   
