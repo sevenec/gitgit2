@@ -171,6 +171,11 @@ const Game = () => {
     animationFrameRef.current = requestAnimationFrame(gameLoop);
   };
 
+  const handleLoadingComplete = () => {
+    setShowLoadingScreen(false);
+    setShowOpeningScreen(true);
+  };
+
   const handleStartGame = () => {
     setShowOpeningScreen(false);
     
