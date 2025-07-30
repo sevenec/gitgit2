@@ -451,6 +451,9 @@ window.GameEngine = class GameEngine {
       if (this.player.blasterTime <= 0) {
         this.player.blasterMode = false;
         this.player.blasterLevel = 0; // Reset blaster level when power-up expires
+      } else {
+        // Automatic shooting when blaster is active
+        this.handleAutomaticShooting(deltaTime);
       }
     }
     
