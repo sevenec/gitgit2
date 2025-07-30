@@ -98,6 +98,23 @@ const Game = () => {
     };
   }, [selectedFlutterer]);
 
+  // Initialize audio manager
+  useEffect(() => {
+    if (window.AudioManager) {
+      setAudioManager(window.AudioManager);
+    } else {
+      // Wait for AudioManager to load
+      const checkAudioManager = () => {
+        if (window.AudioManager) {
+          setAudioManager(window.AudioManager);
+        } else {
+          setTimeout(checkAudioManager, 100);
+        }
+      };
+      checkAudioManager();
+    }
+  }, []);
+
   // Set default flutterer when user loads
   useEffect(() => {
     if (user && !selectedFlutterer) {
@@ -105,6 +122,14 @@ const Game = () => {
       setSelectedFlutterer(userFlutterer);
     }
   }, [user, selectedFlutterer]);
+
+  // Check if user has completed tutorial before
+  useEffect(() => {
+    const hasCompletedTutorial = localStorage.getItem('butterflyTutorialCompleted');
+    if (!hasCompletedTutorial) {
+      setShowTutorial(false); // Will show tutorial after opening screen
+    }
+  }, []);
 
   const startGameLoop = () => {
     const gameLoop = (currentTime) => {
