@@ -42,7 +42,8 @@ window.AudioManager = class AudioManager {
     
     // Initialize audio context
     this.initializeAudioContext();
-    console.log('AudioManager initialized with real music tracks!');
+    console.log('🔇 AudioManager initialized with ALL AUDIO DISABLED to prevent overlap issues!');
+    console.log('🔇 User can enable audio via Sound button if desired');
   }
   
   initializeAudioContext() {
