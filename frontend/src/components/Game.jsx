@@ -63,7 +63,25 @@ const Game = () => {
       canvas.height = Math.max(500, Math.min(700, window.innerHeight - 300));
       
       console.log('Canvas resized to:', canvas.width, 'x', canvas.height);
+    };
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, []);
+
+  // Separate useEffect for game initialization when canvas is available
+  useEffect(() => {
+    if (gameState === 'playing' && canvasRef.current && !gameEngineReady) {
+      console.log('Game state is playing, canvas available, initializing game engine...');
       
+      const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
       
       const initializeGame = () => {
@@ -85,7 +103,12 @@ const Game = () => {
         
         try {
           const canvas = canvasRef.current;
-          resizeCanvas();
+          
+          // Resize canvas first
+          const container = canvas.parentElement;
+          const rect = container.getBoundingClientRect();
+          canvas.width = Math.max(400, Math.min(600, rect.width - 40));
+          canvas.height = Math.max(500, Math.min(700, window.innerHeight - 300));
           
           // Create game engine instance
           console.log('Creating GameEngine instance...');
@@ -96,6 +119,11 @@ const Game = () => {
           const renderer = new window.GameRenderer(canvas);
           gameEngineRef.current.setRenderer(renderer);
           
+          // Set selected flutterer if available
+          if (selectedFlutterer) {
+            gameEngineRef.current.setSelectedFlutterer(selectedFlutterer);
+          }
+          
           console.log('Game initialized successfully');
           setGameEngineReady(true);
           startGameLoop();
@@ -105,20 +133,10 @@ const Game = () => {
         }
       };
       
-      // Initialize game immediately instead of waiting for flutterer selection
-      setTimeout(initializeGame, 500);
-    };
-
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    return () => {
-      window.removeEventListener('resize', resizeCanvas);
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, []); // Remove selectedFlutterer dependency to initialize immediately
+      // Initialize game immediately since canvas is now available
+      setTimeout(initializeGame, 200);
+    }
+  }, [gameState, gameEngineReady, selectedFlutterer]);
 
   // Initialize audio manager
   useEffect(() => {
