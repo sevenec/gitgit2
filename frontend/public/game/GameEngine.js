@@ -966,6 +966,11 @@ window.GameEngine = class GameEngine {
   }
   
   spawnEnemySwarm() {
+    // Play menacing buzz sound for swarm attack
+    if (window.AudioManager) {
+      window.AudioManager.playSound('buzz', { volume: 0.8, duration: 0.8 });
+    }
+    
     // Spawn small enemy insects
     for (let i = 0; i < 5; i++) {
       this.obstacles.push({
@@ -983,6 +988,11 @@ window.GameEngine = class GameEngine {
   }
   
   spawnRageBeam() {
+    // Play explosive sound for rage beam attack
+    if (window.AudioManager) {
+      window.AudioManager.playSound('explosion', { volume: 0.9, duration: 1.0 });
+    }
+    
     // Create a warning indicator first
     this.specialEffects.push({
       type: 'beam_warning',
