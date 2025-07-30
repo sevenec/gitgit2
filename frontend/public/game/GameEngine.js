@@ -53,6 +53,32 @@ window.GameEngine = class GameEngine {
     this.initializeDefaultFlutterer();
   }
   
+  
+  initializeDefaultFlutterer() {
+    // Set default flutterer (Basic Cosmic Flutter)
+    this.selectedFlutterer = {
+      id: 'basic_cosmic',
+      name: 'Basic Cosmic Flutter',
+      skills: { speed: 1.0, health: 100, special: null },
+      colors: {
+        body: '#8B4513',
+        wing1: '#FF6B9D', 
+        wing2: '#FF8FA3',
+        accent: '#FFFFFF'
+      }
+    };
+  }
+  
+  setSelectedFlutterer(flutterer) {
+    this.selectedFlutterer = flutterer;
+    if (this.player) {
+      // Update player stats based on flutterer
+      this.player.maxHealth = flutterer.skills.health;
+      this.player.health = Math.min(this.player.health, this.player.maxHealth);
+      this.player.baseSpeed = 8 * flutterer.skills.speed;
+    }
+  }
+  
   setupEventListeners() {
     // Touch events for mobile
     this.canvas.addEventListener('touchstart', (e) => {
