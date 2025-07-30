@@ -1283,9 +1283,9 @@ window.GameEngine = class GameEngine {
     // Screen flash effect
     this.screenEffects.powerUpEffect();
     
-    // Play enhanced power-up sounds
+    // Play sparkle sound effect for power-up collection
     if (window.AudioManager) {
-      window.AudioManager.playPowerUpSound(powerUp.type);
+      window.AudioManager.playSound('sparkles', { volume: 0.7 });
     }
   }
   
