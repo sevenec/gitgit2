@@ -161,21 +161,83 @@ class AudioManager {
     console.log(`🎵 Now Playing: ${track.name} (${track.mood})`);
   }
   
-  fadeInMusic(track, duration = 1500) {
-    if (this.useHTMLAudio) {
-      // Fallback to HTML5 audio
-      this.playHTMLAudio(track.url, true, this.musicVolume);
-      return;
+  fadeInMusic(track, fadeTime = 1500) {
+    if (!this.audioContext || this.isMuted) return;
+    
+    console.log(`🎼 Starting continuous music: ${track.name}`);
+    
+    // Create a simple but audible continuous music loop
+    this.createContinuousMusic(track, fadeTime);
+  }
+  
+  createContinuousMusic(track, fadeTime) {
+    // Stop any existing music
+    if (this.currentMusicNodes) {
+      this.currentMusicNodes.forEach(node => {
+        try { node.stop(); } catch(e) {}
+      });
     }
+    this.currentMusicNodes = [];
     
-    // Web Audio API implementation
+    // Create a simple, audible musical loop
+    const baseFreq = 220; // A3
+    const melody = [1, 1.25, 1.5, 1.75, 2, 1.75, 1.5, 1.25]; // Simple melody
+    const chordRatios = [1, 1.25, 1.5]; // Major chord
+    
+    // Create continuous background chord
+    chordRatios.forEach((ratio, index) => {
+      const oscillator = this.audioContext.createOscillator();
+      const gainNode = this.audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(this.musicGain);
+      
+      oscillator.type = 'sine';
+      oscillator.frequency.value = baseFreq * ratio;
+      
+      // Gentle volume for background harmony
+      gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.05, this.audioContext.currentTime + fadeTime / 1000);
+      
+      oscillator.start(this.audioContext.currentTime);
+      
+      // Loop indefinitely until stopped
+      this.currentMusicNodes.push(oscillator);
+    });
+    
+    // Create melodic lead that loops
+    let melodyIndex = 0;
+    const playMelodyNote = () => {
+      if (this.isMuted || !this.audioContext) return;
+      
+      const oscillator = this.audioContext.createOscillator();
+      const gainNode = this.audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(this.musicGain);
+      
+      oscillator.type = 'triangle';
+      oscillator.frequency.value = baseFreq * 2 * melody[melodyIndex % melody.length];
+      
+      const noteLength = 0.8;
+      gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.08, this.audioContext.currentTime + 0.05);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + noteLength);
+      
+      oscillator.start(this.audioContext.currentTime);
+      oscillator.stop(this.audioContext.currentTime + noteLength);
+      
+      melodyIndex++;
+      
+      // Schedule next note
+      setTimeout(playMelodyNote, 600);
+    };
+    
+    // Start melody after a short delay
+    setTimeout(playMelodyNote, 500);
+    
     this.currentMusic = track;
-    
-    // Create gain node for this track
-    const trackGain = this.audioContext.createGain();
-    trackGain.connect(this.musicGain);
-    trackGain.gain.setValueAtTime(0, this.audioContext.currentTime);
-    trackGain.gain.linearRampToValueAtTime(1, this.audioContext.currentTime + (duration / 1000));
+    console.log(`🎵 Continuous music loop started: ${track.name}`);
   }
   
   fadeOutMusic(track, duration = 1000) {
