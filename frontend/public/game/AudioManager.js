@@ -316,7 +316,4 @@ window.AudioManager = class AudioManager {
     this.musicDisabled = false;
     console.log('Music enabled');
   }
-}
-
-// Export the class directly (not instance) so it can be instantiated
-export default AudioManager;
+};
