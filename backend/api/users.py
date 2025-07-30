@@ -31,6 +31,12 @@ async def register_user(user_data: UserCreate, db=Depends(get_database)):
     result = await db.users.insert_one(user.dict())
     user.user_id = str(result.inserted_id)
     
+    # Update the user record with the correct user_id
+    await db.users.update_one(
+        {"_id": result.inserted_id},
+        {"$set": {"user_id": user.user_id}}
+    )
+    
     return user
 
 @router.get("/{user_id}", response_model=User)
