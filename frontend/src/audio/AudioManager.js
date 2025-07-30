@@ -1,21 +1,22 @@
 class AudioManager {
   constructor() {
     this.audioContext = null;
-    this.masterVolume = 0.5; // Reduced for relaxation
-    this.musicVolume = 0.3; // Significantly reduced for background ambience
-    this.sfxVolume = 0.6; // Slightly reduced but still audible
+    this.masterVolume = 0.7; // Increased for better audio experience
+    this.musicVolume = 0.6; // Increased for orchestral tracks
+    this.sfxVolume = 0.8; // Full volume for sound effects
     this.currentMusic = null;
+    this.currentMusicAudio = null; // HTML5 audio element for music
     this.musicTracks = {};
     this.soundEffects = {};
     this.isMuted = false;
     
     this.initializeAudio();
-    this.loadAudioAssets();
+    this.loadHighQualityAudioAssets();
   }
   
   initializeAudio() {
     try {
-      // Initialize Web Audio API
+      // Initialize Web Audio API for sound effects
       this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       
       // Create master gain node
@@ -32,21 +33,229 @@ class AudioManager {
       this.sfxGain.connect(this.masterGain);
       this.sfxGain.gain.value = this.sfxVolume;
       
+      console.log('🎼 High-Quality AudioManager initialized');
     } catch (error) {
       console.warn('Web Audio API not supported:', error);
       this.useHTMLAudio = true;
     }
   }
   
-  loadAudioAssets() {
-    // Level-specific music tracks (high-quality orchestral/electronic)
+  loadHighQualityAudioAssets() {
+    // High-quality orchestral/electronic space-themed music tracks for all 15 levels
     this.musicTracks = {
-      // Levels 1-5: Starry Beginnings
-      1: { name: 'Starry Genesis', url: '/audio/music/01_starry_genesis.mp3', mood: 'upbeat_orchestral' },
-      2: { name: 'Cosmic Drift', url: '/audio/music/02_cosmic_drift.mp3', mood: 'electronic_ambient' },
-      3: { name: 'Aurora Fields', url: '/audio/music/03_aurora_fields.mp3', mood: 'ambient_wonder' },
-      4: { name: 'Magnetic Storms', url: '/audio/music/04_magnetic_storms.mp3', mood: 'electronic_tension' },
-      5: { name: 'Colorful Nebula', url: '/audio/music/05_colorful_nebula.mp3', mood: 'orchestral_wonder' },
+      menu: { 
+        name: 'Cosmic Welcome', 
+        src: '/sounds/menu_cosmic_ambient.mp3', 
+        mood: 'ambient_welcome',
+        volume: 0.5
+      },
+      
+      // Early levels - Upbeat and starry
+      1: { 
+        name: 'Starry Awakening', 
+        src: '/sounds/level_01_starry_upbeat.mp3', 
+        mood: 'upbeat_orchestral',
+        description: 'Upbeat starry orchestral theme',
+        volume: 0.6
+      },
+      2: { 
+        name: 'Aurora Dance', 
+        src: '/sounds/level_02_aurora_energy.mp3', 
+        mood: 'energetic_electronic',
+        description: 'Electronic aurora energy flow',
+        volume: 0.6
+      },
+      3: { 
+        name: 'Nebula Drift', 
+        src: '/sounds/level_03_nebula_drift.mp3', 
+        mood: 'ambient_wonder',
+        description: 'Ambient nebula drifting',
+        volume: 0.5
+      },
+      4: { 
+        name: 'Cosmic Winds', 
+        src: '/sounds/level_04_cosmic_winds.mp3', 
+        mood: 'flowing_orchestral',
+        description: 'Flowing orchestral cosmic winds',
+        volume: 0.6
+      },
+      5: { 
+        name: 'Stellar Journey', 
+        src: '/sounds/level_05_stellar_journey.mp3', 
+        mood: 'adventurous_hybrid',
+        description: 'Adventurous orchestral-electronic hybrid',
+        volume: 0.6
+      },
+      
+      // Mid levels - Building intensity
+      6: { 
+        name: 'Galactic Pulse', 
+        src: '/sounds/level_06_galactic_pulse.mp3', 
+        mood: 'pulsing_electronic',
+        description: 'Pulsing electronic galactic theme',
+        volume: 0.7
+      },
+      7: { 
+        name: 'Solar Flare', 
+        src: '/sounds/level_07_solar_flare.mp3', 
+        mood: 'intense_orchestral',
+        description: 'Intense orchestral solar flare',
+        volume: 0.7
+      },
+      8: { 
+        name: 'Deep Space', 
+        src: '/sounds/level_08_deep_space.mp3', 
+        mood: 'mysterious_ambient',
+        description: 'Mysterious deep space ambient',
+        volume: 0.5
+      },
+      9: { 
+        name: 'Quantum Storm', 
+        src: '/sounds/level_09_quantum_storm.mp3', 
+        mood: 'chaotic_hybrid',
+        description: 'Chaotic orchestral-electronic storm',
+        volume: 0.7
+      },
+      
+      // Final approach - Tense and dramatic
+      10: { 
+        name: 'Void Tension', 
+        src: '/sounds/level_10_tense_void.mp3', 
+        mood: 'tense_void',
+        description: 'Tense voids orchestral theme',
+        volume: 0.6
+      },
+      11: { 
+        name: 'Black Hole', 
+        src: '/sounds/level_11_black_hole.mp3', 
+        mood: 'ominous_orchestral',
+        description: 'Ominous black hole orchestral',
+        volume: 0.7
+      },
+      12: { 
+        name: 'Singularity', 
+        src: '/sounds/level_12_singularity.mp3', 
+        mood: 'powerful_hybrid',
+        description: 'Powerful singularity hybrid theme',
+        volume: 0.7
+      },
+      13: { 
+        name: 'Pre-Boss Tension', 
+        src: '/sounds/level_13_pre_boss.mp3', 
+        mood: 'building_tension',
+        description: 'Building tension orchestral',
+        volume: 0.8
+      },
+      14: { 
+        name: 'Boss Approach', 
+        src: '/sounds/level_14_boss_approach.mp3', 
+        mood: 'dramatic_approach',
+        description: 'Dramatic boss approach',
+        volume: 0.8
+      },
+      
+      // Boss battle - Epic cinematic
+      15: { 
+        name: 'Mother Insect Battle', 
+        src: '/sounds/level_15_boss_epic.mp3', 
+        mood: 'epic_cinematic',
+        description: 'Epic cinematic boss battle orchestral',
+        volume: 0.9
+      }
+    };
+
+    // Immersive sound effects with high-quality audio
+    this.soundEffects = {
+      // Power-up sounds with sparkles
+      power_up_collect: { 
+        name: 'Power-Up Sparkle', 
+        src: '/sounds/sfx/powerup_sparkle_collect.wav',
+        description: 'Sparkling power-up collection'
+      },
+      speed_boost: { 
+        name: 'Speed Boost Whoosh', 
+        src: '/sounds/sfx/speed_boost_whoosh.wav',
+        description: 'Speed boost activation whoosh'
+      },
+      shield_activate: { 
+        name: 'Shield Energy', 
+        src: '/sounds/sfx/shield_energy_activate.wav',
+        description: 'Energy shield activation'
+      },
+      blaster_unlock: { 
+        name: 'Blaster Power', 
+        src: '/sounds/sfx/blaster_power_unlock.wav',
+        description: 'Blaster power unlock sound'
+      },
+
+      // Collision sounds with crunches
+      player_hit: { 
+        name: 'Impact Crunch', 
+        src: '/sounds/sfx/collision_crunch_hit.wav',
+        description: 'Crunchy collision impact'
+      },
+      asteroid_collision: { 
+        name: 'Asteroid Crunch', 
+        src: '/sounds/sfx/asteroid_crunch_impact.wav',
+        description: 'Asteroid collision crunch'
+      },
+      insect_collision: { 
+        name: 'Insect Buzz Crunch', 
+        src: '/sounds/sfx/insect_buzz_crunch.wav',
+        description: 'Insect collision with buzz and crunch'
+      },
+
+      // Boss sounds with buzzes and explosions
+      boss_roar: { 
+        name: 'Mother Insect Roar', 
+        src: '/sounds/sfx/boss_mother_insect_roar.wav',
+        description: 'Epic mother insect boss roar'
+      },
+      boss_explosion: { 
+        name: 'Boss Epic Explosion', 
+        src: '/sounds/sfx/boss_epic_explosion.wav',
+        description: 'Massive boss explosion'
+      },
+      boss_buzz_attack: { 
+        name: 'Boss Buzz Attack', 
+        src: '/sounds/sfx/boss_buzz_attack.wav',
+        description: 'Boss insect buzz attack'
+      },
+      
+      // Weapon and action sounds
+      blaster_shot: { 
+        name: 'Energy Blaster', 
+        src: '/sounds/sfx/blaster_energy_shot.wav',
+        description: 'Energy blaster shot'
+      },
+      enemy_explosion: { 
+        name: 'Small Explosion', 
+        src: '/sounds/sfx/enemy_small_explosion.wav',
+        description: 'Small enemy explosion'
+      },
+      
+      // Game state sounds
+      level_complete: { 
+        name: 'Victory Fanfare', 
+        src: '/sounds/sfx/level_victory_fanfare.wav',
+        description: 'Level completion fanfare'
+      },
+      game_over: { 
+        name: 'Cosmic Game Over', 
+        src: '/sounds/sfx/game_over_cosmic.wav',
+        description: 'Cosmic game over theme'
+      }
+    };
+    
+    console.log('🎼 High-quality audio assets loaded:');
+    console.log(`🎵 ${Object.keys(this.musicTracks).length} orchestral/electronic tracks`);
+    console.log(`🔊 ${Object.keys(this.soundEffects).length} immersive sound effects`);
+    console.log('🎯 Inspired by Pixabay, MelodyLoops, and Bensound quality standards');
+    
+    // Enable auto-play and preload critical sounds
+    this.setupAutoPlay();
+    this.preloadCriticalAudio();
+  }
       
       // Levels 6-10: Intermediate Challenges  
       6: { name: 'Crystal Formations', url: '/audio/music/06_crystal_formations.mp3', mood: 'electronic_crystal' },
