@@ -531,7 +531,7 @@ window.GameEngine = class GameEngine {
     
     // Play level-specific music
     if (window.AudioManager) {
-      window.AudioManager.playMusic(this.currentLevel);
+      window.AudioManager.playLevelMusic(this.currentLevel);
       window.AudioManager.playSound('level_start');
     }
   }
