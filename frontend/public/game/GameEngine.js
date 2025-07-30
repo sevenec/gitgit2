@@ -622,4 +622,123 @@ window.GameEngine = class GameEngine {
       }, 2000);
     }
   }
+  
+  updateProjectiles(deltaTime) {
+    this.projectiles.forEach((projectile, index) => {
+      projectile.x += projectile.vx;
+      projectile.y += projectile.vy;
+      projectile.life -= deltaTime;
+      
+      // Remove projectiles that are off screen or expired
+      if (projectile.y < -50 || projectile.y > this.canvas.height + 50 || 
+          projectile.x < -50 || projectile.x > this.canvas.width + 50 || 
+          projectile.life <= 0) {
+        this.projectiles.splice(index, 1);
+      }
+    });
+  }
+  
+  updateBackgroundEffects(deltaTime) {
+    this.backgroundEffects.forEach((effect, index) => {
+      switch (effect.type) {
+        case 'shooting_star':
+          effect.y += effect.speed;
+          effect.life -= deltaTime;
+          if (effect.y > this.canvas.height || effect.life <= 0) {
+            this.backgroundEffects.splice(index, 1);
+          }
+          break;
+        case 'nebula_particle':
+          effect.y += effect.speed;
+          if (effect.y > this.canvas.height) {
+            effect.y = -10;
+            effect.x = Math.random() * this.canvas.width;
+          }
+          break;
+        case 'energy_tendril':
+          effect.angle += 0.02;
+          break;
+      }
+    });
+  }
+  
+  updateSpecialEffects(deltaTime) {
+    this.specialEffects.forEach((effect, index) => {
+      effect.life -= deltaTime;
+      effect.alpha = effect.life / effect.maxLife;
+      
+      if (effect.life <= 0) {
+        this.specialEffects.splice(index, 1);
+      } else {
+        // Update effect based on type
+        switch (effect.type) {
+          case 'power_up_collect':
+            effect.scale += 0.05;
+            effect.y -= 2;
+            break;
+          case 'explosion':
+            effect.scale += 0.1;
+            break;
+        }
+      }
+    });
+  }
+  
+  updateFluttererSpecials(deltaTime) {
+    if (!this.selectedFlutterer || !this.player) return;
+    
+    const special = this.selectedFlutterer.skills.special;
+    
+    // Update special ability cooldowns
+    if (this.player.specialCooldown > 0) {
+      this.player.specialCooldown -= deltaTime;
+    }
+    
+    switch (special) {
+      case 'trail_sparkles':
+        // Add sparkle trail particles
+        if (Math.random() < 0.3) {
+          this.createSparkleTrail(this.player.x, this.player.y);
+        }
+        break;
+      case 'shoot_projectiles':
+        // Auto-shoot when blaster mode is active
+        if (this.player.blasterMode && this.player.specialCooldown <= 0) {
+          this.shootPlayerProjectile();
+          this.player.specialCooldown = 500; // 0.5 second cooldown
+        }
+        break;
+    }
+  }
+  
+  createSparkleTrail(x, y) {
+    for (let i = 0; i < 3; i++) {
+      this.particles.push({
+        x: x + (Math.random() - 0.5) * 20,
+        y: y + (Math.random() - 0.5) * 20,
+        vx: (Math.random() - 0.5) * 2,
+        vy: (Math.random() - 0.5) * 2,
+        color: '#FFD700',
+        life: 800,
+        maxLife: 800,
+        alpha: 1,
+        size: 2 + Math.random() * 2
+      });
+    }
+  }
+  
+  shootPlayerProjectile() {
+    this.projectiles.push({
+      x: this.player.x,
+      y: this.player.y - 20,
+      vx: 0,
+      vy: -8,
+      width: 8,
+      height: 15,
+      color: '#00FFFF',
+      life: 2000,
+      type: 'player',
+      damage: 25
+    });
+  }
 };
