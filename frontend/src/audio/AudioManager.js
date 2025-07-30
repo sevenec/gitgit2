@@ -1,262 +1,320 @@
 class AudioManager {
   constructor() {
-    this.audioContext = null;
-    this.masterVolume = 0.7; 
-    this.musicVolume = 0.0; // MUSIC DISABLED BY DEFAULT
-    this.sfxVolume = 0.8; 
-    this.currentMusic = null;
-    this.currentMusicAudio = null;
-    this.musicTracks = {};
-    this.soundEffects = {};
-    this.isMuted = false;
-    this.musicDisabled = true; // MUSIC COMPLETELY DISABLED
-    this.currentMusicNodes = [];
+    // Audio configuration with real music files
+    this.musicDisabled = false; // Music is now enabled!
+    this.musicVolume = 0.4; // Moderate volume for background music
+    this.sfxVolume = 0.6; // Sound effects volume
+    this.masterVolume = 0.7; // Master volume control
     
-    this.initializeAudio();
-    this.loadBasicAudioAssets();
-  }
-  
-  initializeAudio() {
-    try {
-      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      
-      this.masterGain = this.audioContext.createGain();
-      this.masterGain.connect(this.audioContext.destination);
-      this.masterGain.gain.value = this.masterVolume;
-      
-      this.musicGain = this.audioContext.createGain();
-      this.musicGain.connect(this.masterGain);
-      this.musicGain.gain.value = 0; // MUSIC DISABLED
-      
-      this.sfxGain = this.audioContext.createGain();
-      this.sfxGain.connect(this.masterGain);
-      this.sfxGain.gain.value = this.sfxVolume;
-      
-      console.log('🎼 Minimal AudioManager initialized (Music DISABLED)');
-    } catch (error) {
-      console.warn('Web Audio API not supported:', error);
-      this.useHTMLAudio = true;
-    }
-  }
-  
-  loadBasicAudioAssets() {
-    // Minimal sound effects only - no music files needed
-    this.soundEffects = {
-      power_up_collect: { 
-        name: 'Power-Up Collect', 
-        src: '/sounds/sfx/powerup_collect.wav',
-        fallback: { type: 'square', freq: 800, duration: 0.3 }
-      },
-      player_hit: { 
-        name: 'Player Hit', 
-        src: '/sounds/sfx/player_hit.wav',
-        fallback: { type: 'sawtooth', freq: 150, duration: 0.2 }
-      },
-      blaster_shot: { 
-        name: 'Blaster Shot', 
-        src: '/sounds/sfx/blaster_shot.wav',
-        fallback: { type: 'square', freq: 400, duration: 0.1 }
-      },
-      enemy_explosion: { 
-        name: 'Enemy Explosion', 
-        src: '/sounds/sfx/enemy_explosion.wav',
-        fallback: { type: 'noise', freq: 200, duration: 0.4 }
-      },
-      boss_roar: { 
-        name: 'Boss Roar', 
-        src: '/sounds/sfx/boss_roar.wav',
-        fallback: { type: 'sawtooth', freq: 80, duration: 1.0 }
-      }
+    // Audio context for advanced audio features
+    this.audioContext = null;
+    this.musicTracks = new Map(); // Store loaded music tracks
+    this.currentTrack = null;
+    this.fadeTimeout = null;
+    
+    // Level music mapping
+    this.levelMusicMap = {
+      1: '/sounds/level1-space-epic-cinematic.mp3',
+      2: '/sounds/level2-traveling-through-space.mp3', 
+      3: '/sounds/level3-lost-in-space.mp3',
+      4: '/sounds/level4-space-music.mp3',
+      5: '/sounds/level5-space-clouds-velvet.mp3',
+      // Levels 6-10 will cycle through available tracks
+      6: '/sounds/level1-space-epic-cinematic.mp3',
+      7: '/sounds/level2-traveling-through-space.mp3',
+      8: '/sounds/level3-lost-in-space.mp3',
+      9: '/sounds/level4-space-music.mp3',
+      10: '/sounds/level5-space-clouds-velvet.mp3',
+      // Levels 11-15 (including boss levels) get more intense tracks
+      11: '/sounds/level1-space-epic-cinematic.mp3', // More epic for later levels
+      12: '/sounds/level2-traveling-through-space.mp3',
+      13: '/sounds/level3-lost-in-space.mp3', 
+      14: '/sounds/level4-space-music.mp3',
+      15: '/sounds/level1-space-epic-cinematic.mp3'  // Epic finale music
     };
     
-    console.log('🔊 Minimal audio system loaded - MUSIC DISABLED');
-    console.log(`🔊 ${Object.keys(this.soundEffects).length} basic sound effects available`);
+    // Initialize audio context
+    this.initializeAudioContext();
+    console.log('AudioManager initialized with real music tracks!');
   }
-
-  // Music playback - DISABLED FOR NOW
-  playMusic(level) {
+  
+  initializeAudioContext() {
+    try {
+      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      console.log('Audio context initialized successfully');
+    } catch (e) {
+      console.warn('Web Audio API not supported, falling back to HTML5 audio');
+    }
+  }
+  
+  // Play background music for specific level
+  playLevelMusic(level) {
     if (this.musicDisabled) {
-      console.log('🔇 Music is disabled - no music will play');
+      console.log('Music is disabled - no music will play');
       return;
     }
     
-    if (this.isMuted) {
-      console.log('🔇 Music muted - not playing');
+    const musicPath = this.levelMusicMap[level];
+    if (!musicPath) {
+      console.warn(`No music configured for level ${level}`);
       return;
     }
     
-    // If music is enabled in the future, we can add simple HTML5 audio here
-    console.log(`🎵 Music for level ${level} would play here (currently disabled)`);
-  }
-
-  // Simple sound effects with basic fallback
-  playSound(soundName, options = {}) {
-    if (this.isMuted) return;
+    console.log(`Starting music for Level ${level}: ${musicPath}`);
     
-    const sound = this.soundEffects[soundName];
-    if (!sound) {
-      console.warn(`🔊 Sound not found: ${soundName}`);
-      return;
-    }
+    // Stop current music if playing
+    this.stopMusic();
     
-    // Try HTML5 audio first
-    const audio = new Audio();
-    audio.src = sound.src;
-    audio.volume = (options.volume || 1.0) * this.sfxVolume;
+    // Create new audio element
+    const audio = new Audio(musicPath);
+    audio.volume = this.musicVolume * this.masterVolume;
+    audio.loop = true; // Loop background music
+    
+    // Handle loading and playback
+    audio.addEventListener('loadstart', () => {
+      console.log(`Loading music: ${musicPath}`);
+    });
     
     audio.addEventListener('canplaythrough', () => {
-      audio.play().catch(() => {
-        console.log(`🔊 Using fallback audio for: ${soundName}`);
-        this.playFallbackSound(soundName, options);
-      });
+      console.log(`Music ready to play: ${musicPath}`);
     });
     
-    audio.addEventListener('error', () => {
-      console.log(`🔊 Audio file not found, using fallback for: ${soundName}`);
-      this.playFallbackSound(soundName, options);
+    audio.addEventListener('error', (e) => {
+      console.error(`Failed to load music: ${musicPath}`, e);
     });
     
-    audio.load();
+    // Store reference and play
+    this.currentTrack = audio;
+    
+    // Play with user interaction handling
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          console.log(`Successfully started Level ${level} music`);
+        })
+        .catch(error => {
+          console.warn('Music play failed - likely needs user interaction:', error);
+          // Store for later playback after user interaction
+          document.addEventListener('click', () => {
+            this.resumeMusic();
+          }, { once: true });
+        });
+    }
   }
-
-  // Simple fallback sound generation
-  playFallbackSound(soundName, options = {}) {
+  
+  // Stop current music with optional fade out
+  stopMusic(fadeOut = false) {
+    if (!this.currentTrack) return;
+    
+    if (fadeOut) {
+      // Fade out over 1 second
+      const fadeStep = this.currentTrack.volume / 20;
+      const fadeInterval = setInterval(() => {
+        if (this.currentTrack.volume - fadeStep > 0) {
+          this.currentTrack.volume -= fadeStep;
+        } else {
+          this.currentTrack.pause();
+          this.currentTrack = null;
+          clearInterval(fadeInterval);
+        }
+      }, 50);
+    } else {
+      // Immediate stop
+      this.currentTrack.pause();
+      this.currentTrack = null;
+    }
+  }
+  
+  // Resume paused music
+  resumeMusic() {
+    if (this.currentTrack && this.currentTrack.paused) {
+      const playPromise = this.currentTrack.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log('Music resumed successfully');
+          })
+          .catch(error => {
+            console.warn('Failed to resume music:', error);
+          });
+      }
+    }
+  }
+  
+  // Pause current music
+  pauseMusic() {
+    if (this.currentTrack && !this.currentTrack.paused) {
+      this.currentTrack.pause();
+      console.log('Music paused');
+    }
+  }
+  
+  // Change music level with smooth transition
+  changeLevel(newLevel) {
+    const newMusicPath = this.levelMusicMap[newLevel];
+    const currentPath = this.currentTrack ? this.currentTrack.src : null;
+    
+    // Only change if different track needed
+    if (newMusicPath && !currentPath?.includes(newMusicPath)) {
+      console.log(`Changing to Level ${newLevel} music`);
+      
+      if (this.currentTrack) {
+        // Fade out current, then start new
+        this.stopMusic(true);
+        setTimeout(() => {
+          this.playLevelMusic(newLevel);
+        }, 1000);
+      } else {
+        // Start new immediately
+        this.playLevelMusic(newLevel);
+      }
+    }
+  }
+  
+  // Set music volume (0.0 to 1.0)
+  setMusicVolume(volume) {
+    this.musicVolume = Math.max(0, Math.min(1, volume));
+    if (this.currentTrack) {
+      this.currentTrack.volume = this.musicVolume * this.masterVolume;
+    }
+    console.log(`Music volume set to ${this.musicVolume}`);
+  }
+  
+  // Set master volume (0.0 to 1.0)
+  setMasterVolume(volume) {
+    this.masterVolume = Math.max(0, Math.min(1, volume));
+    if (this.currentTrack) {
+      this.currentTrack.volume = this.musicVolume * this.masterVolume;
+    }
+    console.log(`Master volume set to ${this.masterVolume}`);
+  }
+  
+  // Toggle music on/off
+  toggleMusic() {
+    this.musicDisabled = !this.musicDisabled;
+    if (this.musicDisabled) {
+      this.stopMusic();
+      console.log('Music disabled');
+    } else {
+      console.log('Music enabled');
+    }
+    return !this.musicDisabled;
+  }
+  
+  // Simple sound effects (fallback for power-ups, collisions, etc.)
+  playSound(type, options = {}) {
+    if (!options.volume) options.volume = this.sfxVolume;
+    
+    // Simple beep-based sound effects for now
+    // Can be enhanced with real SFX files later
     if (!this.audioContext) return;
     
     try {
-      const sound = this.soundEffects[soundName];
-      if (!sound || !sound.fallback) return;
-      
       const oscillator = this.audioContext.createOscillator();
       const gainNode = this.audioContext.createGain();
       
       oscillator.connect(gainNode);
-      gainNode.connect(this.sfxGain);
+      gainNode.connect(this.audioContext.destination);
       
-      const profile = sound.fallback;
-      oscillator.type = profile.type;
-      oscillator.frequency.value = profile.freq;
+      // Different sounds for different events
+      switch (type) {
+        case 'powerup':
+          oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime);
+          oscillator.frequency.exponentialRampToValueAtTime(1200, this.audioContext.currentTime + 0.2);
+          break;
+        case 'collision':
+          oscillator.frequency.setValueAtTime(150, this.audioContext.currentTime);
+          oscillator.frequency.exponentialRampToValueAtTime(50, this.audioContext.currentTime + 0.3);
+          break;
+        case 'victory':
+          oscillator.frequency.setValueAtTime(400, this.audioContext.currentTime);
+          oscillator.frequency.setValueAtTime(600, this.audioContext.currentTime + 0.1);
+          oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime + 0.2);
+          break;
+        default:
+          oscillator.frequency.setValueAtTime(440, this.audioContext.currentTime);
+      }
       
-      gainNode.gain.setValueAtTime(0.3 * this.sfxVolume, this.audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + profile.duration);
+      oscillator.type = 'sine';
+      gainNode.gain.setValueAtTime(options.volume * this.masterVolume, this.audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + (options.duration || 0.3));
       
-      oscillator.start();
-      oscillator.stop(this.audioContext.currentTime + profile.duration);
+      oscillator.start(this.audioContext.currentTime);
+      oscillator.stop(this.audioContext.currentTime + (options.duration || 0.3));
       
-    } catch (error) {
-      console.warn('Sound playback failed:', error);
+    } catch (e) {
+      console.warn('Sound effect failed:', e);
     }
   }
-
-  // Volume controls
-  setMasterVolume(volume) {
-    this.masterVolume = Math.max(0, Math.min(1, volume));
-    if (this.masterGain) {
-      this.masterGain.gain.value = this.masterVolume;
-    }
+  
+  // Get current music info
+  getMusicInfo() {
+    if (!this.currentTrack) return null;
+    
+    return {
+      isPlaying: !this.currentTrack.paused,
+      currentTime: this.currentTrack.currentTime,
+      duration: this.currentTrack.duration,
+      volume: this.musicVolume,
+      src: this.currentTrack.src
+    };
   }
 
-  setMusicVolume(volume) {
-    this.musicVolume = Math.max(0, Math.min(1, volume));
-    // Keep music disabled regardless of volume setting
-    if (this.musicGain) {
-      this.musicGain.gain.value = 0; // Always 0 - music disabled
-    }
-    if (this.currentMusicAudio) {
-      this.currentMusicAudio.volume = 0; // Always 0 - music disabled
-    }
+  // Compatibility methods for existing game code
+  playMusic(level) {
+    this.playLevelMusic(level);
+  }
+
+  playSFX(soundName, options = {}) {
+    this.playSound(soundName, options);
+  }
+
+  playPowerUpSound(powerUpType = 'default') {
+    this.playSound('powerup');
   }
 
   setSfxVolume(volume) {
     this.sfxVolume = Math.max(0, Math.min(1, volume));
-    if (this.sfxGain) {
-      this.sfxGain.gain.value = this.sfxVolume;
-    }
   }
 
-  // Mute/unmute controls - music stays disabled
   toggleMute() {
-    this.isMuted = !this.isMuted;
-    
-    if (this.isMuted) {
-      if (this.masterGain) {
-        this.masterGain.gain.value = 0;
-      }
-      console.log('🔇 Audio muted');
-    } else {
-      if (this.masterGain) {
-        this.masterGain.gain.value = this.masterVolume;
-      }
-      console.log('🔊 Audio unmuted (music remains disabled)');
+    this.musicDisabled = !this.musicDisabled;
+    if (this.musicDisabled) {
+      this.stopMusic();
     }
-    
-    return this.isMuted;
+    return this.musicDisabled;
   }
 
-  // Individual mute/unmute methods for game compatibility
   mute() {
-    if (!this.isMuted) {
-      this.toggleMute();
-    }
+    this.musicDisabled = true;
+    this.stopMusic();
   }
 
   unmute() {
-    if (this.isMuted) {
-      this.toggleMute();
-    }
+    this.musicDisabled = false;
   }
 
-  // Alias for playSound to match game expectations
-  playSFX(soundName, options = {}) {
-    return this.playSound(soundName, options);
-  }
-
-  // Power-up specific sound method
-  playPowerUpSound(powerUpType = 'default') {
-    const powerUpSounds = {
-      speed: 'speed_boost',
-      shield: 'shield_activate', 
-      blaster: 'blaster_unlock',
-      default: 'power_up_collect'
-    };
-    
-    const soundName = powerUpSounds[powerUpType] || powerUpSounds.default;
-    this.playSound(soundName);
-  }
-
-  // Audio quality setting (for mobile optimization)
   setAudioQuality(quality) {
-    console.log(`🎼 Audio quality set to: ${quality} (music disabled)`);
+    console.log(`Audio quality set to: ${quality}`);
   }
 
-  // Resume audio context for auto-play policies
   resumeAudioContext() {
     if (this.audioContext && this.audioContext.state === 'suspended') {
       this.audioContext.resume().then(() => {
-        console.log('🎵 Audio context resumed (music disabled)');
+        console.log('Audio context resumed');
       });
     }
   }
 
-  // Stop all audio
   stopAllAudio() {
-    // Clean up any remaining nodes
-    this.currentMusicNodes.forEach(node => {
-      try { 
-        if (node.stop) node.stop(); 
-        if (node.disconnect) node.disconnect();
-      } catch(e) {}
-    });
-    this.currentMusicNodes = [];
-    
-    this.currentMusic = null;
-    console.log('🔇 All audio stopped (music was already disabled)');
+    this.stopMusic();
+    console.log('All audio stopped');
   }
 
-  // Method to enable music in the future (currently does nothing)
   enableMusic() {
-    console.log('🎵 Music can be enabled by setting musicDisabled = false and implementing simple HTML5 audio');
-    console.log('🎵 Current status: Music remains DISABLED as requested');
+    this.musicDisabled = false;
+    console.log('Music enabled');
   }
 }
 
