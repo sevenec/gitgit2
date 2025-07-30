@@ -139,6 +139,134 @@ const Game = () => {
     animationFrameRef.current = requestAnimationFrame(gameLoop);
   };
 
+  const handleGameEnd = async () => {
+    if (!user?.user_id || !gameEngineRef.current) return;
+
+    try {
+      const scoreData = {
+        score: gameEngineRef.current.score,
+        level: gameEngineRef.current.currentLevel,
+        survival_time: Math.floor(gameEngineRef.current.gameTime / 1000),
+        enemies_defeated: gameEngineRef.current.enemiesDefeated || 0,
+        flutterer_used: selectedFlutterer?.id || 'basic_cosmic',
+        session_id: sessionId
+      };
+
+      const result = await submitScore(scoreData);
+      
+      if (result?.new_record) {
+        toast({
+          title: "🎉 NEW HIGH SCORE!",
+          description: `Amazing! You scored ${result.coins_awarded} bonus coins!`,
+          duration: 5000,
+        });
+      }
+
+      // Track analytics
+      if (trackEvent && sessionId) {
+        await trackEvent('game_complete', {
+          score: scoreData.score,
+          level: scoreData.level,
+          survival_time: scoreData.survival_time,
+          flutterer_used: scoreData.flutterer_used
+        }, user.user_id, sessionId);
+      }
+
+    } catch (error) {
+      console.error('Failed to submit score:', error);
+    }
+  };
+
+  const handleFluttererSelect = async (flutterer) => {
+    setSelectedFlutterer(flutterer);
+    
+    if (gameEngineRef.current) {
+      gameEngineRef.current.setSelectedFlutterer(flutterer);
+    }
+    
+    // Update user's selected flutterer in backend
+    if (user?.user_id && flutterer?.id) {
+      try {
+        await selectFlutterer(flutterer.id);
+      } catch (error) {
+        console.error('Failed to update selected flutterer:', error);
+      }
+    }
+  };
+  
+  const handlePurchase = async (item) => {
+    if (!user?.user_id) {
+      toast({
+        title: "Authentication Required",
+        description: "Please wait for user registration to complete.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Simulate purchase process
+    toast({
+      title: "Purchase Coming Soon!",
+      description: `${item.name || item.id} will be available for purchase when the game launches on mobile app stores.`,
+      duration: 4000,
+    });
+    
+    // In production, this would handle real IAP
+    console.log('Purchase requested for:', item);
+  };
+
+  const handleRewardedAd = async () => {
+    if (!user?.user_id) return;
+
+    try {
+      toast({
+        title: "🎬 Watching Ad...",
+        description: "Ad system coming soon! You'll earn 25 coins for watching ads.",
+        duration: 3000,
+      });
+      
+      // In production, this would show real ads
+      console.log('Rewarded ad requested');
+    } catch (error) {
+      console.error('Failed to process rewarded ad:', error);
+    }
+  };
+
+  const handleShareScore = async () => {
+    if (!user?.user_id || !score) return;
+
+    try {
+      const result = await shareScoreAPI(user.user_id, score, 'web');
+      
+      if (result?.success) {
+        toast({
+          title: "🎉 Score Shared!",
+          description: `You earned ${result.coins_awarded} coins for sharing!`,
+          duration: 3000,
+        });
+      }
+      
+      // Web sharing
+      if (navigator.share) {
+        await navigator.share({
+          title: 'Butterfly Nebula Brawl',
+          text: `I just scored ${score.toLocaleString()} points in Butterfly Nebula Brawl! Can you beat my score?`,
+          url: window.location.href
+        });
+      } else {
+        const text = `I just scored ${score.toLocaleString()} points in Butterfly Nebula Brawl! Can you beat my score? ${window.location.href}`;
+        await navigator.clipboard.writeText(text);
+        toast({
+          title: "Score Copied!",
+          description: "Share link copied to clipboard!",
+          duration: 2000,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to share score:', error);
+    }
+  };
+
   const togglePause = () => {
     if (gameEngineRef.current) {
       if (gameEngineRef.current.gameState === 'playing') {
