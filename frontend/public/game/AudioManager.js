@@ -380,6 +380,28 @@ window.AudioManager = class AudioManager {
     gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + 0.8);
   }
   
+  // Mute all audio
+  mute() {
+    this.wasMuted = false; // Track previous state
+    if (this.currentTrack && !this.currentTrack.paused) {
+      this.wasMuted = true;
+      this.pauseMusic();
+    }
+    this.musicVolume = 0;
+    this.sfxVolume = 0;
+    console.log('🔇 Audio muted');
+  }
+  
+  // Unmute all audio  
+  unmute() {
+    this.musicVolume = 0.4; // Restore music volume
+    this.sfxVolume = 0.6;   // Restore SFX volume
+    if (this.wasMuted && this.currentTrack) {
+      this.resumeMusic();
+    }
+    console.log('🔊 Audio unmuted');
+  }
+  
   // Get current music info
   getMusicInfo() {
     if (!this.currentTrack) return null;
