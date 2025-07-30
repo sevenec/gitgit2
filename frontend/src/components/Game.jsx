@@ -313,11 +313,22 @@ const Game = () => {
         {/* Game Header */}
         <Card className="mb-4 p-4 bg-black/30 backdrop-blur-sm border-purple-500/50">
           <div className="flex justify-between items-center mb-2">
-            <h1 className="text-2xl font-bold text-white">
-              <span className="text-pink-300">Butterfly</span>{' '}
-              <span className="text-cyan-300">Nebula</span>{' '}
-              <span className="text-yellow-300">Brawl</span>
-            </h1>
+            <div>
+              <h1 className="text-2xl font-bold text-white">
+                <span className="text-pink-300">Butterfly</span>{' '}
+                <span className="text-cyan-300">Nebula</span>{' '}
+                <span className="text-yellow-300">Brawl</span>
+              </h1>
+              {user && (
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-sm text-gray-300">Welcome, {user.username}</span>
+                  <Badge variant="outline" className="bg-yellow-600/30 text-yellow-200 border-yellow-400">
+                    <Coins size={12} className="mr-1" />
+                    {user.cosmic_coins || 0}
+                  </Badge>
+                </div>
+              )}
+            </div>
             <div className="flex gap-2">
               <Button
                 variant="outline"
@@ -327,12 +338,14 @@ const Game = () => {
               >
                 {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
               </Button>
-              <FluttererSelector
-                selectedFlutterer={selectedFlutterer}
-                onSelectFlutterer={handleFluttererSelect}
-                gameStats={gameStats}
-                onPurchase={handlePurchase}
-              />
+              {!userLoading && (
+                <FluttererSelector
+                  selectedFlutterer={selectedFlutterer}
+                  onSelectFlutterer={handleFluttererSelect}
+                  gameStats={gameStats}
+                  onPurchase={handlePurchase}
+                />
+              )}
               {gameState === 'playing' && (
                 <Button
                   variant="outline"
