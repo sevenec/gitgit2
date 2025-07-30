@@ -175,11 +175,8 @@ const Game = () => {
           // Make it globally available for game engine and testing
           window.audioManager = audioManagerInstance;
           
-          // 🎵 START INTRO MUSIC IMMEDIATELY when app opens!
-          setTimeout(() => {
-            audioManagerInstance.playIntroMusic();
-            console.log('🎼 Intro music started on app open!');
-          }, 1000); // Small delay to ensure full loading
+          // DO NOT START INTRO MUSIC HERE - let OpeningScreen handle it
+          console.log('🎵 AudioManager instantiated and ready - OpeningScreen will start intro music');
           
           console.log('🎵 AudioManager instantiated and ready with real music + intro!');
         } else {
