@@ -406,7 +406,7 @@ class AudioManager {
   }
 
   createStringSection(freq, index) {
-    // Advanced string section with multiple oscillators for richness
+    // Advanced string section with multiple oscillators for rich harmonic content
     for (let harmonic = 1; harmonic <= 3; harmonic++) {
       const stringOsc = this.audioContext.createOscillator();
       const stringGain = this.audioContext.createGain();
@@ -416,12 +416,14 @@ class AudioManager {
       // Use multiple waveforms for richer string sound
       const waveforms = ['sawtooth', 'triangle', 'sine'];
       stringOsc.type = waveforms[harmonic - 1];
-      stringOsc.frequency.value = freq * harmonic * (harmonic === 1 ? 1 : 0.5);
       
-      // Advanced filtering for orchestral warmth
+      // FIXED: Proper harmonic series for rich orchestral sound
+      stringOsc.frequency.value = freq * harmonic; // True harmonics: 1x, 2x, 3x
+      
+      // Advanced filtering for orchestral warmth with proper frequency spread
       stringFilter.type = 'bandpass';
-      stringFilter.frequency.value = 800 + (index * 300) + (harmonic * 200);
-      stringFilter.Q.value = 2 + (harmonic * 0.5);
+      stringFilter.frequency.value = 600 + (index * 400) + (harmonic * 300); // Better separation
+      stringFilter.Q.value = 1.5 + (harmonic * 0.3); // Gentler resonance
       
       // Connect with reverb for spatial depth
       stringOsc.connect(stringFilter);
@@ -429,8 +431,8 @@ class AudioManager {
       stringReverb.connect(stringGain);
       stringGain.connect(this.musicGain);
       
-      // Dynamic volume based on harmonic and index
-      const volume = (0.008 + (index * 0.002)) / harmonic;
+      // Dynamic volume with proper harmonic balance
+      const volume = (0.006 + (index * 0.001)) / Math.sqrt(harmonic); // Natural harmonic volume decay
       stringGain.gain.value = volume;
       
       stringOsc.start();
