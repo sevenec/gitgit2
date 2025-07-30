@@ -219,25 +219,86 @@ window.GameEngine = class GameEngine {
   }
   
   getLevelConfig(level) {
-    // Simplified level config - in full implementation this would come from levels.js
+    // Enhanced level configurations with slower initial speeds
     const configs = {
-      1: { difficulty: { gameSpeed: 2, obstacleSpawnRate: 0.02, powerUpSpawnRate: 0.005 }, theme: 'starry' },
-      5: { difficulty: { gameSpeed: 4, obstacleSpawnRate: 0.04, powerUpSpawnRate: 0.009 }, theme: 'nebula' },
-      10: { difficulty: { gameSpeed: 6.5, obstacleSpawnRate: 0.065, powerUpSpawnRate: 0.014 }, theme: 'core' },
-      15: { difficulty: { gameSpeed: 4, obstacleSpawnRate: 0.03, powerUpSpawnRate: 0.02 }, theme: 'boss' }
+      1: { 
+        difficulty: { gameSpeed: 1.4, obstacleSpawnRate: 0.015, powerUpSpawnRate: 0.007 }, // 30% slower start
+        theme: 'starry',
+        duration: 50000 // 50 seconds for level 1
+      },
+      2: { 
+        difficulty: { gameSpeed: 1.7, obstacleSpawnRate: 0.018, powerUpSpawnRate: 0.008 }, 
+        theme: 'starry',
+        duration: 48000
+      },
+      3: { 
+        difficulty: { gameSpeed: 2.1, obstacleSpawnRate: 0.022, powerUpSpawnRate: 0.008 }, 
+        theme: 'aurora',
+        duration: 47000
+      },
+      4: { 
+        difficulty: { gameSpeed: 2.5, obstacleSpawnRate: 0.025, powerUpSpawnRate: 0.009 }, 
+        theme: 'aurora',
+        duration: 46000
+      },
+      5: { 
+        difficulty: { gameSpeed: 3.0, obstacleSpawnRate: 0.030, powerUpSpawnRate: 0.009 }, 
+        theme: 'nebula',
+        duration: 45000
+      },
+      6: { 
+        difficulty: { gameSpeed: 3.4, obstacleSpawnRate: 0.035, powerUpSpawnRate: 0.010 }, 
+        theme: 'crystal',
+        duration: 45000
+      },
+      7: { 
+        difficulty: { gameSpeed: 3.8, obstacleSpawnRate: 0.040, powerUpSpawnRate: 0.011 }, 
+        theme: 'plasma',
+        duration: 45000
+      },
+      8: { 
+        difficulty: { gameSpeed: 4.2, obstacleSpawnRate: 0.045, powerUpSpawnRate: 0.012 }, 
+        theme: 'quantum',
+        duration: 45000
+      },
+      9: { 
+        difficulty: { gameSpeed: 4.6, obstacleSpawnRate: 0.050, powerUpSpawnRate: 0.013 }, 
+        theme: 'solar',
+        duration: 45000
+      },
+      10: { 
+        difficulty: { gameSpeed: 5.0, obstacleSpawnRate: 0.055, powerUpSpawnRate: 0.014 }, 
+        theme: 'core',
+        duration: 45000
+      },
+      11: { 
+        difficulty: { gameSpeed: 5.5, obstacleSpawnRate: 0.060, powerUpSpawnRate: 0.015 }, 
+        theme: 'void',
+        duration: 45000
+      },
+      12: { 
+        difficulty: { gameSpeed: 6.0, obstacleSpawnRate: 0.065, powerUpSpawnRate: 0.016 }, 
+        theme: 'void',
+        duration: 45000
+      },
+      13: { 
+        difficulty: { gameSpeed: 6.5, obstacleSpawnRate: 0.070, powerUpSpawnRate: 0.017 }, 
+        theme: 'void',
+        duration: 45000
+      },
+      14: { 
+        difficulty: { gameSpeed: 7.0, obstacleSpawnRate: 0.075, powerUpSpawnRate: 0.018 }, 
+        theme: 'void',
+        duration: 45000
+      },
+      15: { 
+        difficulty: { gameSpeed: 4.0, obstacleSpawnRate: 0.030, powerUpSpawnRate: 0.020 }, // Slower for boss mechanics
+        theme: 'boss',
+        duration: 180000 // 3 minutes for boss fight
+      }
     };
     
-    // Find closest config
-    const availableLevels = Object.keys(configs).map(Number).sort((a, b) => a - b);
-    let targetLevel = availableLevels[0];
-    
-    for (let i = 0; i < availableLevels.length; i++) {
-      if (level >= availableLevels[i]) {
-        targetLevel = availableLevels[i];
-      }
-    }
-    
-    return configs[targetLevel];
+    return configs[level] || configs[1];
   }
   
   initializeLevelEffects(config) {
