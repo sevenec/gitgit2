@@ -151,19 +151,31 @@ const Game = () => {
 
   // Initialize audio manager
   useEffect(() => {
-    if (window.AudioManager) {
-      setAudioManager(window.AudioManager);
-    } else {
-      // Wait for AudioManager to load
-      const checkAudioManager = () => {
-        if (window.AudioManager) {
-          setAudioManager(window.AudioManager);
+    console.log('🎵 Initializing AudioManager...');
+    
+    const initializeAudio = async () => {
+      try {
+        // Import and create AudioManager instance
+        const AudioManagerModule = await import('../audio/AudioManager');
+        const audioManagerInstance = AudioManagerModule.default;
+        
+        if (audioManagerInstance) {
+          console.log('✅ AudioManager imported successfully');
+          setAudioManager(audioManagerInstance);
+          
+          // Make it globally available for testing
+          window.audioManager = audioManagerInstance;
+          
+          console.log('🎵 AudioManager initialized and ready');
         } else {
-          setTimeout(checkAudioManager, 100);
+          console.error('❌ Failed to import AudioManager');
         }
-      };
-      checkAudioManager();
-    }
+      } catch (error) {
+        console.error('❌ AudioManager initialization failed:', error);
+      }
+    };
+    
+    initializeAudio();
   }, []);
 
   // Set default flutterer when user loads
