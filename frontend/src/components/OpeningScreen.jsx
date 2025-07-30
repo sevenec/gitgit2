@@ -4,10 +4,12 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Star, Play, Settings, Trophy, Calendar, Volume2, VolumeX, ArrowRight, Zap, Shield, Heart, Target } from 'lucide-react';
 
-const OpeningScreen = ({ onStartGame, onShowTutorial, onOpenFluttererSelector, onOpenSettings, audioManager }) => {
+const OpeningScreen = ({ onStartGame, onShowTutorial, onOpenFluttererSelector, onOpenSettings, audioManager, user, gameStats }) => {
   const [showParticles, setShowParticles] = useState(true);
   const [currentTip, setCurrentTip] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
+  const [showDailyChallenges, setShowDailyChallenges] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   const gameTips = [
     { icon: Target, text: "Tap and drag to guide your butterfly through the cosmic nebula", color: "text-cyan-300" },
