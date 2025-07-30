@@ -1808,7 +1808,7 @@ window.GameRenderer = class GameRenderer {
       const barWidth = 200;
       const barHeight = 10;
       const barX = this.canvas.width - barWidth - 20;
-      const barY = 30;
+      const barY = 50; // Moved down to account for health bar
       
       this.ctx.fillStyle = '#333333';
       this.ctx.fillRect(barX, barY, barWidth, barHeight);
