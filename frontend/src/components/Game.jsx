@@ -122,11 +122,18 @@ const Game = () => {
         setLevel(gameEngineRef.current.currentLevel);
         setLives(gameEngineRef.current.lives);
         
-        // Update high score
+        // Update high score and stats
         if (gameEngineRef.current.score > highScore) {
           const newHighScore = gameEngineRef.current.score;
           setHighScore(newHighScore);
           localStorage.setItem('butterflyNebulaHighScore', newHighScore.toString());
+        }
+        
+        // Update game stats
+        if (gameEngineRef.current.currentLevel > gameStats.maxLevel) {
+          const newMaxLevel = gameEngineRef.current.currentLevel;
+          setGameStats(prev => ({...prev, maxLevel: newMaxLevel}));
+          localStorage.setItem('butterflyMaxLevel', newMaxLevel.toString());
         }
       }
 
