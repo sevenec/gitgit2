@@ -149,8 +149,30 @@ window.AudioManager = class AudioManager {
       audio.loop = true; // Loop background music
       audio.preload = 'auto';
       
+      // Handle loading and playback
+      audio.addEventListener('canplaythrough', () => {
+        console.log(`✅ Level ${level} music loaded and ready`);
+      });
+      
+      audio.addEventListener('error', (e) => {
+        console.error(`❌ Failed to load Level ${level} music: ${musicPath}`, e);
+      });
+      
       // Store reference and play
       this.currentTrack = audio;
+      
+      // Play the music (modern browsers require user interaction)
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log(`✅ Level ${level} music started successfully - ${musicPath}`);
+          })
+          .catch(error => {
+            console.warn(`Level ${level} music needs user interaction:`, error);
+          });
+      }
+    }, 300); // Increased delay to 300ms for complete cleanup
       
       // Play the music (modern browsers require user interaction)
       const playPromise = audio.play();
