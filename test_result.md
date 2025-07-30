@@ -108,6 +108,166 @@ user_problem_statement: |
   2. Game goes to tutorial but doesn't play actual gameplay afterward
   3. No music is playing during the game
 
+backend:
+  - task: "User Management API - Registration"
+    implemented: true
+    working: true
+    file: "/app/backend/api/users.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "POST /api/users/register endpoint working correctly. Successfully creates new users with unique user_id, unlocks starter flutterer (basic_cosmic), and handles device_id uniqueness properly."
+
+  - task: "User Management API - Get User Profile"
+    implemented: true
+    working: true
+    file: "/app/backend/api/users.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "GET /api/users/{user_id} endpoint working correctly. Returns complete user profile including coins, game stats, flutterer progress, and all user data."
+
+  - task: "User Management API - Update User Profile"
+    implemented: true
+    working: true
+    file: "/app/backend/api/users.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "PUT /api/users/{user_id} endpoint implemented and working. Allows updating username, email, selected_flutterer with proper validation and last_active timestamp updates."
+
+  - task: "Score Management API - Submit Score"
+    implemented: true
+    working: true
+    file: "/app/backend/api/users.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "POST /api/users/{user_id}/score endpoint working perfectly. Calculates coin rewards, tracks high scores, updates game stats, and saves to leaderboard. Awards 297 coins for 15750 score with proper bonuses."
+
+  - task: "Score Management API - Leaderboard"
+    implemented: true
+    working: true
+    file: "/app/backend/api/users.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "GET /api/users/{user_id}/leaderboard endpoint working correctly. Returns aggregated leaderboard with proper ranking, user scores, and flutterer information. Successfully shows test users in leaderboard."
+
+  - task: "Game Configuration API"
+    implemented: true
+    working: true
+    file: "/app/backend/api/game.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "GET /api/game/config endpoint working correctly. Returns game configuration including version 1.0.0, maintenance_mode false, ad cooldown settings, and game balance parameters."
+
+  - task: "Flutterer Catalog API"
+    implemented: true
+    working: true
+    file: "/app/backend/api/game.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "GET /api/game/flutterers endpoint working correctly. Returns complete catalog of 10 flutterers with pricing, rarity tiers, and starter pack information. Includes basic_cosmic starter flutterer."
+
+  - task: "Game Events API"
+    implemented: true
+    working: true
+    file: "/app/backend/api/game.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "GET /api/game/events endpoint working correctly. Returns active events list (currently empty, which is expected for new deployment)."
+
+  - task: "Monetization API - Rewarded Ads"
+    implemented: true
+    working: true
+    file: "/app/backend/api/game.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "POST /api/game/ad/rewarded endpoint had MongoDB update syntax error mixing direct field updates with $inc operators."
+      - working: true
+        agent: "testing"
+        comment: "Fixed MongoDB update syntax by using $set for last_rewarded_ad field. Now correctly awards 25 coins for coin ads and implements proper cooldown mechanism (5 minutes) and daily limits (10 ads/day)."
+
+  - task: "Social Features API - Share Score"
+    implemented: true
+    working: true
+    file: "/app/backend/api/game.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "POST /api/game/share-score endpoint working correctly. Awards 15 coins for score sharing and tracks shared scores with platform and timestamp."
+
+  - task: "Flutterer Unlock API"
+    implemented: true
+    working: true
+    file: "/app/backend/api/users.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "POST /api/users/{user_id}/flutterer/unlock endpoint working correctly. Successfully unlocks flutterers (tested with stardust_dancer) and updates user progress."
+
+  - task: "Daily Challenges API"
+    implemented: true
+    working: true
+    file: "/app/backend/api/users.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "GET /api/users/{user_id}/daily-challenges endpoint working correctly. Generates 3 daily challenges with different types (score, survival, level, enemies) and proper reward coins."
+
+  - task: "Database Persistence and Data Integrity"
+    implemented: true
+    working: true
+    file: "/app/backend/database.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Database persistence working correctly. User data, coins, game stats, and flutterer progress all persist properly. MongoDB indexes created for optimal performance."
+
 frontend:
   - task: "Visual variety for butterfly flutterers"
     implemented: true
