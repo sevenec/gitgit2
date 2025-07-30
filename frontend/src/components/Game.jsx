@@ -216,6 +216,12 @@ const Game = () => {
               >
                 {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
               </Button>
+              <FluttererSelector
+                selectedFlutterer={selectedFlutterer}
+                onSelectFlutterer={handleFluttererSelect}
+                gameStats={gameStats}
+                onPurchase={handlePurchase}
+              />
               {gameState === 'playing' && (
                 <Button
                   variant="outline"
