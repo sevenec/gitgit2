@@ -118,47 +118,50 @@ window.AudioManager = class AudioManager {
       return;
     }
     
-    console.log(`Starting music for Level ${level}: ${musicPath}`);
+    console.log(`🎵 Starting music for Level ${level}: ${musicPath}`);
     
-    // Stop current music if playing
-    this.stopMusic();
+    // ENHANCED STOP: Ensure ALL previous audio is stopped
+    this.stopAllAudio();
     
-    // Create new audio element
-    const audio = new Audio(musicPath);
-    audio.volume = this.musicVolume * this.masterVolume;
-    audio.loop = true; // Loop background music
-    
-    // Handle loading and playback
-    audio.addEventListener('loadstart', () => {
-      console.log(`Loading music: ${musicPath}`);
-    });
-    
-    audio.addEventListener('canplaythrough', () => {
-      console.log(`Music ready to play: ${musicPath}`);
-    });
-    
-    audio.addEventListener('error', (e) => {
-      console.error(`Failed to load music: ${musicPath}`, e);
-    });
-    
-    // Store reference and play
-    this.currentTrack = audio;
-    
-    // Play with user interaction handling
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          console.log(`Successfully started Level ${level} music`);
-        })
-        .catch(error => {
-          console.warn('Music play failed - likely needs user interaction:', error);
-          // Store for later playback after user interaction
-          document.addEventListener('click', () => {
-            this.resumeMusic();
-          }, { once: true });
-        });
-    }
+    // Small delay to ensure cleanup is complete
+    setTimeout(() => {
+      // Create new audio element
+      const audio = new Audio(musicPath);
+      audio.volume = this.musicVolume * this.masterVolume;
+      audio.loop = true; // Loop background music
+      
+      // Handle loading and playback
+      audio.addEventListener('loadstart', () => {
+        console.log(`Loading music: ${musicPath}`);
+      });
+      
+      audio.addEventListener('canplaythrough', () => {
+        console.log(`Music ready to play: ${musicPath}`);
+      });
+      
+      audio.addEventListener('error', (e) => {
+        console.error(`Failed to load music: ${musicPath}`, e);
+      });
+      
+      // Store reference and play
+      this.currentTrack = audio;
+      
+      // Play with user interaction handling
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log(`✅ Successfully started Level ${level} music - SINGLE TRACK ONLY`);
+          })
+          .catch(error => {
+            console.warn('Music play failed - likely needs user interaction:', error);
+            // Store for later playback after user interaction
+            document.addEventListener('click', () => {
+              this.resumeMusic();
+            }, { once: true });
+          });
+      }
+    }, 100); // 100ms delay for cleanup
   }
   
   // Stop current music with optional fade out - ENHANCED to stop ALL audio
