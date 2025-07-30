@@ -6,11 +6,11 @@ import logging
 from pathlib import Path
 
 # Import database connection
-from .database import connect_to_mongo, close_mongo_connection
+from database import connect_to_mongo, close_mongo_connection
 
 # Import API routers
-from .api.users import router as users_router
-from .api.game import router as game_router
+from api.users import router as users_router
+from api.game import router as game_router
 
 ROOT_DIR = Path(__file__).parent
 from dotenv import load_dotenv
