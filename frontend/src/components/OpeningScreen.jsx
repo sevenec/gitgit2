@@ -192,7 +192,7 @@ const OpeningScreen = ({ onStartGame, onShowTutorial, onOpenFluttererSelector, o
             </Button>
             
             <Button
-              onClick={onOpenFluttererSelector}
+              onClick={handleFlutterers}
               variant="outline"
               className="py-3 bg-purple-600/20 border-purple-400 text-purple-200 hover:bg-purple-600/40 rounded-full"
             >
@@ -203,7 +203,7 @@ const OpeningScreen = ({ onStartGame, onShowTutorial, onOpenFluttererSelector, o
 
           <div className="grid grid-cols-3 gap-2">
             <Button
-              onClick={() => console.log('Daily Challenges')}
+              onClick={handleDailyChallenges}
               variant="outline"
               size="sm"
               className="py-2 bg-green-600/20 border-green-400 text-green-200 hover:bg-green-600/40 rounded-full"
@@ -213,7 +213,7 @@ const OpeningScreen = ({ onStartGame, onShowTutorial, onOpenFluttererSelector, o
             </Button>
             
             <Button
-              onClick={() => console.log('Leaderboard')}
+              onClick={handleLeaderboard}
               variant="outline"
               size="sm"
               className="py-2 bg-yellow-600/20 border-yellow-400 text-yellow-200 hover:bg-yellow-600/40 rounded-full"
