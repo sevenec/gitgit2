@@ -167,7 +167,13 @@ const Game = () => {
           // Make it globally available for game engine and testing
           window.audioManager = audioManagerInstance;
           
-          console.log('🎵 AudioManager instantiated and ready with real music!');
+          // 🎵 START INTRO MUSIC IMMEDIATELY! 🎵
+          setTimeout(() => {
+            audioManagerInstance.playIntroMusic();
+            console.log('🎼 Intro music started on game window open!');
+          }, 1000); // Small delay to ensure full loading
+          
+          console.log('🎵 AudioManager instantiated and ready with real music + intro!');
         } else {
           console.error('❌ AudioManager class not found on window');
         }
