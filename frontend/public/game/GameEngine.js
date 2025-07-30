@@ -298,6 +298,15 @@ window.GameEngine = class GameEngine {
   }
   
   update(deltaTime) {
+    if (this.gameState === 'bossIntro') {
+      this.bossIntroTimer -= deltaTime;
+      if (this.bossIntroTimer <= 0) {
+        this.gameState = 'playing';
+      }
+      this.updateBackgroundEffects(deltaTime);
+      return;
+    }
+    
     if (this.gameState !== 'playing') return;
     
     this.gameTime += deltaTime;
@@ -315,6 +324,15 @@ window.GameEngine = class GameEngine {
     // Update particles
     this.updateParticles(deltaTime);
     
+    // Update projectiles
+    this.updateProjectiles(deltaTime);
+    
+    // Update background effects
+    this.updateBackgroundEffects(deltaTime);
+    
+    // Update special effects
+    this.updateSpecialEffects(deltaTime);
+    
     // Update boss
     if (this.isBossLevel && this.boss) {
       this.updateBoss(deltaTime);
@@ -328,6 +346,9 @@ window.GameEngine = class GameEngine {
     
     // Check level completion
     this.checkLevelCompletion();
+    
+    // Update flutterer special abilities
+    this.updateFluttererSpecials(deltaTime);
   }
   
   updatePlayer(deltaTime) {
