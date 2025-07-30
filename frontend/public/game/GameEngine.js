@@ -799,28 +799,43 @@ window.GameEngine = class GameEngine {
       }
     }
     
-    // Check power-up collisions
-    this.powerUps.forEach((powerUp, index) => {
+    // Check power-up collisions (use reverse iteration to safely remove elements)
+    for (let i = this.powerUps.length - 1; i >= 0; i--) {
+      const powerUp = this.powerUps[i];
       if (this.isColliding(this.player, powerUp)) {
         this.collectPowerUp(powerUp);
         this.createPowerUpEffect(powerUp.x, powerUp.y, powerUp.type);
-        this.powerUps.splice(index, 1);
+        this.powerUps.splice(i, 1);
       }
-    });
+    }
     
-    // Check player projectile vs obstacle collisions
-    this.projectiles.forEach((projectile, pIndex) => {
-      if (projectile.type !== 'player') return;
+    // Check player projectile vs obstacle collisions (use reverse iteration for both arrays)
+    for (let pIndex = this.projectiles.length - 1; pIndex >= 0; pIndex--) {
+      const projectile = this.projectiles[pIndex];
+      if (projectile.type !== 'player') continue;
       
-      this.obstacles.forEach((obstacle, oIndex) => {
+      for (let oIndex = this.obstacles.length - 1; oIndex >= 0; oIndex--) {
+        const obstacle = this.obstacles[oIndex];
         if (this.isColliding(projectile, obstacle)) {
           this.createExplosion(obstacle.x, obstacle.y);
+          this.score += obstacle.points || 20;
+          
+          // Remove both projectile and obstacle
           this.obstacles.splice(oIndex, 1);
           this.projectiles.splice(pIndex, 1);
-          this.score += 25; // Bonus for shooting enemies
+          
+          // Play sound effect
+          try {
+            if (window.audioManager) {
+              window.audioManager.playSound('enemy_explosion');
+            }
+          } catch (error) {
+            console.warn('Audio error:', error);
+          }
+          break; // Exit obstacle loop since projectile is gone
         }
-      });
-    });
+      }
+    }
     
     // Check player projectile vs boss collisions
     if (this.boss) {
