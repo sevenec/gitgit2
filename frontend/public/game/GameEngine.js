@@ -677,6 +677,28 @@ window.GameEngine = class GameEngine {
   }
   
   update(deltaTime) {
+    // Update enhanced systems first
+    if (this.particleSystem) {
+      this.particleSystem.update(deltaTime);
+    }
+    if (this.screenEffects) {
+      this.screenEffects.update(deltaTime);
+    }
+    
+    // Performance monitoring
+    this.frameCount++;
+    const now = performance.now();
+    if (now - this.lastFpsCheck > 1000) {
+      this.fps = Math.round(this.frameCount * 1000 / (now - this.lastFpsCheck));
+      this.frameCount = 0;
+      this.lastFpsCheck = now;
+      
+      // Auto-optimize if FPS drops below 45 on mobile
+      if (this.fps < 45 && !this.performanceOptimized) {
+        this.optimizeForLowPerformance();
+      }
+    }
+    
     if (this.gameState === 'bossIntro') {
       this.bossIntroTimer -= deltaTime;
       if (this.bossIntroTimer <= 0) {
