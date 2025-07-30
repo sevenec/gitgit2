@@ -34,19 +34,28 @@ const Game = () => {
       // Initialize game engine and renderer
       const ctx = canvas.getContext('2d');
       
-      // Wait for game classes to load
+      // Wait for game classes to load and add debugging
       const initializeGame = () => {
+        console.log('Attempting to initialize game...', { GameEngine: !!window.GameEngine, GameRenderer: !!window.GameRenderer });
+        
         if (window.GameEngine && window.GameRenderer) {
-          gameEngineRef.current = new window.GameEngine(canvas, ctx);
-          gameRendererRef.current = new window.GameRenderer(canvas, ctx);
-          startGameLoop();
+          try {
+            gameEngineRef.current = new window.GameEngine(canvas, ctx);
+            gameRendererRef.current = new window.GameRenderer(canvas, ctx);
+            console.log('Game initialized successfully');
+            startGameLoop();
+          } catch (error) {
+            console.error('Error initializing game:', error);
+          }
         } else {
+          console.log('Game classes not yet loaded, retrying...');
           // Retry after a short delay
           setTimeout(initializeGame, 100);
         }
       };
       
-      initializeGame();
+      // Give a small delay to ensure scripts are loaded
+      setTimeout(initializeGame, 500);
     };
 
     resizeCanvas();
