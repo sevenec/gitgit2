@@ -365,6 +365,7 @@ class AudioManager {
     return config;
   }
 
+  // ULTRA-PREMIUM Orchestral Harmony with Advanced Audio Processing
   createOrchestralHarmony(config) {
     try {
       if (!config || !config.harmony || !Array.isArray(config.harmony)) {
@@ -372,65 +373,284 @@ class AudioManager {
         return;
       }
 
-      console.log(`🎼 Creating orchestral harmony with ${config.harmony.length} voices`);
+      console.log(`🎼 Creating ULTRA-PREMIUM orchestral harmony with ${config.harmony.length} voices`);
       
-      // Create rich orchestral harmony using multiple oscillator types
+      // Create multiple instrument layers for rich orchestral sound
       config.harmony.forEach((freq, index) => {
         try {
-          // String section simulation
-          const stringOsc = this.audioContext.createOscillator();
-          const stringGain = this.audioContext.createGain();
-          const stringFilter = this.audioContext.createBiquadFilter();
+          // === STRING SECTION LAYER ===
+          this.createStringSection(freq, index);
           
-          // Use sawtooth for rich harmonic content
-          stringOsc.type = 'sawtooth';
-          stringOsc.frequency.value = freq;
+          // === BRASS SECTION LAYER ===
+          this.createBrassSection(freq, index);
           
-          // Low-pass filter for orchestral warmth
-          stringFilter.type = 'lowpass';
-          stringFilter.frequency.value = 2000 - (index * 200);
-          stringFilter.Q.value = 1;
+          // === WOODWIND SECTION LAYER ===
+          this.createWoodwindSection(freq, index);
           
-          stringOsc.connect(stringFilter);
-          stringFilter.connect(stringGain);
-          stringGain.connect(this.musicGain);
-          
-          // Subtle volume for orchestral blend
-          stringGain.gain.value = 0.015 + (index * 0.005);
-          
-          stringOsc.start();
-          this.currentMusicNodes.push(stringOsc);
+          // === ELECTRONIC PAD LAYER ===
+          this.createElectronicPadLayer(freq, index);
           
           // Add bassline for foundation
           if (config.bassline && config.bassline[index]) {
-            const bassOsc = this.audioContext.createOscillator();
-            const bassGain = this.audioContext.createGain();
-            const bassFilter = this.audioContext.createBiquadFilter();
-            
-            bassOsc.type = 'sine';
-            bassOsc.frequency.value = config.bassline[index];
-            
-            bassFilter.type = 'lowpass';
-            bassFilter.frequency.value = 300;
-            
-            bassOsc.connect(bassFilter);
-            bassFilter.connect(bassGain);
-            bassGain.connect(this.musicGain);
-            
-            bassGain.gain.value = 0.02;
-            
-            bassOsc.start();
-            this.currentMusicNodes.push(bassOsc);
+            this.createAdvancedBassline(config.bassline[index], index);
           }
         } catch (error) {
-          console.warn(`⚠️ Error creating oscillator at index ${index}:`, error);
+          console.warn(`⚠️ Error creating orchestral layer at index ${index}:`, error);
         }
       });
       
-      console.log(`✅ Orchestral harmony created with ${this.currentMusicNodes.length} active nodes`);
+      console.log(`✅ ULTRA-PREMIUM orchestral harmony created with ${this.currentMusicNodes.length} active nodes`);
     } catch (error) {
       console.error('❌ Critical error in createOrchestralHarmony:', error);
     }
+  }
+
+  createStringSection(freq, index) {
+    // Advanced string section with multiple oscillators for richness
+    for (let harmonic = 1; harmonic <= 3; harmonic++) {
+      const stringOsc = this.audioContext.createOscillator();
+      const stringGain = this.audioContext.createGain();
+      const stringFilter = this.audioContext.createBiquadFilter();
+      const stringReverb = this.createReverbNode();
+      
+      // Use multiple waveforms for richer string sound
+      const waveforms = ['sawtooth', 'triangle', 'sine'];
+      stringOsc.type = waveforms[harmonic - 1];
+      stringOsc.frequency.value = freq * harmonic * (harmonic === 1 ? 1 : 0.5);
+      
+      // Advanced filtering for orchestral warmth
+      stringFilter.type = 'bandpass';
+      stringFilter.frequency.value = 800 + (index * 300) + (harmonic * 200);
+      stringFilter.Q.value = 2 + (harmonic * 0.5);
+      
+      // Connect with reverb for spatial depth
+      stringOsc.connect(stringFilter);
+      stringFilter.connect(stringReverb);
+      stringReverb.connect(stringGain);
+      stringGain.connect(this.musicGain);
+      
+      // Dynamic volume based on harmonic and index
+      const volume = (0.008 + (index * 0.002)) / harmonic;
+      stringGain.gain.value = volume;
+      
+      stringOsc.start();
+      this.currentMusicNodes.push(stringOsc);
+    }
+  }
+
+  createBrassSection(freq, index) {
+    // Rich brass section with characteristic harmonic content
+    const brassOsc = this.audioContext.createOscillator();
+    const brassGain = this.audioContext.createGain();
+    const brassFilter = this.audioContext.createBiquadFilter();
+    const brassDistortion = this.createDistortionNode(0.1);
+    
+    brassOsc.type = 'sawtooth'; // Rich harmonic content for brass
+    brassOsc.frequency.value = freq * 0.5; // Lower octave for brass foundation
+    
+    // Brass-specific filtering
+    brassFilter.type = 'bandpass';
+    brassFilter.frequency.value = 400 + (index * 150);
+    brassFilter.Q.value = 3;
+    
+    // Connect with subtle distortion for brass character
+    brassOsc.connect(brassDistortion);
+    brassDistortion.connect(brassFilter);
+    brassFilter.connect(brassGain);
+    brassGain.connect(this.musicGain);
+    
+    brassGain.gain.value = 0.006 + (index * 0.002);
+    
+    brassOsc.start();
+    this.currentMusicNodes.push(brassOsc);
+  }
+
+  createWoodwindSection(freq, index) {
+    // Ethereal woodwind layer for atmospheric depth
+    const woodOsc = this.audioContext.createOscillator();
+    const woodGain = this.audioContext.createGain();
+    const woodFilter = this.audioContext.createBiquadFilter();
+    const woodLFO = this.audioContext.createOscillator();
+    const woodLFOGain = this.audioContext.createGain();
+    
+    woodOsc.type = 'triangle';
+    woodOsc.frequency.value = freq * 2; // Higher octave for woodwinds
+    
+    // LFO for subtle vibrato
+    woodLFO.type = 'sine';
+    woodLFO.frequency.value = 4 + Math.random() * 2; // 4-6 Hz vibrato
+    woodLFOGain.gain.value = 3;
+    
+    woodLFO.connect(woodLFOGain);
+    woodLFOGain.connect(woodOsc.frequency);
+    
+    // Woodwind-specific filtering
+    woodFilter.type = 'lowpass';
+    woodFilter.frequency.value = 1200 + (index * 200);
+    woodFilter.Q.value = 1.5;
+    
+    woodOsc.connect(woodFilter);
+    woodFilter.connect(woodGain);
+    woodGain.connect(this.musicGain);
+    
+    woodGain.gain.value = 0.004 + (index * 0.001);
+    
+    woodOsc.start();
+    woodLFO.start();
+    this.currentMusicNodes.push(woodOsc);
+    this.currentMusicNodes.push(woodLFO);
+  }
+
+  createElectronicPadLayer(freq, index) {
+    // Advanced electronic pad with phase modulation
+    const padOsc1 = this.audioContext.createOscillator();
+    const padOsc2 = this.audioContext.createOscillator();
+    const padGain = this.audioContext.createGain();
+    const padFilter = this.audioContext.createBiquadFilter();
+    const padDelay = this.createDelayNode(0.3, 0.2);
+    
+    padOsc1.type = 'sine';
+    padOsc2.type = 'triangle';
+    padOsc1.frequency.value = freq * 4; // Higher octave
+    padOsc2.frequency.value = freq * 4.01; // Slight detuning for beating effect
+    
+    // Advanced filtering with resonance
+    padFilter.type = 'bandpass';
+    padFilter.frequency.value = 1000 + (index * 400);
+    padFilter.Q.value = 4;
+    
+    // Mix both oscillators
+    const mixer = this.audioContext.createGain();
+    padOsc1.connect(mixer);
+    padOsc2.connect(mixer);
+    
+    mixer.connect(padFilter);
+    padFilter.connect(padDelay);
+    padDelay.connect(padGain);
+    padGain.connect(this.musicGain);
+    
+    padGain.gain.value = 0.003;
+    
+    padOsc1.start();
+    padOsc2.start();
+    this.currentMusicNodes.push(padOsc1);
+    this.currentMusicNodes.push(padOsc2);
+  }
+
+  createAdvancedBassline(freq, index) {
+    // Deep, rich bassline with sub-harmonics
+    const bassOsc = this.audioContext.createOscillator();
+    const subOsc = this.audioContext.createOscillator();
+    const bassGain = this.audioContext.createGain();
+    const bassFilter = this.audioContext.createBiquadFilter();
+    const bassCompressor = this.createCompressorNode();
+    
+    bassOsc.type = 'sine';
+    subOsc.type = 'sine';
+    bassOsc.frequency.value = freq;
+    subOsc.frequency.value = freq * 0.5; // Sub-octave
+    
+    // Bass-specific filtering
+    bassFilter.type = 'lowpass';
+    bassFilter.frequency.value = 150 + (index * 50);
+    bassFilter.Q.value = 2;
+    
+    // Mix bass and sub
+    const bassMixer = this.audioContext.createGain();
+    bassOsc.connect(bassMixer);
+    subOsc.connect(bassMixer);
+    
+    bassMixer.connect(bassFilter);
+    bassFilter.connect(bassCompressor);
+    bassCompressor.connect(bassGain);
+    bassGain.connect(this.musicGain);
+    
+    bassGain.gain.value = 0.015 + (index * 0.005);
+    
+    bassOsc.start();
+    subOsc.start();
+    this.currentMusicNodes.push(bassOsc);
+    this.currentMusicNodes.push(subOsc);
+  }
+
+  // Advanced Audio Processing Nodes
+  createReverbNode() {
+    const reverbGain = this.audioContext.createGain();
+    const delay1 = this.audioContext.createDelay();
+    const delay2 = this.audioContext.createDelay();
+    const delay3 = this.audioContext.createDelay();
+    
+    delay1.delayTime.value = 0.03;
+    delay2.delayTime.value = 0.07;
+    delay3.delayTime.value = 0.11;
+    
+    const feedback1 = this.audioContext.createGain();
+    const feedback2 = this.audioContext.createGain();
+    const feedback3 = this.audioContext.createGain();
+    
+    feedback1.gain.value = 0.3;
+    feedback2.gain.value = 0.25;
+    feedback3.gain.value = 0.2;
+    
+    // Create reverb network
+    delay1.connect(feedback1);
+    feedback1.connect(delay1);
+    delay1.connect(reverbGain);
+    
+    delay2.connect(feedback2);
+    feedback2.connect(delay2);
+    delay2.connect(reverbGain);
+    
+    delay3.connect(feedback3);
+    feedback3.connect(delay3);
+    delay3.connect(reverbGain);
+    
+    reverbGain.gain.value = 0.2;
+    
+    return delay1;
+  }
+
+  createDistortionNode(amount) {
+    const waveshaper = this.audioContext.createWaveShaper();
+    const samples = 44100;
+    const curve = new Float32Array(samples);
+    
+    for (let i = 0; i < samples; i++) {
+      const x = (i * 2) / samples - 1;
+      curve[i] = Math.tanh(x * amount * 10) * 0.5;
+    }
+    
+    waveshaper.curve = curve;
+    waveshaper.oversample = '4x';
+    
+    return waveshaper;
+  }
+
+  createDelayNode(delayTime, feedback) {
+    const delay = this.audioContext.createDelay();
+    const feedbackGain = this.audioContext.createGain();
+    const wetGain = this.audioContext.createGain();
+    
+    delay.delayTime.value = delayTime;
+    feedbackGain.gain.value = feedback;
+    wetGain.gain.value = 0.3;
+    
+    delay.connect(feedbackGain);
+    feedbackGain.connect(delay);
+    delay.connect(wetGain);
+    
+    return wetGain;
+  }
+
+  createCompressorNode() {
+    const compressor = this.audioContext.createDynamicsCompressor();
+    compressor.threshold.value = -24;
+    compressor.knee.value = 30;
+    compressor.ratio.value = 4;
+    compressor.attack.value = 0.003;
+    compressor.release.value = 0.25;
+    
+    return compressor;
   }
 
   createElectronicPad(config) {
