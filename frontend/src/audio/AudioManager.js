@@ -230,45 +230,295 @@ class AudioManager {
     this.currentMusic = track;
   }
 
-  // Fallback procedural music generation
+  // Fallback procedural music generation with HIGH-QUALITY orchestral/electronic sounds
   playFallbackMusic(level) {
     if (!this.audioContext) return;
     
+    // Stop any existing music cleanly
     if (this.currentMusicNodes.length > 0) {
       this.currentMusicNodes.forEach(node => {
-        try { node.stop(); } catch(e) {}
+        try { 
+          if (node.stop) node.stop();
+          if (node.disconnect) node.disconnect();
+        } catch(e) {}
       });
       this.currentMusicNodes = [];
     }
 
-    const musicConfig = this.getLevelMusicConfig(level);
+    console.log(`🎼 Creating HIGH-QUALITY orchestral/electronic music for level ${level}`);
     
-    // Create ambient harmony
-    musicConfig.harmony.forEach((freq, index) => {
-      const oscillator = this.audioContext.createOscillator();
-      const gainNode = this.audioContext.createGain();
+    const musicConfig = this.getHighQualityMusicConfig(level);
+    
+    // Create rich harmonic foundation with proper orchestral voicing
+    this.createOrchestralHarmony(musicConfig);
+    
+    // Add electronic elements for space atmosphere
+    this.createElectronicPad(musicConfig);
+    
+    // Create melodic content based on level theme
+    this.createDynamicMelody(musicConfig);
+    
+    // Add rhythmic elements for energy
+    if (musicConfig.hasRhythm) {
+      this.createRhythmSection(musicConfig);
+    }
+  }
+
+  getHighQualityMusicConfig(level) {
+    const configs = {
+      1: { 
+        name: 'Starry Awakening',
+        mood: 'upbeat_orchestral',
+        key: 'C',
+        harmony: [261.63, 329.63, 392.00], // C4, E4, G4 - C Major
+        bassline: [130.81, 164.81, 196.00], // C3, E3, G3
+        melody: [523.25, 659.25, 783.99, 659.25, 523.25, 392.00, 329.63],
+        tempo: 1200,
+        atmosphere: 'bright',
+        hasRhythm: true,
+        electronic: true
+      },
+      2: { 
+        name: 'Aurora Dance',
+        mood: 'energetic_electronic',
+        key: 'D',
+        harmony: [293.66, 369.99, 440.00], // D4, F#4, A4 - D Major
+        bassline: [146.83, 185.00, 220.00],
+        melody: [587.33, 739.99, 880.00, 739.99, 587.33, 440.00, 369.99],
+        tempo: 1000,
+        atmosphere: 'energetic',
+        hasRhythm: true,
+        electronic: true
+      },
+      3: { 
+        name: 'Nebula Drift',
+        mood: 'ambient_wonder',
+        key: 'Am',
+        harmony: [220.00, 261.63, 329.63], // A3, C4, E4 - A Minor
+        bassline: [110.00, 130.81, 164.81],
+        melody: [440.00, 523.25, 659.25, 523.25, 440.00, 329.63, 261.63],
+        tempo: 1800,
+        atmosphere: 'mysterious',
+        hasRhythm: false,
+        electronic: true
+      },
+      10: {
+        name: 'Void Tension',
+        mood: 'tense_void',
+        key: 'Fm',
+        harmony: [174.61, 220.00, 277.18], // F3, A3, C#4 - F Minor
+        bassline: [87.31, 110.00, 138.59],
+        melody: [349.23, 440.00, 554.37, 440.00, 349.23, 277.18, 220.00],
+        tempo: 2000,
+        atmosphere: 'tense',
+        hasRhythm: false,
+        electronic: true
+      },
+      15: {
+        name: 'Mother Insect Battle',
+        mood: 'epic_boss_battle',
+        key: 'Dm',
+        harmony: [146.83, 174.61, 220.00], // D3, F3, A3 - D Minor
+        bassline: [73.42, 87.31, 110.00],
+        melody: [293.66, 349.23, 440.00, 523.25, 440.00, 349.23, 293.66],
+        tempo: 800,
+        atmosphere: 'epic',
+        hasRhythm: true,
+        electronic: true
+      }
+    };
+    
+    return configs[level] || configs[Math.min(Math.max(level, 1), 5)];
+  }
+
+  createOrchestralHarmony(config) {
+    // Create rich orchestral harmony using multiple oscillator types
+    config.harmony.forEach((freq, index) => {
+      // String section simulation
+      const stringOsc = this.audioContext.createOscillator();
+      const stringGain = this.audioContext.createGain();
+      const stringFilter = this.audioContext.createBiquadFilter();
       
-      oscillator.connect(gainNode);
-      gainNode.connect(this.musicGain);
+      // Use sawtooth for rich harmonic content
+      stringOsc.type = 'sawtooth';
+      stringOsc.frequency.value = freq;
       
-      oscillator.type = 'sine';
-      oscillator.frequency.value = freq;
-      gainNode.gain.value = 0.02 + (index * 0.01);
+      // Low-pass filter for orchestral warmth
+      stringFilter.type = 'lowpass';
+      stringFilter.frequency.value = 2000 - (index * 200);
+      stringFilter.Q.value = 1;
       
-      oscillator.start();
-      this.currentMusicNodes.push(oscillator);
+      stringOsc.connect(stringFilter);
+      stringFilter.connect(stringGain);
+      stringGain.connect(this.musicGain);
+      
+      // Subtle volume for orchestral blend
+      stringGain.gain.value = 0.015 + (index * 0.005);
+      
+      stringOsc.start();
+      this.currentMusicNodes.push(stringOsc);
+      
+      // Add bassline for foundation
+      if (config.bassline && config.bassline[index]) {
+        const bassOsc = this.audioContext.createOscillator();
+        const bassGain = this.audioContext.createGain();
+        const bassFilter = this.audioContext.createBiquadFilter();
+        
+        bassOsc.type = 'sine';
+        bassOsc.frequency.value = config.bassline[index];
+        
+        bassFilter.type = 'lowpass';
+        bassFilter.frequency.value = 300;
+        
+        bassOsc.connect(bassFilter);
+        bassFilter.connect(bassGain);
+        bassGain.connect(this.musicGain);
+        
+        bassGain.gain.value = 0.02;
+        
+        bassOsc.start();
+        this.currentMusicNodes.push(bassOsc);
+      }
     });
   }
 
-  getLevelMusicConfig(level) {
-    const configs = {
-      1: { harmony: [220, 275, 330], mood: 'upbeat_starry' },
-      2: { harmony: [247, 311, 370], mood: 'energetic_aurora' },
-      3: { harmony: [196, 247, 294], mood: 'ambient_nebula' },
-      10: { harmony: [147, 196, 262], mood: 'tense_void' },
-      15: { harmony: [110, 147, 196], mood: 'epic_boss' }
+  createElectronicPad(config) {
+    if (!config.electronic) return;
+    
+    // Add electronic pad for space atmosphere
+    config.harmony.forEach((freq, index) => {
+      const padOsc = this.audioContext.createOscillator();
+      const padGain = this.audioContext.createGain();
+      const padFilter = this.audioContext.createBiquadFilter();
+      
+      // Use triangle for smooth electronic sound
+      padOsc.type = 'triangle';
+      padOsc.frequency.value = freq * 2; // Octave higher
+      
+      // Band-pass filter for electronic character
+      padFilter.type = 'bandpass';
+      padFilter.frequency.value = 800 + (index * 200);
+      padFilter.Q.value = 2;
+      
+      padOsc.connect(padFilter);
+      padFilter.connect(padGain);
+      padGain.connect(this.musicGain);
+      
+      // Subtle electronic layer
+      padGain.gain.value = 0.008;
+      
+      padOsc.start();
+      this.currentMusicNodes.push(padOsc);
+    });
+  }
+
+  createDynamicMelody(config) {
+    let melodyIndex = 0;
+    let melodyOscillator = null;
+    
+    const playMelodyNote = () => {
+      if (this.isMuted || !this.audioContext || !this.currentMusic) return;
+      
+      // Clean up previous note
+      if (melodyOscillator) {
+        try { melodyOscillator.stop(); } catch(e) {}
+      }
+      
+      melodyOscillator = this.audioContext.createOscillator();
+      const gainNode = this.audioContext.createGain();
+      const filter = this.audioContext.createBiquadFilter();
+      
+      melodyOscillator.connect(filter);
+      filter.connect(gainNode);
+      gainNode.connect(this.musicGain);
+      
+      // Choose oscillator type based on atmosphere
+      switch(config.atmosphere) {
+        case 'bright':
+          melodyOscillator.type = 'triangle';
+          break;
+        case 'energetic':
+          melodyOscillator.type = 'square';
+          break;
+        case 'mysterious':
+          melodyOscillator.type = 'sine';
+          break;
+        case 'tense':
+          melodyOscillator.type = 'sawtooth';
+          break;
+        case 'epic':
+          melodyOscillator.type = 'triangle';
+          break;
+        default:
+          melodyOscillator.type = 'sine';
+      }
+      
+      melodyOscillator.frequency.value = config.melody[melodyIndex % config.melody.length];
+      
+      // Filter based on atmosphere
+      if (config.atmosphere === 'bright' || config.atmosphere === 'energetic') {
+        filter.type = 'bandpass';
+        filter.frequency.value = 1500;
+        filter.Q.value = 3;
+      } else {
+        filter.type = 'lowpass';
+        filter.frequency.value = 1200;
+        filter.Q.value = 1;
+      }
+      
+      const noteLength = config.tempo * 0.0007;
+      gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.025, this.audioContext.currentTime + 0.1);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + noteLength);
+      
+      melodyOscillator.start(this.audioContext.currentTime);
+      melodyOscillator.stop(this.audioContext.currentTime + noteLength);
+      
+      melodyIndex++;
+      
+      // Schedule next note with slight musical variation
+      const variation = (Math.random() - 0.5) * (config.tempo * 0.1);
+      this.melodyTimeout = setTimeout(playMelodyNote, config.tempo + variation);
     };
-    return configs[level] || configs[1];
+    
+    // Start melody after a brief delay
+    this.melodyTimeout = setTimeout(playMelodyNote, 800);
+  }
+
+  createRhythmSection(config) {
+    if (!config.hasRhythm) return;
+    
+    // Add subtle rhythmic element
+    const createRhythmPulse = () => {
+      if (this.isMuted || !this.audioContext || !this.currentMusic) return;
+      
+      const pulseOsc = this.audioContext.createOscillator();
+      const pulseGain = this.audioContext.createGain();
+      const pulseFilter = this.audioContext.createBiquadFilter();
+      
+      pulseOsc.type = 'square';
+      pulseOsc.frequency.value = config.bassline[0] * 0.5; // Sub-bass
+      
+      pulseFilter.type = 'lowpass';
+      pulseFilter.frequency.value = 120;
+      
+      pulseOsc.connect(pulseFilter);
+      pulseFilter.connect(pulseGain);
+      pulseGain.connect(this.musicGain);
+      
+      pulseGain.gain.setValueAtTime(0, this.audioContext.currentTime);
+      pulseGain.gain.linearRampToValueAtTime(0.03, this.audioContext.currentTime + 0.01);
+      pulseGain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.1);
+      
+      pulseOsc.start(this.audioContext.currentTime);
+      pulseOsc.stop(this.audioContext.currentTime + 0.1);
+      
+      // Schedule next pulse
+      setTimeout(createRhythmPulse, config.tempo / 2);
+    };
+    
+    // Start rhythm section
+    setTimeout(createRhythmPulse, 1000);
   }
 
   // Play sound effects with enhanced quality
