@@ -34,16 +34,19 @@ const Game = () => {
       // Initialize game engine and renderer
       const ctx = canvas.getContext('2d');
       
-      // Dynamic import of game classes
-      import('../game/GameEngine.js').then(() => {
-        import('../game/GameRenderer.js').then(() => {
+      // Wait for game classes to load
+      const initializeGame = () => {
+        if (window.GameEngine && window.GameRenderer) {
           gameEngineRef.current = new window.GameEngine(canvas, ctx);
           gameRendererRef.current = new window.GameRenderer(canvas, ctx);
-          
-          // Start game loop
           startGameLoop();
-        });
-      });
+        } else {
+          // Retry after a short delay
+          setTimeout(initializeGame, 100);
+        }
+      };
+      
+      initializeGame();
     };
 
     resizeCanvas();
