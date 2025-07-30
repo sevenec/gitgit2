@@ -1243,6 +1243,24 @@ window.GameEngine = class GameEngine {
     
     this.score += 50;
     
+    // Enhanced visual effects for power-up collection
+    const colors = {
+      'speed': '#00FF00',
+      'shield': '#00FFFF', 
+      'blaster': '#FF4500',
+      'health': '#FF69B4'
+    };
+    
+    // Create sparkle explosion
+    this.particleSystem.createSparkles(
+      powerUp.x, powerUp.y, 
+      colors[powerUp.type] || '#FFD700', 
+      20
+    );
+    
+    // Screen flash effect
+    this.screenEffects.powerUpEffect();
+    
     // Play enhanced power-up sounds
     if (window.AudioManager) {
       window.AudioManager.playPowerUpSound(powerUp.type);
