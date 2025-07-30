@@ -71,11 +71,27 @@ const Game = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Load high score from localStorage
+    // Load high score and game stats from localStorage
     const savedHighScore = localStorage.getItem('butterflyNebulaHighScore');
+    const savedMaxLevel = localStorage.getItem('butterflyMaxLevel');
+    const savedEnemiesDefeated = localStorage.getItem('butterflyEnemiesDefeated');
+    const savedSurvivalTime = localStorage.getItem('butterflySurvivalTime');
+    const savedBossDefeats = localStorage.getItem('butterflyBossDefeats');
+    
     if (savedHighScore) {
       setHighScore(parseInt(savedHighScore));
     }
+    
+    setGameStats({
+      highScore: parseInt(savedHighScore || '0'),
+      maxLevel: parseInt(savedMaxLevel || '1'),
+      enemiesDefeated: parseInt(savedEnemiesDefeated || '0'),
+      totalSurvivalTime: parseInt(savedSurvivalTime || '0'),
+      bossDefeats: parseInt(savedBossDefeats || '0')
+    });
+    
+    // Set default flutterer
+    setSelectedFlutterer(FLUTTERERS[0]); // Basic Cosmic Flutter
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
