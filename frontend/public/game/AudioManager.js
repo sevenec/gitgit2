@@ -81,24 +81,6 @@ window.AudioManager = class AudioManager {
       const audio = new Audio(introMusicPath);
       audio.volume = this.musicVolume * this.masterVolume * 0.7; // Extra quiet for intro
       audio.loop = true;
-    
-    const introMusicPath = this.levelMusicMap['intro'];
-    if (!introMusicPath) {
-      console.warn('No intro music configured');
-      return;
-    }
-    
-    console.log(`🎼 Starting intro music: ${introMusicPath}`);
-    
-    // Stop any current music with enhanced cleanup
-    this.stopAllAudio();
-    
-    // Small delay to ensure cleanup
-    setTimeout(() => {
-      // Create intro music element
-      const audio = new Audio(introMusicPath);
-      audio.volume = this.musicVolume * this.masterVolume * 0.8; // Slightly quieter for intro
-      audio.loop = true; // Loop intro music
       
       // Handle loading and playback
       audio.addEventListener('canplaythrough', () => {
