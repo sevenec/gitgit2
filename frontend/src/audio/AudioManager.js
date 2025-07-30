@@ -1117,7 +1117,4 @@ class AudioManager {
   }
 }
 
-// Create global audio manager instance
-window.AudioManager = new AudioManager();
-
 export default AudioManager;
