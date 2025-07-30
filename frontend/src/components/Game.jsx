@@ -381,8 +381,19 @@ const Game = () => {
   };
 
   const toggleMute = () => {
-    setIsMuted(!isMuted);
-    // In a full implementation, this would control game audio
+    const newMutedState = !isMuted;
+    setIsMuted(newMutedState);
+    
+    // Control audio manager
+    if (audioManager) {
+      if (newMutedState) {
+        audioManager.mute();
+      } else {
+        audioManager.unmute();
+      }
+    }
+    
+    console.log('Audio', newMutedState ? 'muted' : 'unmuted');
   };
 
   return (
