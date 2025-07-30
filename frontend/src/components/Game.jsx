@@ -27,6 +27,9 @@ const Game = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [selectedFlutterer, setSelectedFlutterer] = useState(null);
   const [sessionId, setSessionId] = useState(null);
+  const [showOpeningScreen, setShowOpeningScreen] = useState(true);
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [audioManager, setAudioManager] = useState(null);
   const [highScore, setHighScore] = useState(0);
   const [gameStats, setGameStats] = useState({
     highScore: 0,
