@@ -60,7 +60,7 @@ const TutorialScreen = ({ onComplete, onSkip }) => {
     {
       title: "Avoid Obstacles",
       icon: Shield,
-      content: "Watch out for dangerous red insects and brown asteroids! Touching them will damage your butterfly and cost you lives.",
+      content: "Navigate through cosmic hazards that change with each level: crystalline shards, energy spirals, solar flares, and more! Each level brings unique obstacles.",
       visual: "obstacles_demo",
       color: "from-red-500 to-orange-500"
     },
