@@ -102,8 +102,8 @@ window.GameRenderer = class GameRenderer {
       backgroundColor = '#001122'; // Dark blue
       accentColor = '#4A90E2'; // Blue
     } else if (level === 2) {
-      backgroundColor = '#002211'; // Dark green
-      accentColor = '#00FFAA'; // Bright green
+      backgroundColor = '#0D1B2A'; // Calm deep navy - much more soothing
+      accentColor = '#7DD3FC'; // Soft sky blue - very calming
     } else if (level === 3) {
       backgroundColor = '#220011'; // Dark magenta
       accentColor = '#FF6B9D'; // Pink
