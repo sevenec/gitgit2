@@ -195,7 +195,7 @@ const OpeningScreen = ({ onStartGame, onShowTutorial, onOpenFluttererSelector, o
         <div className="space-y-4 w-full max-w-md">
           <Button
             onClick={handleStartAdventure}
-            className="w-full py-4 text-xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 hover:from-pink-600 hover:via-purple-600 hover:to-cyan-600 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 animate-pulse-glow"
+            className="premium-button premium-pulse-glow w-full py-4 text-xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 hover:from-pink-600 hover:via-purple-600 hover:to-cyan-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
             size="lg"
           >
             <Play className="mr-3" size={24} /> 
