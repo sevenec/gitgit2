@@ -1113,9 +1113,15 @@ window.GameEngine = class GameEngine {
     const levelConfig = this.getLevelConfig(this.currentLevel);
     const obstacleTypes = levelConfig?.obstacleTypes || ['asteroid', 'insect'];
     
+    // DEBUG: Log what's actually happening
+    console.log(`Level ${this.currentLevel} config:`, levelConfig);
+    console.log(`Available obstacle types:`, obstacleTypes);
+    
     // Choose obstacle type based on level configuration
     const randomIndex = Math.floor(Math.random() * obstacleTypes.length);
     const obstacleType = obstacleTypes[randomIndex];
+    
+    console.log(`Spawning obstacle type: ${obstacleType}`);
     
     const obstacle = {
       x: Math.random() * (this.canvas.width - 60) + 30,
