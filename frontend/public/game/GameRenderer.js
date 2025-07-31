@@ -878,65 +878,33 @@ window.GameRenderer = class GameRenderer {
         lowerWingSize: { width: 6, height: 8 },
         pattern: 'simple',
         trailEffect: false,
-        sparkles: false
+        sparkles: false,
+        glow: false
       };
     }
     
-    // Define unique visual properties for each flutterer
-    const visualConfigs = {
-      'basic_cosmic': {
-        bodyWidth: 4, bodyHeight: 30, wingScale: 1, wingShape: 'standard',
-        upperWingSize: { width: 8, height: 12 }, lowerWingSize: { width: 6, height: 8 },
-        pattern: 'simple', trailEffect: false, sparkles: false
-      },
-      'stardust_dancer': {
-        bodyWidth: 3, bodyHeight: 28, wingScale: 1.1, wingShape: 'elongated',
-        upperWingSize: { width: 9, height: 14 }, lowerWingSize: { width: 7, height: 10 },
-        pattern: 'sparkles', trailEffect: true, sparkles: true
-      },
-      'solar_glider': {
-        bodyWidth: 5, bodyHeight: 32, wingScale: 1.2, wingShape: 'broad',
-        upperWingSize: { width: 10, height: 11 }, lowerWingSize: { width: 8, height: 7 },
-        pattern: 'radial', trailEffect: false, sparkles: false
-      },
-      'frost_wing': {
-        bodyWidth: 4, bodyHeight: 30, wingScale: 1.1, wingShape: 'crystalline',
-        upperWingSize: { width: 9, height: 13 }, lowerWingSize: { width: 6, height: 9 },
-        pattern: 'frost', trailEffect: false, sparkles: true
-      },
-      'plasma_striker': {
-        bodyWidth: 5, bodyHeight: 28, wingScale: 0.9, wingShape: 'angular',
-        upperWingSize: { width: 7, height: 11 }, lowerWingSize: { width: 5, height: 7 },
-        pattern: 'electric', trailEffect: false, sparkles: false
-      },
-      'void_phantom': {
-        bodyWidth: 3, bodyHeight: 32, wingScale: 1.3, wingShape: 'ethereal',
-        upperWingSize: { width: 10, height: 15 }, lowerWingSize: { width: 8, height: 11 },
-        pattern: 'ghostly', trailEffect: true, sparkles: false
-      },
-      'epic_blaster_wing': {
-        bodyWidth: 6, bodyHeight: 34, wingScale: 1.2, wingShape: 'armored',
-        upperWingSize: { width: 10, height: 13 }, lowerWingSize: { width: 7, height: 9 },
-        pattern: 'tech', trailEffect: false, sparkles: false
-      },
-      'cosmic_guardian': {
-        bodyWidth: 6, bodyHeight: 36, wingScale: 1.4, wingShape: 'guardian',
-        upperWingSize: { width: 12, height: 14 }, lowerWingSize: { width: 9, height: 10 },
-        pattern: 'shield', trailEffect: false, sparkles: true
-      },
-      'legendary_nebula_guardian': {
-        bodyWidth: 7, bodyHeight: 38, wingScale: 1.5, wingShape: 'majestic',
-        upperWingSize: { width: 13, height: 16 }, lowerWingSize: { width: 10, height: 12 },
-        pattern: 'legendary', trailEffect: true, sparkles: true
-      },
-      'speedy_cosmic_flutter': {
-        bodyWidth: 3, bodyHeight: 26, wingScale: 0.8, wingShape: 'streamlined',
-        upperWingSize: { width: 6, height: 10 }, lowerWingSize: { width: 4, height: 6 },
-        pattern: 'speed', trailEffect: true, sparkles: false
-      }
-    };
+    // Use visualProps from flutterer data if available
+    const visualProps = flutterer.visualProps || {};
+    const size = visualProps.size || 1.0;
     
-    return visualConfigs[flutterer.id] || visualConfigs['basic_cosmic'];
+    return {
+      bodyWidth: Math.floor(4 * size),
+      bodyHeight: Math.floor(30 * size),
+      wingScale: size,
+      wingShape: visualProps.wingShape || 'standard',
+      upperWingSize: { 
+        width: Math.floor(8 * size), 
+        height: Math.floor(12 * size) 
+      },
+      lowerWingSize: { 
+        width: Math.floor(6 * size), 
+        height: Math.floor(8 * size) 
+      },
+      pattern: visualProps.wingPattern || 'simple',
+      trailEffect: visualProps.trailEffect || false,
+      sparkles: visualProps.sparkles || false,
+      glow: visualProps.glow || false
+    };
   }
   
   drawEnhancedWings(colors, visualProps, flutterer, wingFlap = 1) {
