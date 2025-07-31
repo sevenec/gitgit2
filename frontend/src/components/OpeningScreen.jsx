@@ -25,23 +25,9 @@ const OpeningScreen = ({ onStartGame, onShowTutorial, onOpenFluttererSelector, o
       setCurrentTip((prev) => (prev + 1) % gameTips.length);
     }, 3000);
 
-    // 🎵 START INTRO MUSIC when app opens (with proper null checks)
-    if (audioManager) {
-      console.log('🎵 Starting intro music on app open - OpeningScreen');
-      audioManager.playIntroMusic();
-    } else {
-      console.warn('⚠️ AudioManager not ready yet - will retry intro music');
-      // Retry after AudioManager is ready
-      const retryIntroMusic = () => {
-        if (window.audioManager) {
-          console.log('🎵 Starting intro music on retry - OpeningScreen');
-          window.audioManager.playIntroMusic();
-        } else {
-          setTimeout(retryIntroMusic, 500); // Retry every 500ms
-        }
-      };
-      setTimeout(retryIntroMusic, 1000); // Wait 1 second then start retrying
-    }
+    // 🔇 DO NOT AUTO-START MUSIC - Wait for user interaction
+    // Music will start when user clicks "START ADVENTURE" or any other button
+    console.log('🎵 AudioManager ready - music will start on user interaction');
 
     return () => {
       clearInterval(tipInterval);
