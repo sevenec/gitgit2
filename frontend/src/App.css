@@ -1,3 +1,222 @@
+/* PREMIUM APP POLISH - SMOOTH TRANSITIONS & ANIMATIONS */
+
+/* Screen Transitions */
+.screen-transition-enter {
+  opacity: 0;
+  transform: translateY(20px) scale(0.98);
+}
+
+.screen-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.screen-transition-exit {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.screen-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-20px) scale(1.02);
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Premium Button Animations */
+.premium-button {
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 600ms;
+}
+
+.premium-button:hover::before {
+  left: 100%;
+}
+
+.premium-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.premium-button:active {
+  transform: translateY(0);
+  transition: transform 150ms;
+}
+
+/* Floating Animations */
+@keyframes premium-float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(-8px) rotate(1deg); }
+  50% { transform: translateY(-12px) rotate(0deg); }
+  75% { transform: translateY(-8px) rotate(-1deg); }
+}
+
+.premium-float {
+  animation: premium-float 4s ease-in-out infinite;
+}
+
+/* Pulse Glow Premium */
+@keyframes premium-pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.4),
+                0 0 40px rgba(255, 105, 180, 0.2),
+                0 0 60px rgba(255, 105, 180, 0.1);
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(255, 105, 180, 0.6),
+                0 0 60px rgba(255, 105, 180, 0.4),
+                0 0 90px rgba(255, 105, 180, 0.2);
+  }
+}
+
+.premium-pulse-glow {
+  animation: premium-pulse-glow 2s ease-in-out infinite;
+}
+
+/* Loading Screen */
+.premium-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 50%, #0f0f23 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 500ms ease-out;
+}
+
+.premium-loading-overlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Butterfly Logo Animation */
+@keyframes butterfly-wings {
+  0%, 100% { transform: scaleX(1) scaleY(1); }
+  50% { transform: scaleX(0.8) scaleY(1.1); }
+}
+
+.premium-butterfly-wing {
+  animation: butterfly-wings 1.5s ease-in-out infinite;
+}
+
+.premium-butterfly-wing:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.premium-butterfly-wing:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.premium-butterfly-wing:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+/* Loading Progress */
+@keyframes loading-progress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+.premium-loading-bar {
+  width: 0%;
+  height: 4px;
+  background: linear-gradient(90deg, #ff6b9d, #c084fc, #60a5fa, #34d399);
+  border-radius: 2px;
+  animation: loading-progress 3s ease-out forwards;
+}
+
+/* Achievement Popup */
+.achievement-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #1e293b, #334155);
+  border: 2px solid #fbbf24;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transform: translateX(400px);
+  transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  min-width: 300px;
+}
+
+.achievement-popup.show {
+  transform: translateX(0);
+}
+
+.achievement-popup.hide {
+  transform: translateX(400px);
+}
+
+/* Level Transition */
+.level-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 400ms ease-in-out;
+}
+
+.level-transition-overlay.active {
+  opacity: 1;
+}
+
+.level-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(255,255,255,0.5);
+  transform: scale(0.8);
+  transition: transform 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.level-title.animate {
+  transform: scale(1);
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .premium-button {
+    min-height: 44px; /* iOS touch target */
+  }
+  
+  .level-title {
+    font-size: 2rem;
+  }
+  
+  .achievement-popup {
+    right: 10px;
+    top: 10px;
+    min-width: 280px;
+  }
+}
+
 .App-logo {
     height: 40vmin;
     pointer-events: none;
