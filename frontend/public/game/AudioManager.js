@@ -476,27 +476,18 @@ window.AudioManager = class AudioManager {
     this.sfxVolume = Math.max(0, Math.min(1, volume));
   }
 
-  // Toggle mute/unmute with BALANCED AUDIO CONTROL
+  // Toggle mute/unmute - SIMPLE APPROACH
   toggleMute() {
     if (this.musicDisabled) {
-      // Currently music is disabled, enable quiet music but keep SFX off
       this.musicDisabled = false;
-      this.sfxDisabled = true; // Keep annoying sounds off
-      this.musicVolume = 0.25; // Quiet music
-      this.sfxVolume = 0.0; // No sound effects
-      this.masterVolume = 0.6; // Moderate master volume
-      console.log('🎵 QUIET MUSIC ENABLED - Sound effects remain disabled');
-      return false; // Not muted
+      this.audioElement.volume = this.musicVolume * this.masterVolume;
+      console.log('🎵 Music enabled');
+      return false;
     } else {
-      // Currently enabled, disable music
       this.musicDisabled = true;
-      this.sfxDisabled = true;
-      this.musicVolume = 0.0;
-      this.sfxVolume = 0.0;
-      this.masterVolume = 0.0;
-      this.forceStopAllAudio(); // Stop any currently playing audio
-      console.log('🔇 ALL AUDIO DISABLED');
-      return true; // Muted
+      this.audioElement.pause();
+      console.log('🔇 Music disabled');
+      return true;
     }
   }
 
