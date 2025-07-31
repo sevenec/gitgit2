@@ -470,6 +470,11 @@ window.GameEngine = class GameEngine {
     this.levelTime = 0;
     this.isBossLevel = this.currentLevel === this.maxLevel;
     
+    // FORCE TESTING: Auto-advance levels to test variety
+    if (this.currentLevel === 1 && this.levelTime === 0) {
+      console.log('🎮 TESTING MODE: Starting Level 1 with unique visuals');
+    }
+    
     // Initialize player with flutterer stats
     const fluttererHealth = this.selectedFlutterer?.skills?.health || 100;
     const fluttererSpeed = this.selectedFlutterer?.skills?.speed || 1.0;
@@ -526,6 +531,13 @@ window.GameEngine = class GameEngine {
     this.obstacleSpawnRate = levelConfig.difficulty.obstacleSpawnRate;
     this.powerUpSpawnRate = levelConfig.difficulty.powerUpSpawnRate;
     this.levelDuration = levelConfig.duration || 45000;
+    
+    // FORCE IMMEDIATE VARIETY: Store level config globally for renderer access
+    this.levelConfig = levelConfig;
+    
+    console.log(`🎨 Level ${this.currentLevel} initialized with config:`, levelConfig);
+    console.log(`🎨 Background: ${levelConfig.backgroundColor}, Accent: ${levelConfig.accentColor}`);
+    console.log(`🎨 Obstacle types: ${levelConfig.obstacleTypes.join(', ')}`);
     
     // Initialize background effects based on level theme
     this.initializeLevelEffects(levelConfig);
