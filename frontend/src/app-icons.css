@@ -1,0 +1,57 @@
+/* Mobile App Icon CSS - For Cordova/PhoneGap Integration */
+
+.app-icon-generator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 50%, #0f0f23 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.app-icon-butterfly {
+  position: relative;
+  z-index: 2;
+}
+
+.app-icon-background {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, 
+    rgba(255, 107, 157, 0.3) 0%, 
+    rgba(124, 58, 237, 0.2) 50%, 
+    rgba(15, 15, 35, 0.8) 100%
+  );
+}
+
+/* Nebula particles for icon background */
+.app-icon-particles {
+  position: absolute;
+  inset: 0;
+}
+
+.app-icon-particle {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: twinkle-icon 2s ease-in-out infinite;
+}
+
+@keyframes twinkle-icon {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.2); }
+}
+
+/* iOS App Icon Sizes */
+.icon-1024 { width: 1024px; height: 1024px; }
+.icon-512 { width: 512px; height: 512px; }
+.icon-180 { width: 180px; height: 180px; }
+.icon-120 { width: 120px; height: 120px; }
+.icon-87 { width: 87px; height: 87px; }
+.icon-80 { width: 80px; height: 80px; }
+.icon-60 { width: 60px; height: 60px; }
+.icon-58 { width: 58px; height: 58px; }
+.icon-40 { width: 40px; height: 40px; }
+.icon-29 { width: 29px; height: 29px; }
+.icon-20 { width: 20px; height: 20px; }
