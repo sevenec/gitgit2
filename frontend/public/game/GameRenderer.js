@@ -1950,17 +1950,17 @@ window.GameRenderer = class GameRenderer {
   
   // Individual obstacle type renderers
   drawCrystalObstacle(obstacle, size, color, time) {
-    // LEVEL 2: Bright crystalline obstacles with sharp edges
-    this.ctx.fillStyle = '#00FFAA'; // Bright green crystals
-    this.ctx.strokeStyle = '#FFFFFF';
-    this.ctx.lineWidth = 3;
-    this.ctx.shadowColor = '#00FFAA';
-    this.ctx.shadowBlur = 10;
+    // LEVEL 2: Gentle, calming crystal obstacles with soft blue glow
+    this.ctx.fillStyle = '#87CEEB'; // Soft sky blue crystals - very calming
+    this.ctx.strokeStyle = '#B0E0E6'; // Powder blue outline
+    this.ctx.lineWidth = 2;
+    this.ctx.shadowColor = '#87CEEB';
+    this.ctx.shadowBlur = 8; // Softer glow for calming effect
     
     this.ctx.beginPath();
     for (let i = 0; i < 6; i++) {
       const angle = (i / 6) * Math.PI * 2;
-      const radius = size * (0.8 + Math.sin(time * 3 + i) * 0.2);
+      const radius = size * (0.8 + Math.sin(time * 2 + i) * 0.15); // Gentler pulsing
       const x = Math.cos(angle) * radius;
       const y = Math.sin(angle) * radius;
       if (i === 0) this.ctx.moveTo(x, y);
@@ -1970,8 +1970,8 @@ window.GameRenderer = class GameRenderer {
     this.ctx.fill();
     this.ctx.stroke();
     
-    // Add crystalline core
-    this.ctx.fillStyle = '#FFFFFF';
+    // Add soft, calming crystalline core
+    this.ctx.fillStyle = '#F0F8FF'; // Alice blue - very gentle
     this.ctx.beginPath();
     this.ctx.arc(0, 0, size * 0.3, 0, Math.PI * 2);
     this.ctx.fill();
