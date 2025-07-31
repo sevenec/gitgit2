@@ -1618,10 +1618,10 @@ window.GameEngine = class GameEngine {
     });
   }
   
-  // Performance optimization method for low-end devices
+  // Performance optimization method for low-end devices  
   optimizeForLowPerformance() {
-    console.log('🔧 Applying low-performance optimizations');
-    this.performanceOptimized = true;
+    console.log('🔧 Applying low-performance optimizations - stats disabled for clean UI');
+    this.performanceOptimized = false; // Keep stats box hidden
     
     // Reduce particle count
     if (this.particleSystem) {
