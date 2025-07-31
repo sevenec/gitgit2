@@ -1873,62 +1873,70 @@ window.GameRenderer = class GameRenderer {
     
     this.ctx.rotate(obstacle.rotation + time * 0.5);
     
-    switch (obstacleType) {
-      case 'crystal':
-      case 'ice':
-        this.drawCrystalObstacle(obstacle, size, accentColor, time);
-        break;
-      case 'spiral':
-      case 'vortex':
-        this.drawSpiralObstacle(obstacle, size, accentColor, time);
-        break;
-      case 'cloud':
-      case 'gas':
-        this.drawGasCloudObstacle(obstacle, size, accentColor, time);
-        break;
-      case 'energy':
-      case 'beam':
-        this.drawEnergyObstacle(obstacle, size, accentColor, time);
-        break;
-      case 'shard':
-      case 'prism':
-        this.drawPrismObstacle(obstacle, size, accentColor, time);
-        break;
-      case 'flare':
-      case 'corona':
-        this.drawSolarObstacle(obstacle, size, accentColor, time);
-        break;
-      case 'particle':
-      case 'wave':
-        this.drawQuantumObstacle(obstacle, size, accentColor, time);
-        break;
-      case 'spore':
-      case 'virus':
-        this.drawBioObstacle(obstacle, size, accentColor, time);
-        break;
-      case 'lava':
-      case 'magma':
-        this.drawVolcanicObstacle(obstacle, size, accentColor, time);
-        break;
-      case 'shadow':
-      case 'void':
-        this.drawVoidObstacle(obstacle, size, accentColor, time);
-        break;
-      case 'lightning':
-      case 'thunder':
-        this.drawStormObstacle(obstacle, size, accentColor, time);
-        break;
-      case 'fractal':
-      case 'distortion':
-        this.drawChaosObstacle(obstacle, size, accentColor, time);
-        break;
-      case 'meteor':
-      case 'shockwave':
-        this.drawApocalypseObstacle(obstacle, size, accentColor, time);
-        break;
-      default:
-        this.drawBasicObstacle(obstacle);
-        break;
+    // Add error handling to prevent runtime crashes
+    try {
+      switch (obstacleType) {
+        case 'crystal':
+        case 'ice':
+          this.drawCrystalObstacle(obstacle, size, accentColor, time);
+          break;
+        case 'spiral':
+        case 'vortex':
+          this.drawSpiralObstacle(obstacle, size, accentColor, time);
+          break;
+        case 'cloud':
+        case 'gas':
+          this.drawGasCloudObstacle(obstacle, size, accentColor, time);
+          break;
+        case 'energy':
+        case 'beam':
+          this.drawEnergyObstacle(obstacle, size, accentColor, time);
+          break;
+        case 'shard':
+        case 'prism':
+          this.drawPrismObstacle(obstacle, size, accentColor, time);
+          break;
+        case 'flare':
+        case 'corona':
+          this.drawSolarObstacle(obstacle, size, accentColor, time);
+          break;
+        case 'particle':
+        case 'wave':
+          this.drawQuantumObstacle(obstacle, size, accentColor, time);
+          break;
+        case 'spore':
+        case 'virus':
+          this.drawBioObstacle(obstacle, size, accentColor, time);
+          break;
+        case 'lava':
+        case 'magma':
+          this.drawVolcanicObstacle(obstacle, size, accentColor, time);
+          break;
+        case 'shadow':
+        case 'void':
+          this.drawVoidObstacle(obstacle, size, accentColor, time);
+          break;
+        case 'lightning':
+        case 'thunder':
+          this.drawStormObstacle(obstacle, size, accentColor, time);
+          break;
+        case 'fractal':
+        case 'distortion':
+          this.drawChaosObstacle(obstacle, size, accentColor, time);
+          break;
+        case 'meteor':
+        case 'shockwave':
+          this.drawApocalypseObstacle(obstacle, size, accentColor, time);
+          break;
+        default:
+          // Safe fallback
+          this.drawBasicObstacle(obstacle);
+          break;
+      }
+    } catch (error) {
+      console.warn(`Error drawing ${obstacleType} obstacle:`, error);
+      // Fallback to basic obstacle to prevent crash
+      this.drawBasicObstacle(obstacle);
     }
   }
   
