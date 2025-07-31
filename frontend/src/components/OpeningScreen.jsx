@@ -134,19 +134,19 @@ const OpeningScreen = ({ onStartGame, onShowTutorial, onOpenFluttererSelector, o
         <div className="text-center mb-8 animate-fade-in">
           {/* Animated Butterfly Logo */}
           <div className="mb-6 relative">
-            <div className="animate-float">
+            <div className="premium-float">
               <div className="w-24 h-24 mx-auto relative">
                 {/* Butterfly wings */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="relative">
                     {/* Upper wings */}
-                    <div className="absolute -top-6 -left-8 w-6 h-10 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full opacity-80 animate-pulse" style={{animationDuration: '2s'}} />
-                    <div className="absolute -top-6 -right-8 w-6 h-10 bg-gradient-to-bl from-pink-400 to-purple-500 rounded-full opacity-80 animate-pulse" style={{animationDuration: '2s', animationDelay: '0.1s'}} />
+                    <div className="premium-butterfly-wing absolute -top-6 -left-8 w-6 h-10 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full opacity-80" style={{animationDuration: '2s', boxShadow: '0 0 15px rgba(255, 105, 180, 0.5)'}} />
+                    <div className="premium-butterfly-wing absolute -top-6 -right-8 w-6 h-10 bg-gradient-to-bl from-pink-400 to-purple-500 rounded-full opacity-80" style={{animationDuration: '2s', animationDelay: '0.1s', boxShadow: '0 0 15px rgba(255, 105, 180, 0.5)'}} />
                     {/* Lower wings */}
-                    <div className="absolute -bottom-2 -left-6 w-5 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full opacity-70 animate-pulse" style={{animationDuration: '2s', animationDelay: '0.2s'}} />
-                    <div className="absolute -bottom-2 -right-6 w-5 h-8 bg-gradient-to-bl from-cyan-400 to-blue-500 rounded-full opacity-70 animate-pulse" style={{animationDuration: '2s', animationDelay: '0.3s'}} />
+                    <div className="premium-butterfly-wing absolute -bottom-2 -left-6 w-5 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full opacity-70" style={{animationDuration: '2s', animationDelay: '0.2s', boxShadow: '0 0 12px rgba(96, 165, 250, 0.5)'}} />
+                    <div className="premium-butterfly-wing absolute -bottom-2 -right-6 w-5 h-8 bg-gradient-to-bl from-cyan-400 to-blue-500 rounded-full opacity-70" style={{animationDuration: '2s', animationDelay: '0.3s', boxShadow: '0 0 12px rgba(96, 165, 250, 0.5)'}} />
                     {/* Body */}
-                    <div className="w-1 h-12 bg-gradient-to-b from-yellow-400 to-orange-500 rounded-full mx-auto" />
+                    <div className="w-1 h-12 bg-gradient-to-b from-yellow-400 to-orange-500 rounded-full mx-auto" style={{boxShadow: '0 0 8px rgba(251, 191, 36, 0.5)'}} />
                   </div>
                 </div>
               </div>
