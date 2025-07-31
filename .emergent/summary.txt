@@ -1,9 +1,11 @@
 <analysis>
-The previous AI engineer successfully brought the Butterfly Nebula Brawl game from an MVP state to a highly polished and feature-complete application. Initially, the focus was on resolving critical music quality issues by completely disabling the complex procedural music system in  and fixing screen shrinking in . Subsequently, the engineer embarked on comprehensive Visual Polish and Mobile Optimization, introducing , , and , integrating these extensively into  and . A significant portion of the trajectory details the iterative process of integrating user-provided music, addressing initial issues like music overlap and ensuring 15 unique tracks for all levels, including intro music and enhanced sound effects. Finally, the AI engineer addressed multiple UI button functionalities (, , , ) and prepared the application for PWA deployment, providing detailed build and hosting instructions, though direct file download or hosting was impossible due to environmental constraints. The game is now declared 100% complete by the previous AI engineer.
+The previous AI engineer successfully brought Butterfly Nebula Brawl to a feature-complete state, tackling visual polish, mobile optimization, and critical music issues. However, the trajectory reveals a persistent struggle with audio and visual bugs, leading to an iterative debugging process. Key challenges included music overlap (due to inconsistent AudioManager instances and modern browser autoplay restrictions), screen shrinking, a lingering debug stats box, and a critical lack of visual distinction between game levels (obstacles and backgrounds appearing identical). The AI engineer repeatedly attempted fixes, often believing issues were resolved only for the user to report their persistence. This led to deep debugging, including the use of a troubleshoot agent that identified a root cause for audio overlap (multiple  objects). Towards the end, the focus shifted to completing unique obstacle drawing functions and ensuring level configuration properly applied to rendering, with the user still reporting visual issues at the trajectory's conclusion, indicating the visual distinctness problem remains active.
 </analysis>
 
 <product_requirements>
-The goal is Butterfly Nebula Brawl, a high-quality 2D hyper-casual mobile game for Android and iOS, inspired by Brawl Stars. It features a customizable butterfly flying vertically, dodging obstacles, and collecting power-ups across 15 levels, culminating in a Mother Insect boss fight. The game includes 10 collectible flutterers with unique skills. Monetization is planned via in-app purchases and AdMob ads, with viral features like high scores and daily challenges. The application demands professional polish: smooth physics, responsive touch controls, particle effects, high-res assets, 60 FPS performance, and a modular codebase. Deployment prioritizes Google Play (APK) then App Store (IPA). Current implementation covers core gameplay, initial UI (opening/tutorial), backend integration, with recent work on gameplay speed, health bar, improved obstacle/boss visuals, and iteratively refined music/sound effects (now 15 unique tracks + intro, with SFX), and fully functional UI buttons/modals.
+The Butterfly Nebula Brawl game aims to be a high-quality 2D hyper-casual mobile game (Android/iOS), similar to Brawl Stars. Players control a customizable butterfly vertically, dodging obstacles and collecting power-ups across 15 levels, culminating in a Mother Insect boss fight. It includes 10 collectible flutterers with unique skills, and plans for monetization via in-app purchases and AdMob ads, alongside viral features like high scores and daily challenges. The application requires professional polish, including smooth physics, responsive touch controls, particle effects, high-res assets, 60 FPS performance, and a modular codebase. Deployment is prioritized for Google Play (APK) then App Store (IPA).
+
+Current implementation features core gameplay, initial UI (opening/tutorial), and backend integration. Recent work included improving gameplay speed, adding a health bar, enhancing obstacle and boss visuals, and refining the audio system to include 15 unique level tracks plus intro music with comprehensive sound effects. UI buttons and their associated modals (Daily Challenges, Ranks, Flutterers, Sound) are fully functional. The PWA deployment readiness was a key focus, with a build generated and instructions provided, though direct hosting/download is not supported. Despite claims of completion, user feedback in the trajectory highlights ongoing issues with music transitions and lack of visual distinction between levels.
 </product_requirements>
 
 <key_technical_concepts>
@@ -16,54 +18,55 @@ The goal is Butterfly Nebula Brawl, a high-quality 2D hyper-casual mobile game f
 
 <code_architecture>
 
--   ****: Core game logic.
-    -   **Importance**: Manages game state, player actions, obstacles, collisions.
-    -   **Changes**: Speeded up initial gameplay,  modified for health damage. Integrated , , . Updated  loop and / for effects. Updated sound effect calls (, , ). Corrected  calls from  to instance methods.
--   ****: Handles game element rendering.
-    -   **Importance**: Draws all visual components onto HTML5 Canvas.
-    -   **Changes**: Implemented health bar, adjusted level progress bar. Redesigned  and . Integrated rendering of  and . Added  and  methods.
--   ****: Main game integration component.
-    -   **Importance**: Renders game canvas, integrates engine/renderer, manages UI.
-    -   **Changes**: Fixed  import, . Modified canvas dimensions to resolve screen shrinking. Integrated  instantiation. Updated to correctly instantiate and use . Added state and props for  modal. Updated  for intro music.
--   ****: Manages game audio. (Originally )
-    -   **Importance**: Centralizes music and sound effect playback.
-    -   **Changes**: Drastically simplified initially (procedural music removed), then completely rewritten to handle user-uploaded MP3s. Now supports 15 unique level tracks + intro music. Implemented , , , , , and a robust  method to prevent sound overlap. Added methods for different sound effects (sparkle, crunch, buzz, explosion). Made a window global.
--   ****: Displays initial game menu.
-    -   **Importance**: Entry point for players.
-    -   **Changes**: Ensured correct state updates for tutorial. Fixed JSX errors. Implemented , ,  handlers and added modal dialogs for Daily Challenges and Leaderboard. Updated sound button to use correct mute/unmute.
--   ****: New file for in-game particle effects.
-    -   **Importance**: Provides visual flair.
-    -   **Changes**: Newly created file. Integrated into  and .
--   ****: New file for screen-wide visual effects.
-    -   **Importance**: Handles effects like screen shake.
-    -   **Changes**: Newly created file. Integrated into  and .
--   ****: New file for optimized mobile touch input.
-    -   **Importance**: Improves responsiveness and accuracy of touch controls.
-    -   **Changes**: Newly created file. Integrated into .
--   ****: Web App Manifest file.
-    -   **Importance**: Defines PWA properties (name, icons, display mode).
-    -   **Changes**: Newly created for PWA optimization.
--   ****: Service Worker file.
-    -   **Importance**: Enables offline capabilities and caching for PWA.
-    -   **Changes**: Newly created for PWA optimization.
--   ****: Main HTML file.
-    -   **Importance**: Entry point for the frontend application.
-    -   **Changes**: Added links to  and  for PWA, and script tags to load , , and  (after  was moved to ).
+
+-   ****:
+    -   **Importance**: Core game logic, state management, and level configuration.
+    -   **Changes**: Refined  assignments (lines 56, 280, 1621) to prevent debug stats box.  (line 540) was greatly expanded to define 15 unique visual themes, including , , , and  for each level. The  method (line 1111) was modified to select obstacle types dynamically from , replacing hardcoded 'asteroid'/'insect' choices. Debug logging was added for level configuration.
+
+-   ****:
+    -   **Importance**: Renders all game visuals onto the canvas, including backgrounds, obstacles, and UI.
+    -   **Changes**: Calls to  were removed (line 75) to hide the debug stats box. The  function (line 652) was updated to explicitly call  to ensure level-specific backgrounds are rendered. Numerous new obstacle drawing functions (e.g., , , , , etc.) were added to support the diverse  defined in , and  now dispatches to these. The accidentally removed  was re-added.  was updated to utilize level config for colors/effects.  was added to use accent colors.  function was added. Comprehensive  blocks were added around drawing functions for runtime error prevention.
+
+-   ****:
+    -   **Importance**: Main React component managing game rendering, engine integration, and high-level game state.
+    -   **Changes**: Fixed inconsistent  vs  usage for  instantiation. A 200ms  delay was introduced in  to fix React timing issues where the canvas wasn't fully mounted before game initialization. Logic for starting intro music on app open was frequently adjusted: initially set, then disabled, then linked to START ADVENTURE, then back to app open (with browser autoplay considerations). Duplicate intro music calls were removed.
+
+-   ****:
+    -   **Importance**: Centralized audio management for music and sound effects.
+    -   **Changes**: Underwent significant refactoring multiple times. Initially, complex  and  methods were added with delays. Later, the core architecture was changed to use a *single persistent HTML Audio element* ().  and  now primarily update  and call , which inherently stops the previous track.  and related methods were simplified to pause/clear this single element. Default audio state was toggled between completely silent and having quiet music. Logic was added to resume the  on the *first user interaction* () to bypass modern browser autoplay restrictions. SFX were generally kept disabled or at very low volume. Extensive console logging was added to track audio state and transitions.
+
+-   ****:
+    -   **Importance**: Displays the game's initial menu and handles navigation to other screens.
+    -   **Changes**: Modified to handle  initialization and intro music starting on app open (with null checks and retry logic). Added a visual indicator 🎵 Click anywhere to start music to inform users about browser autoplay policies.
+
+-   ****:
+    -   **Importance**: Web App Manifest for PWA capabilities.
+    -   **Changes**: Created, defines PWA properties, icons, and display mode.
+
+-   ****:
+    -   **Importance**: Service Worker for PWA offline capabilities and caching.
+    -   **Changes**: Created, enables PWA features.
+
+-   ****:
+    -   **Importance**: Main entry point for the frontend.
+    -   **Changes**: Modified to link  and  for PWA, and updated script tags for , , and  after AudioManager was moved to .
 </code_architecture>
 
 <pending_tasks>
--   **User to obtain build files**: The AI engineer cannot provide a direct download of the  folder due to environment limitations.
--   **User to deploy PWA**: Deploy the  folder to a hosting service like Vercel or Netlify as per instructions.
--   **User to test PWA on iPhone Safari**: Verify PWA features, performance, and Add to Home Screen functionality.
--   **User to package for App Stores**: Initiate Cordova build processes for APK/IPA and follow provided deployment guides.
+-   **User to obtain build files**: The AI engineer cannot directly provide the  folder.
+-   **User to deploy PWA**: Deploy the generated  folder to a hosting service (e.g., Vercel, Netlify) using the provided  package.
+-   **User to test PWA on iPhone Safari**: Verify PWA features and behavior on an actual device.
+-   **User to package for App Stores**: Initiate Cordova build processes for APK/IPA.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer completed the comprehensive development and final polishing of the Butterfly Nebula Brawl application. This included ensuring all game mechanics, audio (15 unique tracks + intro, comprehensive SFX, no overlaps, functional volume controls), visual polish (particles, screen shake, enhanced power-ups), mobile optimizations (responsive touch controls), and UI functionalities (Daily Challenges, Ranks, Flutterers, Sound buttons with proper modals) were fully integrated and bug-free.
+Immediately prior to this summary request, the AI engineer was actively debugging persistent visual issues: specifically, that obstacles across levels still appeared identical (pink circles) and that background visuals were not changing despite prior attempts to implement level-specific themes. This was a direct follow-up to the user's explicit complaint that the obstacles are still not having variety and the background is still not changing.
 
-The absolute last action taken was in response to the user's request for a downloadable zip of the frontend build folder and a hosted PWA preview link. The AI engineer clarified the environment's limitations (cannot provide direct download or hosted link) but successfully generated the optimized production build located at . It then provided detailed, step-by-step instructions for the user on how to access these build files and deploy them to common PWA hosting platforms like Vercel or Netlify, along with instructions for iPhone Safari testing and future app store deployments. The  and  files were created, and  was updated to enable PWA features. The game is now considered 100% complete and production-ready by the previous AI engineer.
+Before this specific debugging effort, the AI engineer had just resolved a critical uncaught runtime error that occurred when starting gameplay. This was fixed by adding comprehensive error handling ( blocks) around obstacle drawing functions in , providing a safe fallback to  if a more specific drawing function failed. A new deployment package, , was created reflecting this stability fix.
+
+The current work involves inspecting the code related to obstacle spawning in  and background rendering in . The AI engineer had added debug  statements within 's  function (around line 1111) to inspect the  being passed to ensure it contains correct  and , and similar logs in  for background rendering. The goal is to verify if the level-specific configuration data is correctly propagating and being used by the rendering logic. The music system has been confirmed by the user to be working perfectly and remains untouched during these visual fixes.
 </current_work>
 
 <optional_next_step>
-The game's development is declared complete. The next step is for the user to obtain the build files and deploy the PWA as per the provided instructions.
+Analyze the console logs from the latest build to understand why level-specific obstacle types and background changes are not rendering.
 </optional_next_step>
