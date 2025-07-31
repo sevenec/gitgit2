@@ -39,6 +39,14 @@ export const FLUTTERERS = [
       wing2: '#FF8FA3',
       accent: '#FFFFFF'
     },
+    visualProps: {
+      wingShape: 'standard',
+      wingPattern: 'simple',
+      size: 1.0,
+      trailEffect: false,
+      sparkles: false,
+      glow: false
+    },
     unlockCondition: 'starter'
   },
   {
@@ -48,6 +56,27 @@ export const FLUTTERERS = [
     description: 'Leaves sparkling trails as it flies',
     unlocked: false,
     skills: {
+      speed: 1.1,
+      health: 90,
+      special: 'trail_sparkles'
+    },
+    colors: {
+      body: '#4A5568',
+      wing1: '#E2E8F0',
+      wing2: '#CBD5E0',
+      accent: '#F7FAFC',
+      glow: '#FFD700'
+    },
+    visualProps: {
+      wingShape: 'elongated',
+      wingPattern: 'sparkles',
+      size: 1.1,
+      trailEffect: true,
+      sparkles: true,
+      glow: true
+    },
+    unlockCondition: 'reach_level_3'
+  },
       speed: 1.1,
       health: 100,
       special: 'trail_sparkles'
