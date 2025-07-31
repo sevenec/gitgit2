@@ -97,29 +97,26 @@ window.AudioManager = class AudioManager {
   // Setup music to start on first user interaction
   setupUserInteractionMusic() {
     const startMusicOnClick = () => {
-      if (this.currentTrack && this.currentTrack.paused) {
-        console.log('🎵 Starting intro music on user interaction');
-        this.currentTrack.play()
+      if (this.audioElement && this.audioElement.paused) {
+        console.log('🎵 Starting music on user interaction');
+        this.audioElement.play()
           .then(() => {
-            console.log('✅ Intro music started after user interaction!');
-            // Remove the listener since music has started
+            console.log('✅ Music started after user interaction!');
             document.removeEventListener('click', startMusicOnClick);
             document.removeEventListener('touchstart', startMusicOnClick);
           })
           .catch(error => {
-            console.error('❌ Still cannot play intro music:', error);
+            console.error('❌ Still cannot play music:', error);
           });
       }
     };
     
-    // Listen for both click and touch events
     document.addEventListener('click', startMusicOnClick, { once: true });
     document.addEventListener('touchstart', startMusicOnClick, { once: true });
-    
     console.log('🎵 Music will start on first click/touch anywhere on the page');
   }
 
-  // Play background music for specific level - ENHANCED OVERLAP PREVENTION
+  // Play level music - SIMPLE SINGLE AUDIO ELEMENT APPROACH  
   playLevelMusic(level) {
     if (this.musicDisabled) {
       console.log('🔇 Music disabled - no level music');
@@ -132,62 +129,29 @@ window.AudioManager = class AudioManager {
       return;
     }
     
-    console.log(`🎵 LEVEL TRANSITION: AGGRESSIVELY stopping intro music and starting Level ${level}: ${musicPath}`);
+    // Check if this is already playing
+    if (this.currentTrackPath === musicPath) {
+      console.log(`🎵 Level ${level} music already playing - no change needed`);
+      return;
+    }
     
-    // TRIPLE-STOP ALL AUDIO - Extra aggressive for intro music overlap
-    this.stopMusic(); // Stop current track
-    this.stopAllAudio(); // Stop all audio elements
-    this.forceStopAllAudio(); // Force stop everything
+    console.log(`🎵 SINGLE ELEMENT: Changing to Level ${level} music: ${musicPath}`);
     
-    // LONGER delay to ensure intro music is completely dead
-    setTimeout(async () => {
-      // Final aggressive cleanup before starting level music
-      await this.forceStopAllAudio();
-      
-      // Extra safety - manually find and kill any audio elements
-      const allAudio = document.querySelectorAll('audio');
-      allAudio.forEach((audio, index) => {
-        if (!audio.paused) {
-          console.log(`🔇 KILLING persistent audio element ${index + 1}`);
-          audio.pause();
-          audio.currentTime = 0;
-          audio.volume = 0;
-          audio.src = '';
-        }
-      });
-      
-      console.log(`🎵 INTRO COMPLETELY STOPPED - Starting Level ${level} music: ${musicPath}`);
-      
-      // Create new audio element for level music
-      const audio = new Audio(musicPath);
-      audio.volume = this.musicVolume * this.masterVolume;
-      audio.loop = true;
-      audio.preload = 'auto';
-      
-      // Handle loading and playback
-      audio.addEventListener('canplaythrough', () => {
-        console.log(`✅ Level ${level} music loaded and ready`);
-      });
-      
-      audio.addEventListener('error', (e) => {
-        console.error(`❌ Failed to load Level ${level} music: ${musicPath}`, e);
-      });
-      
-      // Store reference and play
-      this.currentTrack = audio;
-      
-      // Play the music
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            console.log(`✅ Level ${level} music started successfully - INTRO MUSIC KILLED - ${musicPath}`);
-          })
-          .catch(error => {
-            console.warn(`Level ${level} music needs user interaction:`, error);
-          });
-      }
-    }, 500); // Increased to 500ms delay for complete intro music elimination
+    // SIMPLE APPROACH: Just change the source - this automatically stops previous music!
+    this.audioElement.src = musicPath;
+    this.currentTrackPath = musicPath;
+    
+    // Play the new music
+    const playPromise = this.audioElement.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          console.log(`✅ Level ${level} music started - PREVIOUS MUSIC AUTOMATICALLY STOPPED`);
+        })
+        .catch(error => {
+          console.warn(`Level ${level} music needs user interaction:`, error);
+        });
+    }
   }
   
   // Stop current music with optional fade out - ENHANCED to stop ALL audio
