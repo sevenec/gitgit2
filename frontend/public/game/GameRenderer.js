@@ -1788,30 +1788,6 @@ window.GameRenderer = class GameRenderer {
     
     this.ctx.shadowBlur = 0;
   }
-    // Enhanced creative rendering for all other obstacle types
-    const time = Date.now() * 0.001;
-    const size = Math.min(obstacle.width, obstacle.height) / 2;
-    
-    // Determine obstacle variant based on position and properties
-    const variant = Math.floor((obstacle.x + obstacle.y) * 0.01) % 4;
-    
-    switch (variant) {
-      case 0: // Crystal Shard
-        this.drawCrystalShard(obstacle, size, time);
-        break;
-      case 1: // Plasma Core
-        this.drawPlasmaCore(obstacle, size, time);
-        break;
-      case 2: // Space Debris
-        this.drawSpaceDebris(obstacle, size, time);
-        break;
-      case 3: // Energy Anomaly  
-        this.drawEnergyAnomaly(obstacle, size, time);
-        break;
-      default:
-        this.drawPlasmaCore(obstacle, size, time);
-    }
-  }
 
   drawCrystalShard(obstacle, size, time) {
     // Rotating crystal shard with prismatic effects
