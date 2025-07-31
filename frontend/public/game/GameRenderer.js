@@ -665,7 +665,10 @@ window.GameRenderer = class GameRenderer {
     
     this.ctx.rotate(obstacle.rotation + time * 0.5);
     
-    // Simple colorful obstacle
+    // DEBUGGING: Log when we fall back to basic
+    console.log(`⚠️ Using basic obstacle fallback for type: ${obstacle.type}`);
+    
+    // Simple colorful obstacle - but make it more distinctive
     this.ctx.fillStyle = '#FF6B9D';
     this.ctx.strokeStyle = '#FFFFFF';
     this.ctx.lineWidth = 2;
