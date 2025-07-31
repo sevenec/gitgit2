@@ -644,15 +644,22 @@ window.GameEngine = class GameEngine {
         backgroundColor: '#4B0082',
         accentColor: '#FF1493'
       },
-      },
       14: { 
         difficulty: { gameSpeed: 7.0, obstacleSpawnRate: 0.075, powerUpSpawnRate: 0.018 }, 
-        theme: 'void',
-        duration: 45000
+        theme: 'apocalypse',
+        duration: 47000,
+        obstacleTypes: ['meteor', 'shockwave'],
+        backgroundColor: '#8B0000',
+        accentColor: '#FF0000'
       },
       15: { 
-        difficulty: { gameSpeed: 4.0, obstacleSpawnRate: 0.030, powerUpSpawnRate: 0.020 }, // Slower for boss mechanics
+        difficulty: { gameSpeed: 4.0, obstacleSpawnRate: 0.030, powerUpSpawnRate: 0.020 },
         theme: 'boss',
+        duration: 60000,
+        obstacleTypes: ['final', 'ultimate'],
+        backgroundColor: '#2F1B2C',
+        accentColor: '#FFD700'
+      }
         duration: 180000 // 3 minutes for boss fight
       }
     };
