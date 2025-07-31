@@ -82,9 +82,14 @@ window.GameRenderer = class GameRenderer {
     const gameEngine = window.gameEngine;
     const levelConfig = gameEngine ? gameEngine.getLevelConfig(level) : null;
     
+    // DEBUG: Log what background is being rendered
+    console.log(`Rendering background for Level ${level}:`, levelConfig);
+    
     // Use level-specific background color if available
     let backgroundColor = levelConfig?.backgroundColor || '#001122';
     let accentColor = levelConfig?.accentColor || '#4A90E2';
+    
+    console.log(`Background colors - BG: ${backgroundColor}, Accent: ${accentColor}`);
     
     // Create gradient with level-specific colors
     const gradient = this.ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height);
