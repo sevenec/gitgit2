@@ -1789,6 +1789,359 @@ window.GameRenderer = class GameRenderer {
     this.ctx.shadowBlur = 0;
   }
 
+  // Additional unique obstacle types for visual variety
+  drawPrismObstacle(obstacle, size, color, time) {
+    this.ctx.fillStyle = color + '60';
+    this.ctx.strokeStyle = color;
+    this.ctx.lineWidth = 2;
+    
+    // Multi-sided prism with rainbow refraction effect
+    const sides = 8;
+    for (let layer = 0; layer < 3; layer++) {
+      const layerSize = size * (0.5 + layer * 0.25);
+      const hueShift = (layer * 60 + time * 30) % 360;
+      this.ctx.strokeStyle = `hsl(${hueShift}, 70%, 60%)`;
+      
+      this.ctx.beginPath();
+      for (let i = 0; i < sides; i++) {
+        const angle = (i / sides) * Math.PI * 2 + time + layer * 0.5;
+        const x = Math.cos(angle) * layerSize;
+        const y = Math.sin(angle) * layerSize;
+        if (i === 0) this.ctx.moveTo(x, y);
+        else this.ctx.lineTo(x, y);
+      }
+      this.ctx.closePath();
+      this.ctx.stroke();
+      if (layer === 0) this.ctx.fill();
+    }
+  }
+  
+  drawSolarObstacle(obstacle, size, color, time) {
+    // Solar flare/corona obstacle
+    this.ctx.fillStyle = '#FF4500';
+    this.ctx.shadowColor = '#FFA500';
+    this.ctx.shadowBlur = 15;
+    
+    // Core
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, size * 0.4, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Solar flares
+    this.ctx.strokeStyle = '#FFD700';
+    this.ctx.lineWidth = 4;
+    for (let i = 0; i < 8; i++) {
+      const angle = (i / 8) * Math.PI * 2 + time * 2;
+      const flareLength = size * (1 + Math.sin(time * 3 + i) * 0.5);
+      const startRadius = size * 0.5;
+      
+      this.ctx.beginPath();
+      this.ctx.moveTo(Math.cos(angle) * startRadius, Math.sin(angle) * startRadius);
+      this.ctx.lineTo(Math.cos(angle) * flareLength, Math.sin(angle) * flareLength);
+      this.ctx.stroke();
+    }
+    this.ctx.shadowBlur = 0;
+  }
+  
+  drawQuantumObstacle(obstacle, size, color, time) {
+    // Quantum particle/wave obstacle with uncertainty principle visualization
+    this.ctx.strokeStyle = color;
+    this.ctx.fillStyle = color + '30';
+    
+    // Multiple probability clouds
+    for (let i = 0; i < 5; i++) {
+      const phase = time * 4 + i * Math.PI * 0.4;
+      const probability = Math.sin(phase) * 0.5 + 0.5;
+      const cloudSize = size * (0.3 + probability * 0.4);
+      const offset = Math.cos(phase * 1.3) * size * 0.2;
+      
+      this.ctx.globalAlpha = probability * 0.6;
+      this.ctx.beginPath();
+      this.ctx.arc(offset, Math.sin(phase * 0.7) * size * 0.2, cloudSize, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+    
+    // Quantum interference pattern
+    this.ctx.globalAlpha = 1;
+    this.ctx.lineWidth = 1;
+    for (let i = 0; i < 3; i++) {
+      const waveOffset = time * 3 + i * Math.PI * 0.6;
+      this.ctx.beginPath();
+      for (let x = -size; x <= size; x += 5) {
+        const wave = Math.sin(x * 0.1 + waveOffset) * size * 0.3;
+        if (x === -size) this.ctx.moveTo(x, wave);
+        else this.ctx.lineTo(x, wave);
+      }
+      this.ctx.stroke();
+    }
+  }
+  
+  drawBioObstacle(obstacle, size, color, time) {
+    // Organic spore/virus obstacle
+    this.ctx.fillStyle = color + '80';
+    this.ctx.strokeStyle = color;
+    
+    // Main body - pulsating organic shape
+    const pulseSize = size * (0.8 + Math.sin(time * 5) * 0.2);
+    this.ctx.beginPath();
+    for (let i = 0; i < 12; i++) {
+      const angle = (i / 12) * Math.PI * 2;
+      const variation = Math.sin(time * 3 + i * 0.5) * 0.3 + 1;
+      const radius = pulseSize * variation;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+      if (i === 0) this.ctx.moveTo(x, y);
+      else this.ctx.lineTo(x, y);
+    }
+    this.ctx.closePath();
+    this.ctx.fill();
+    this.ctx.stroke();
+    
+    // Spores/tendrils
+    this.ctx.lineWidth = 2;
+    for (let i = 0; i < 6; i++) {
+      const angle = (i / 6) * Math.PI * 2 + time;
+      const tendrilLength = size * (1.2 + Math.sin(time * 2 + i) * 0.3);
+      
+      this.ctx.beginPath();
+      this.ctx.moveTo(0, 0);
+      this.ctx.quadraticCurveTo(
+        Math.cos(angle) * tendrilLength * 0.5,
+        Math.sin(angle) * tendrilLength * 0.5 + Math.sin(time * 4) * 10,
+        Math.cos(angle) * tendrilLength,
+        Math.sin(angle) * tendrilLength
+      );
+      this.ctx.stroke();
+      
+      // Spore at tip
+      this.ctx.beginPath();
+      this.ctx.arc(Math.cos(angle) * tendrilLength, Math.sin(angle) * tendrilLength, 3, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+  }
+  
+  drawVolcanicObstacle(obstacle, size, color, time) {
+    // Lava/magma obstacle with dripping effect
+    this.ctx.fillStyle = '#FF6347';
+    this.ctx.strokeStyle = '#FF4500';
+    this.ctx.lineWidth = 3;
+    
+    // Molten core
+    const coreSize = size * (0.6 + Math.sin(time * 4) * 0.2);
+    this.ctx.shadowColor = '#FF0000';
+    this.ctx.shadowBlur = 10;
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, coreSize, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Lava drips
+    this.ctx.shadowBlur = 0;
+    this.ctx.fillStyle = '#DC143C';
+    for (let i = 0; i < 8; i++) {
+      const angle = (i / 8) * Math.PI * 2;
+      const dripLength = size * (0.5 + Math.sin(time * 3 + i) * 0.3);
+      const x = Math.cos(angle) * size * 0.7;
+      const y = Math.sin(angle) * size * 0.7;
+      
+      // Teardrop shape
+      this.ctx.beginPath();
+      this.ctx.ellipse(x, y + dripLength * 0.3, 4, dripLength, angle + Math.PI/2, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+    
+    // Heat shimmer effect
+    this.ctx.strokeStyle = '#FFA500';
+    this.ctx.lineWidth = 1;
+    for (let i = 0; i < 3; i++) {
+      const shimmerRadius = size * (1.2 + i * 0.2);
+      this.ctx.globalAlpha = 0.3 - i * 0.1;
+      this.ctx.beginPath();
+      this.ctx.arc(Math.sin(time * 6) * 2, Math.cos(time * 4) * 2, shimmerRadius, 0, Math.PI * 2);
+      this.ctx.stroke();
+    }
+    this.ctx.globalAlpha = 1;
+  }
+  
+  drawVoidObstacle(obstacle, size, color, time) {
+    // Dark void/shadow obstacle that seems to absorb light
+    this.ctx.fillStyle = '#000000';
+    this.ctx.strokeStyle = color;
+    this.ctx.lineWidth = 1;
+    
+    // Dark core
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, size, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Void tendrils reaching outward
+    for (let i = 0; i < 6; i++) {
+      const angle = (i / 6) * Math.PI * 2 + time * 0.5;
+      const tendrilReach = size * (1.5 + Math.sin(time * 2 + i) * 0.5);
+      
+      // Create gradient from black to transparent
+      const gradient = this.ctx.createRadialGradient(0, 0, size * 0.8, 0, 0, tendrilReach);
+      gradient.addColorStop(0, '#000000');
+      gradient.addColorStop(1, 'transparent');
+      
+      this.ctx.fillStyle = gradient;
+      this.ctx.beginPath();
+      this.ctx.arc(0, 0, tendrilReach, angle - 0.2, angle + 0.2);
+      this.ctx.lineTo(0, 0);
+      this.ctx.fill();
+    }
+    
+    // Distortion effect around edge
+    this.ctx.strokeStyle = color + '40';
+    this.ctx.lineWidth = 2;
+    for (let i = 0; i < 12; i++) {
+      const angle = (i / 12) * Math.PI * 2 + time;
+      const distortRadius = size * (1.1 + Math.sin(time * 8 + i) * 0.1);
+      const x = Math.cos(angle) * distortRadius;
+      const y = Math.sin(angle) * distortRadius;
+      
+      this.ctx.beginPath();
+      this.ctx.arc(x, y, 2, 0, Math.PI * 2);
+      this.ctx.stroke();
+    }
+  }
+  
+  drawStormObstacle(obstacle, size, color, time) {
+    // Lightning/thunder storm obstacle
+    this.ctx.strokeStyle = color;
+    this.ctx.fillStyle = '#2F4F4F';
+    this.ctx.lineWidth = 2;
+    
+    // Storm cloud core
+    for (let i = 0; i < 4; i++) {
+      const cloudSize = size * (0.4 + i * 0.15);
+      const offset = Math.sin(time + i) * size * 0.2;
+      this.ctx.globalAlpha = 0.6 - i * 0.1;
+      this.ctx.beginPath();
+      this.ctx.arc(offset, Math.cos(time * 1.2 + i) * size * 0.1, cloudSize, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+    
+    this.ctx.globalAlpha = 1;
+    
+    // Lightning bolts
+    this.ctx.strokeStyle = '#FFD700';
+    this.ctx.lineWidth = 3;
+    this.ctx.shadowColor = '#FFD700';
+    this.ctx.shadowBlur = 5;
+    
+    for (let i = 0; i < 3; i++) {
+      if (Math.sin(time * 10 + i * 2) > 0.7) { // Random lightning flashes
+        const startAngle = (i / 3) * Math.PI * 2;
+        let x = Math.cos(startAngle) * size * 0.3;
+        let y = Math.sin(startAngle) * size * 0.3;
+        
+        this.ctx.beginPath();
+        this.ctx.moveTo(x, y);
+        
+        // Jagged lightning path
+        for (let j = 0; j < 5; j++) {
+          x += (Math.random() - 0.5) * size * 0.4;
+          y += size * 0.3;
+          this.ctx.lineTo(x, y);
+        }
+        this.ctx.stroke();
+      }
+    }
+    this.ctx.shadowBlur = 0;
+  }
+  
+  drawChaosObstacle(obstacle, size, color, time) {
+    // Chaotic fractal/distortion obstacle
+    this.ctx.strokeStyle = color;
+    this.ctx.fillStyle = color + '20';
+    
+    // Fractal-like chaotic pattern
+    const iterations = 3;
+    for (let iter = 0; iter < iterations; iter++) {
+      const iterSize = size * (1 - iter * 0.2);
+      const rotation = time * (1 + iter) + iter * Math.PI * 0.3;
+      
+      this.ctx.save();
+      this.ctx.rotate(rotation);
+      this.ctx.lineWidth = 3 - iter;
+      
+      // Chaotic geometric shape
+      this.ctx.beginPath();
+      for (let i = 0; i < 8; i++) {
+        const angle = (i / 8) * Math.PI * 2;
+        const chaos = Math.sin(time * 7 + i + iter * 2) * 0.5 + 1;
+        const radius = iterSize * chaos;
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+        
+        if (i === 0) this.ctx.moveTo(x, y);
+        else this.ctx.lineTo(x, y);
+      }
+      this.ctx.closePath();
+      
+      if (iter === 0) this.ctx.fill();
+      this.ctx.stroke();
+      this.ctx.restore();
+    }
+    
+    // Chaotic particles
+    for (let i = 0; i < 10; i++) {
+      const particleAngle = time * 5 + i * 0.6;
+      const particleRadius = size * (0.8 + Math.sin(time * 3 + i) * 0.6);
+      const x = Math.cos(particleAngle) * particleRadius;
+      const y = Math.sin(particleAngle) * particleRadius;
+      
+      this.ctx.beginPath();
+      this.ctx.arc(x, y, 2, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+  }
+  
+  drawApocalypseObstacle(obstacle, size, color, time) {
+    // Meteoric/shockwave apocalypse obstacle
+    this.ctx.fillStyle = '#8B0000';
+    this.ctx.strokeStyle = '#FF0000';
+    
+    // Meteor core with trailing fire
+    const coreSize = size * 0.6;
+    this.ctx.shadowColor = '#FF4500';
+    this.ctx.shadowBlur = 15;
+    
+    // Meteor body
+    this.ctx.beginPath();
+    this.ctx.ellipse(0, 0, coreSize, coreSize * 1.2, time * 2, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Fire trail
+    this.ctx.shadowBlur = 0;
+    for (let i = 0; i < 6; i++) {
+      const trailLength = size * (1 + i * 0.2);
+      const trailWidth = size * (0.3 - i * 0.04);
+      const flicker = Math.sin(time * 8 + i) * 0.2 + 1;
+      
+      this.ctx.fillStyle = i < 2 ? '#FF4500' : i < 4 ? '#FF6347' : '#FF8C00';
+      this.ctx.globalAlpha = (0.8 - i * 0.12) * flicker;
+      
+      this.ctx.beginPath();
+      this.ctx.ellipse(0, trailLength * 0.3, trailWidth, trailLength, Math.PI/2, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+    
+    this.ctx.globalAlpha = 1;
+    
+    // Shockwave rings
+    this.ctx.strokeStyle = '#FF0000';
+    this.ctx.lineWidth = 2;
+    for (let i = 0; i < 3; i++) {
+      const waveRadius = size * (1.2 + i * 0.4 + Math.sin(time * 4) * 0.2);
+      this.ctx.globalAlpha = 0.7 - i * 0.2;
+      this.ctx.beginPath();
+      this.ctx.arc(0, 0, waveRadius, 0, Math.PI * 2);
+      this.ctx.stroke();
+    }
+    this.ctx.globalAlpha = 1;
+  }
+
   drawCrystalShard(obstacle, size, time) {
     // Rotating crystal shard with prismatic effects
     this.ctx.rotate(obstacle.rotation + time * 0.3);
