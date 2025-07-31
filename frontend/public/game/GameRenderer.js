@@ -699,7 +699,9 @@ window.GameRenderer = class GameRenderer {
   renderGame(gameEngine) {
     // Render level-specific background first
     if (gameEngine && gameEngine.currentLevel) {
-      this.renderEnhancedBackground(gameEngine.currentLevel);
+      // Get level config and pass it explicitly
+      const levelConfig = gameEngine.levelConfig || gameEngine.getLevelConfig(gameEngine.currentLevel);
+      this.renderEnhancedBackground(gameEngine.currentLevel, levelConfig);
     }
     
     // Apply screen shake effects
