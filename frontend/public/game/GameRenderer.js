@@ -2012,19 +2012,32 @@ window.GameRenderer = class GameRenderer {
   }
   
   drawSpiralObstacle(obstacle, size, color, time) {
-    this.ctx.strokeStyle = color;
-    this.ctx.lineWidth = 3;
+    // LEVEL 3: Purple/magenta spinning spirals
+    this.ctx.strokeStyle = '#FF6B9D'; // Bright magenta
+    this.ctx.lineWidth = 4;
+    this.ctx.shadowColor = '#FF6B9D';
+    this.ctx.shadowBlur = 15;
+    
     this.ctx.beginPath();
     
-    for (let i = 0; i < 50; i++) {
-      const angle = (i / 50) * Math.PI * 4 + time * 2;
-      const radius = (i / 50) * size;
+    for (let i = 0; i < 60; i++) {
+      const angle = (i / 60) * Math.PI * 6 + time * 3; // Spinning effect
+      const radius = (i / 60) * size * 1.2;
       const x = Math.cos(angle) * radius;
       const y = Math.sin(angle) * radius;
       if (i === 0) this.ctx.moveTo(x, y);
       else this.ctx.lineTo(x, y);
     }
     this.ctx.stroke();
+    
+    // Add pulsing center
+    this.ctx.fillStyle = '#FFFFFF';
+    const pulseSize = size * 0.2 * (1 + Math.sin(time * 5) * 0.3);
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, pulseSize, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.shadowBlur = 0;
   }
   
   drawGasCloudObstacle(obstacle, size, color, time) {
