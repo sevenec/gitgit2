@@ -102,6 +102,24 @@ window.GameRenderer = class GameRenderer {
     this.renderLevelVisualEffects(level, { backgroundColor, accentColor, theme: levelConfig?.theme });
   }
   
+  // Render stars with level-specific accent colors
+  renderEnhancedStars(accentColor = '#FFFFFF') {
+    this.ctx.save();
+    const time = Date.now() * 0.001;
+    
+    // Generate pseudo-random star positions
+    for (let i = 0; i < 50; i++) {
+      const x = (i * 123 + time * 10) % this.canvas.width;
+      const y = (i * 456 + time * 5) % this.canvas.height;
+      const twinkle = Math.sin(time * 2 + i) * 0.5 + 0.5;
+      
+      this.ctx.fillStyle = accentColor + Math.floor(twinkle * 255).toString(16).padStart(2, '0');
+      this.ctx.fillRect(x, y, 2, 2);
+    }
+    
+    this.ctx.restore();
+  }
+  
   // Helper function to adjust color brightness
   adjustBrightness(color, factor) {
     const hex = color.replace('#', '');
