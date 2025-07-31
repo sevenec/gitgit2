@@ -277,9 +277,10 @@ window.GameEngine = class GameEngine {
     const isLowEnd = /Android.*Chrome.*[1-4]\d\.|iPhone|iPad.*OS [1-9]_/.test(userAgent);
     
     if (isMobile || isLowEnd) {
-      this.performanceOptimized = true;
+      // Performance optimizations applied but stats disabled for clean UI
+      this.performanceOptimized = false; // Keep stats box hidden
       this.particleSystem.maxParticles = 150; // Reduce particles on mobile
-      console.log('🔧 Mobile performance optimizations applied');
+      console.log('🔧 Mobile performance optimizations applied - stats disabled');
     }
   }
   
