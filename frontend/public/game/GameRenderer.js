@@ -79,22 +79,36 @@ window.GameRenderer = class GameRenderer {
   
   renderEnhancedBackground(level) {
     // Enhanced background rendering with level-specific themes
-    const backgroundConfig = this.getLevelBackgroundConfig(level);
+    const gameEngine = window.gameEngine;
+    const levelConfig = gameEngine ? gameEngine.getLevelConfig(level) : null;
     
-    // Create complex multi-stop gradient
+    // Use level-specific background color if available
+    let backgroundColor = levelConfig?.backgroundColor || '#001122';
+    let accentColor = levelConfig?.accentColor || '#4A90E2';
+    
+    // Create gradient with level-specific colors
     const gradient = this.ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height);
-    backgroundConfig.gradientStops.forEach((stop, index) => {
-      gradient.addColorStop(index / (backgroundConfig.gradientStops.length - 1), stop);
-    });
+    gradient.addColorStop(0, backgroundColor);
+    gradient.addColorStop(0.5, this.adjustBrightness(backgroundColor, 1.2));
+    gradient.addColorStop(1, accentColor + '20'); // Add transparency
     
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     
-    // Render enhanced star field
-    this.renderEnhancedStars();
+    // Render enhanced star field with level-specific colors
+    this.renderEnhancedStars(accentColor);
     
     // Add level-specific visual effects
-    this.renderLevelVisualEffects(level, backgroundConfig);
+    this.renderLevelVisualEffects(level, { backgroundColor, accentColor, theme: levelConfig?.theme });
+  }
+  
+  // Helper function to adjust color brightness
+  adjustBrightness(color, factor) {
+    const hex = color.replace('#', '');
+    const r = Math.min(255, Math.floor(parseInt(hex.substr(0, 2), 16) * factor));
+    const g = Math.min(255, Math.floor(parseInt(hex.substr(2, 2), 16) * factor));
+    const b = Math.min(255, Math.floor(parseInt(hex.substr(4, 2), 16) * factor));
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
   }
   
   getLevelBackgroundConfig(level) {
