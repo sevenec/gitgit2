@@ -116,7 +116,7 @@ window.AudioManager = class AudioManager {
     console.log('🎵 Music will start on first click/touch anywhere on the page');
   }
 
-  // Play level music - SIMPLE SINGLE AUDIO ELEMENT APPROACH  
+  // Play level music - SINGLE AUDIO ELEMENT APPROACH WITH BETTER LOGGING
   playLevelMusic(level) {
     if (this.musicDisabled) {
       console.log('🔇 Music disabled - no level music');
@@ -135,21 +135,30 @@ window.AudioManager = class AudioManager {
       return;
     }
     
-    console.log(`🎵 SINGLE ELEMENT: Changing to Level ${level} music: ${musicPath}`);
+    console.log(`🎵 MUSIC CHANGE: Level ${level}`);
+    console.log(`   FROM: ${this.currentTrackPath || 'none'}`);
+    console.log(`   TO: ${musicPath}`);
     
-    // SIMPLE APPROACH: Just change the source - this automatically stops previous music!
+    // FORCE PAUSE AND RESET the single audio element
+    this.audioElement.pause();
+    this.audioElement.currentTime = 0;
+    
+    // Change the source - this automatically stops any previous music
     this.audioElement.src = musicPath;
     this.currentTrackPath = musicPath;
+    
+    console.log(`🔇 STOPPED previous music, STARTING Level ${level} music`);
     
     // Play the new music
     const playPromise = this.audioElement.play();
     if (playPromise !== undefined) {
       playPromise
         .then(() => {
-          console.log(`✅ Level ${level} music started - PREVIOUS MUSIC AUTOMATICALLY STOPPED`);
+          console.log(`✅ Level ${level} music SUCCESSFULLY STARTED - ${musicPath}`);
+          console.log(`🎵 Current audio element src: ${this.audioElement.src}`);
         })
         .catch(error => {
-          console.warn(`Level ${level} music needs user interaction:`, error);
+          console.warn(`❌ Level ${level} music failed to play:`, error);
         });
     }
   }
