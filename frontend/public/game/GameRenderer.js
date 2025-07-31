@@ -1642,7 +1642,152 @@ window.GameRenderer = class GameRenderer {
     this.ctx.stroke();
   }
   
-  drawBasicObstacle(obstacle) {
+  drawLevelSpecificObstacle(obstacle, levelConfig) {
+    const time = Date.now() * 0.001;
+    const size = Math.min(obstacle.width, obstacle.height) / 2;
+    const theme = levelConfig?.theme || 'starfield';
+    const accentColor = levelConfig?.accentColor || '#FFFFFF';
+    const obstacleTypes = levelConfig?.obstacleTypes || ['asteroid', 'debris'];
+    
+    // Choose obstacle type based on level configuration
+    const typeIndex = Math.floor((obstacle.x + obstacle.y) * 0.01) % obstacleTypes.length;
+    const obstacleType = obstacleTypes[typeIndex];
+    
+    this.ctx.rotate(obstacle.rotation + time * 0.5);
+    
+    switch (obstacleType) {
+      case 'crystal':
+      case 'ice':
+        this.drawCrystalObstacle(obstacle, size, accentColor, time);
+        break;
+      case 'spiral':
+      case 'vortex':
+        this.drawSpiralObstacle(obstacle, size, accentColor, time);
+        break;
+      case 'cloud':
+      case 'gas':
+        this.drawGasCloudObstacle(obstacle, size, accentColor, time);
+        break;
+      case 'energy':
+      case 'beam':
+        this.drawEnergyObstacle(obstacle, size, accentColor, time);
+        break;
+      case 'shard':
+      case 'prism':
+        this.drawPrismObstacle(obstacle, size, accentColor, time);
+        break;
+      case 'flare':
+      case 'corona':
+        this.drawSolarObstacle(obstacle, size, accentColor, time);
+        break;
+      case 'particle':
+      case 'wave':
+        this.drawQuantumObstacle(obstacle, size, accentColor, time);
+        break;
+      case 'spore':
+      case 'virus':
+        this.drawBioObstacle(obstacle, size, accentColor, time);
+        break;
+      case 'lava':
+      case 'magma':
+        this.drawVolcanicObstacle(obstacle, size, accentColor, time);
+        break;
+      case 'shadow':
+      case 'void':
+        this.drawVoidObstacle(obstacle, size, accentColor, time);
+        break;
+      case 'lightning':
+      case 'thunder':
+        this.drawStormObstacle(obstacle, size, accentColor, time);
+        break;
+      case 'fractal':
+      case 'distortion':
+        this.drawChaosObstacle(obstacle, size, accentColor, time);
+        break;
+      case 'meteor':
+      case 'shockwave':
+        this.drawApocalypseObstacle(obstacle, size, accentColor, time);
+        break;
+      default:
+        this.drawBasicObstacle(obstacle);
+        break;
+    }
+  }
+  
+  // Individual obstacle type renderers
+  drawCrystalObstacle(obstacle, size, color, time) {
+    this.ctx.fillStyle = color + '80';
+    this.ctx.strokeStyle = color;
+    this.ctx.lineWidth = 2;
+    
+    this.ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const angle = (i / 6) * Math.PI * 2;
+      const radius = size * (0.8 + Math.sin(time * 3 + i) * 0.2);
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+      if (i === 0) this.ctx.moveTo(x, y);
+      else this.ctx.lineTo(x, y);
+    }
+    this.ctx.closePath();
+    this.ctx.fill();
+    this.ctx.stroke();
+  }
+  
+  drawSpiralObstacle(obstacle, size, color, time) {
+    this.ctx.strokeStyle = color;
+    this.ctx.lineWidth = 3;
+    this.ctx.beginPath();
+    
+    for (let i = 0; i < 50; i++) {
+      const angle = (i / 50) * Math.PI * 4 + time * 2;
+      const radius = (i / 50) * size;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+      if (i === 0) this.ctx.moveTo(x, y);
+      else this.ctx.lineTo(x, y);
+    }
+    this.ctx.stroke();
+  }
+  
+  drawGasCloudObstacle(obstacle, size, color, time) {
+    this.ctx.fillStyle = color + '40';
+    
+    for (let i = 0; i < 5; i++) {
+      const offsetX = Math.sin(time + i) * size * 0.3;
+      const offsetY = Math.cos(time + i * 1.5) * size * 0.3;
+      const cloudSize = size * (0.6 + Math.sin(time * 2 + i) * 0.2);
+      
+      this.ctx.beginPath();
+      this.ctx.arc(offsetX, offsetY, cloudSize, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+  }
+  
+  drawEnergyObstacle(obstacle, size, color, time) {
+    this.ctx.strokeStyle = color;
+    this.ctx.lineWidth = 3;
+    this.ctx.shadowColor = color;
+    this.ctx.shadowBlur = 10;
+    
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, size, 0, Math.PI * 2);
+    this.ctx.stroke();
+    
+    // Energy bolts
+    for (let i = 0; i < 4; i++) {
+      const angle = (i / 4) * Math.PI * 2 + time * 3;
+      const innerRadius = size * 0.3;
+      const outerRadius = size * 1.2;
+      
+      this.ctx.beginPath();
+      this.ctx.moveTo(Math.cos(angle) * innerRadius, Math.sin(angle) * innerRadius);
+      this.ctx.lineTo(Math.cos(angle) * outerRadius, Math.sin(angle) * outerRadius);
+      this.ctx.stroke();
+    }
+    
+    this.ctx.shadowBlur = 0;
+  }
     // Enhanced creative rendering for all other obstacle types
     const time = Date.now() * 0.001;
     const size = Math.min(obstacle.width, obstacle.height) / 2;
