@@ -1109,6 +1109,14 @@ window.GameEngine = class GameEngine {
   }
   
   spawnObstacle() {
+    // Get level-specific obstacle configuration
+    const levelConfig = this.getLevelConfig(this.currentLevel);
+    const obstacleTypes = levelConfig?.obstacleTypes || ['asteroid', 'insect'];
+    
+    // Choose obstacle type based on level configuration
+    const randomIndex = Math.floor(Math.random() * obstacleTypes.length);
+    const obstacleType = obstacleTypes[randomIndex];
+    
     const obstacle = {
       x: Math.random() * (this.canvas.width - 60) + 30,
       y: -30,
@@ -1116,7 +1124,9 @@ window.GameEngine = class GameEngine {
       height: 30 + Math.random() * 20,
       rotation: 0,
       rotationSpeed: (Math.random() - 0.5) * 0.2,
-      type: Math.random() > 0.5 ? 'asteroid' : 'insect'
+      type: obstacleType, // Now uses level-specific types!
+      levelTheme: levelConfig?.theme || 'starfield',
+      levelAccentColor: levelConfig?.accentColor || '#FFFFFF'
     };
     
     this.obstacles.push(obstacle);
