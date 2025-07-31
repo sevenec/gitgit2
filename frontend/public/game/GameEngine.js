@@ -1447,11 +1447,7 @@ window.GameEngine = class GameEngine {
   }
   
   checkLevelCompletion() {
-    // TESTING: Quick level advancement after 10 seconds instead of 35-45 seconds
-    const quickTestingMode = true;
-    const testLevelDuration = quickTestingMode ? 10000 : this.levelDuration; // 10 seconds for testing
-    
-    if (this.levelTime >= testLevelDuration && !this.isBossLevel) {
+    if (this.levelTime >= this.levelDuration && !this.isBossLevel) {
       this.completeLevel();
     }
     
