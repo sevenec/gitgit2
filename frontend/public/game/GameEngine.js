@@ -538,26 +538,40 @@ window.GameEngine = class GameEngine {
   }
   
   getLevelConfig(level) {
-    // Enhanced level configurations with improved initial speeds
+    // Enhanced level configurations with unique visual themes per level
     const configs = {
       1: { 
-        difficulty: { gameSpeed: 3.2, obstacleSpawnRate: 0.028, powerUpSpawnRate: 0.012 }, // Increased speed for better engagement
-        theme: 'starry',
-        duration: 35000 // Shorter for faster progression
+        difficulty: { gameSpeed: 3.2, obstacleSpawnRate: 0.028, powerUpSpawnRate: 0.012 },
+        theme: 'starfield',
+        duration: 35000,
+        obstacleTypes: ['asteroid', 'debris'],
+        backgroundColor: '#001122',
+        accentColor: '#4A90E2'
       },
       2: { 
         difficulty: { gameSpeed: 3.6, obstacleSpawnRate: 0.030, powerUpSpawnRate: 0.013 },
         theme: 'aurora',
-        duration: 35000
+        duration: 35000,
+        obstacleTypes: ['crystal', 'ice'],
+        backgroundColor: '#002211', 
+        accentColor: '#00FFAA'
       },
       3: { 
         difficulty: { gameSpeed: 2.8, obstacleSpawnRate: 0.032, powerUpSpawnRate: 0.014 },
         theme: 'galaxy',
-        duration: 36000
+        duration: 36000,
+        obstacleTypes: ['spiral', 'vortex'],
+        backgroundColor: '#220011',
+        accentColor: '#FF6B9D'
       },
       4: { 
         difficulty: { gameSpeed: 2.5, obstacleSpawnRate: 0.025, powerUpSpawnRate: 0.009 }, 
-        theme: 'aurora',
+        theme: 'nebula',
+        duration: 37000,
+        obstacleTypes: ['cloud', 'gas'],
+        backgroundColor: '#112200',
+        accentColor: '#FFAA00'
+      },
         duration: 46000
       },
       5: { 
