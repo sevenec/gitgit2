@@ -61,7 +61,7 @@ window.AudioManager = class AudioManager {
     }
   }
   
-  // Play intro music - SIMPLE SINGLE AUDIO ELEMENT APPROACH
+  // Play intro music - SINGLE AUDIO ELEMENT WITH BETTER LOGGING
   playIntroMusic() {
     if (this.musicDisabled) {
       console.log('🔇 Music disabled - no intro music');
@@ -74,18 +74,22 @@ window.AudioManager = class AudioManager {
       return;
     }
     
-    console.log('🎵 SINGLE ELEMENT: Starting intro music');
+    console.log('🎵 INTRO MUSIC: Starting with single audio element');
+    console.log(`   Audio element src will be: ${introMusicPath}`);
     
-    // SIMPLE APPROACH: Just change the source of the single audio element
+    // Set the source of the single audio element
     this.audioElement.src = introMusicPath;
     this.currentTrackPath = introMusicPath;
+    
+    console.log(`🎵 Audio element src set to: ${this.audioElement.src}`);
     
     // Try to play
     const playPromise = this.audioElement.play();
     if (playPromise !== undefined) {
       playPromise
         .then(() => {
-          console.log('✅ INTRO MUSIC STARTED - Single element approach');
+          console.log('✅ INTRO MUSIC STARTED SUCCESSFULLY');
+          console.log(`🎵 Playing: ${this.currentTrackPath}`);
         })
         .catch(error => {
           console.warn('⚠️ Intro music needs user interaction:', error);
