@@ -120,6 +120,206 @@ window.GameRenderer = class GameRenderer {
     this.ctx.restore();
   }
   
+  // Render level-specific visual effects
+  renderLevelVisualEffects(level, config) {
+    const { backgroundColor, accentColor, theme } = config;
+    const time = Date.now() * 0.001;
+    
+    // Add theme-specific atmospheric effects
+    switch (theme) {
+      case 'aurora':
+        this.renderAuroraEffect(accentColor, time);
+        break;
+      case 'galaxy':
+        this.renderGalaxyEffect(accentColor, time);
+        break;
+      case 'nebula':
+        this.renderNebulaEffect(accentColor, time);
+        break;
+      case 'plasma':
+        this.renderPlasmaEffect(accentColor, time);
+        break;
+      case 'solar':
+        this.renderSolarEffect(accentColor, time);
+        break;
+      case 'void':
+        this.renderVoidEffect(accentColor, time);
+        break;
+      case 'storm':
+        this.renderStormEffect(accentColor, time);
+        break;
+      default:
+        // Default starfield effect
+        break;
+    }
+  }
+  
+  // Individual theme effect renderers
+  renderAuroraEffect(accentColor, time) {
+    this.ctx.save();
+    this.ctx.globalAlpha = 0.3;
+    
+    // Flowing aurora waves
+    for (let i = 0; i < 3; i++) {
+      const gradient = this.ctx.createLinearGradient(0, 0, this.canvas.width, 0);
+      gradient.addColorStop(0, 'transparent');
+      gradient.addColorStop(0.5, accentColor + '40');
+      gradient.addColorStop(1, 'transparent');
+      
+      this.ctx.fillStyle = gradient;
+      const waveY = this.canvas.height * (0.2 + i * 0.3) + Math.sin(time + i) * 50;
+      this.ctx.fillRect(0, waveY, this.canvas.width, 30);
+    }
+    
+    this.ctx.restore();
+  }
+  
+  renderGalaxyEffect(accentColor, time) {
+    this.ctx.save();
+    this.ctx.globalAlpha = 0.4;
+    
+    // Spiral galaxy arms
+    this.ctx.strokeStyle = accentColor + '60';
+    this.ctx.lineWidth = 2;
+    
+    const centerX = this.canvas.width / 2;
+    const centerY = this.canvas.height / 2;
+    
+    for (let arm = 0; arm < 2; arm++) {
+      this.ctx.beginPath();
+      for (let i = 0; i < 100; i++) {
+        const angle = (i * 0.1) + time * 0.5 + (arm * Math.PI);
+        const radius = i * 3;
+        const x = centerX + Math.cos(angle) * radius;
+        const y = centerY + Math.sin(angle) * radius;
+        
+        if (i === 0) this.ctx.moveTo(x, y);
+        else this.ctx.lineTo(x, y);
+      }
+      this.ctx.stroke();
+    }
+    
+    this.ctx.restore();
+  }
+  
+  renderNebulaEffect(accentColor, time) {
+    this.ctx.save();
+    this.ctx.globalAlpha = 0.2;
+    
+    // Flowing nebula clouds
+    for (let i = 0; i < 5; i++) {
+      const x = (Math.sin(time * 0.5 + i) * this.canvas.width * 0.3) + this.canvas.width / 2;
+      const y = (Math.cos(time * 0.3 + i) * this.canvas.height * 0.3) + this.canvas.height / 2;
+      const size = 100 + Math.sin(time + i) * 30;
+      
+      const gradient = this.ctx.createRadialGradient(x, y, 0, x, y, size);
+      gradient.addColorStop(0, accentColor + '40');
+      gradient.addColorStop(1, 'transparent');
+      
+      this.ctx.fillStyle = gradient;
+      this.ctx.beginPath();
+      this.ctx.arc(x, y, size, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+    
+    this.ctx.restore();
+  }
+  
+  renderPlasmaEffect(accentColor, time) {
+    this.ctx.save();
+    this.ctx.globalAlpha = 0.3;
+    this.ctx.strokeStyle = accentColor;
+    this.ctx.lineWidth = 1;
+    
+    // Plasma energy grid
+    const gridSize = 50;
+    for (let x = 0; x < this.canvas.width; x += gridSize) {
+      for (let y = 0; y < this.canvas.height; y += gridSize) {
+        const intensity = Math.sin(time * 2 + x * 0.01 + y * 0.01) * 0.5 + 0.5;
+        this.ctx.globalAlpha = intensity * 0.2;
+        
+        this.ctx.beginPath();
+        this.ctx.rect(x, y, gridSize, gridSize);
+        this.ctx.stroke();
+      }
+    }
+    
+    this.ctx.restore();
+  }
+  
+  renderSolarEffect(accentColor, time) {
+    this.ctx.save();
+    
+    // Solar flares from edges
+    this.ctx.strokeStyle = '#FFA500';
+    this.ctx.lineWidth = 2;
+    this.ctx.shadowColor = '#FF4500';
+    this.ctx.shadowBlur = 5;
+    
+    for (let i = 0; i < 4; i++) {
+      if (Math.sin(time * 8 + i * 2) > 0.5) {
+        const startX = i < 2 ? 0 : this.canvas.width;
+        const startY = Math.random() * this.canvas.height;
+        const endX = startX + (i < 2 ? 100 : -100);
+        const endY = startY + (Math.random() - 0.5) * 200;
+        
+        this.ctx.beginPath();
+        this.ctx.moveTo(startX, startY);
+        this.ctx.lineTo(endX, endY);
+        this.ctx.stroke();
+      }
+    }
+    
+    this.ctx.restore();
+  }
+  
+  renderVoidEffect(accentColor, time) {
+    this.ctx.save();
+    
+    // Dark void distortions
+    this.ctx.globalAlpha = 0.1;
+    this.ctx.fillStyle = '#000000';
+    
+    for (let i = 0; i < 8; i++) {
+      const x = Math.sin(time * 2 + i) * this.canvas.width * 0.3 + this.canvas.width / 2;
+      const y = Math.cos(time * 1.5 + i) * this.canvas.height * 0.3 + this.canvas.height / 2;
+      const size = 50 + Math.sin(time * 3 + i) * 20;
+      
+      this.ctx.beginPath();
+      this.ctx.arc(x, y, size, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+    
+    this.ctx.restore();
+  }
+  
+  renderStormEffect(accentColor, time) {
+    this.ctx.save();
+    
+    // Lightning flashes
+    if (Math.sin(time * 12) > 0.8) {
+      this.ctx.globalAlpha = 0.1;
+      this.ctx.fillStyle = '#FFD700';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+    
+    // Rain effect
+    this.ctx.strokeStyle = accentColor + '40';
+    this.ctx.lineWidth = 1;
+    
+    for (let i = 0; i < 50; i++) {
+      const x = (i * 20 + time * 200) % this.canvas.width;
+      const y = (time * 300 + i * 10) % this.canvas.height;
+      
+      this.ctx.beginPath();
+      this.ctx.moveTo(x, y);
+      this.ctx.lineTo(x - 5, y + 15);
+      this.ctx.stroke();
+    }
+    
+    this.ctx.restore();
+  }
+  
   // Helper function to adjust color brightness
   adjustBrightness(color, factor) {
     const hex = color.replace('#', '');
