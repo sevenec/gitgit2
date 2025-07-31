@@ -200,20 +200,107 @@
   transform: scale(1);
 }
 
-/* Mobile Optimizations */
-@media (max-width: 768px) {
+/* Additional Mobile Optimizations & Touch Enhancements */
+@media (max-width: 640px) {
   .premium-button {
-    min-height: 44px; /* iOS touch target */
+    min-height: 48px; /* Larger touch targets for mobile */
+    font-size: 1.1rem;
+    padding: 12px 24px;
+  }
+  
+  .level-title {
+    font-size: 2.5rem;
+  }
+  
+  .achievement-popup {
+    right: 8px;
+    top: 8px;
+    left: 8px;
+    min-width: auto;
+    max-width: calc(100vw - 16px);
+  }
+  
+  .premium-loading-overlay h1 {
+    font-size: 2.5rem;
+  }
+  
+  .premium-float {
+    animation-duration: 3s; /* Faster on mobile for better performance */
+  }
+}
+
+/* Ultra-responsive design for small screens */
+@media (max-width: 480px) {
+  .premium-button {
+    min-height: 52px;
+    font-size: 1rem;
   }
   
   .level-title {
     font-size: 2rem;
   }
   
+  .premium-loading-overlay {
+    padding: 20px;
+  }
+  
+  .premium-loading-overlay h1 {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+}
+
+/* High DPI / Retina Display Optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .premium-button,
+  .premium-butterfly-wing,
   .achievement-popup {
-    right: 10px;
-    top: 10px;
-    min-width: 280px;
+    transform: translateZ(0); /* Hardware acceleration */
+    backface-visibility: hidden;
+  }
+}
+
+/* Reduce animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .premium-float,
+  .premium-butterfly-wing,
+  .premium-pulse-glow {
+    animation: none;
+  }
+  
+  .screen-transition-enter-active,
+  .screen-transition-exit-active {
+    transition: opacity 200ms ease;
+    transform: none;
+  }
+  
+  .premium-button:hover {
+    transform: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .achievement-popup {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    border-color: #fbbf24;
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-height: 600px) and (orientation: landscape) {
+  .premium-loading-overlay h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .premium-float .w-32.h-32 {
+    width: 6rem;
+    height: 6rem;
+  }
+  
+  .level-title {
+    font-size: 2rem;
   }
 }
 
