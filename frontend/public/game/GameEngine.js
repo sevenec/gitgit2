@@ -572,52 +572,78 @@ window.GameEngine = class GameEngine {
         backgroundColor: '#112200',
         accentColor: '#FFAA00'
       },
-        duration: 46000
-      },
       5: { 
         difficulty: { gameSpeed: 3.0, obstacleSpawnRate: 0.030, powerUpSpawnRate: 0.009 }, 
-        theme: 'nebula',
-        duration: 45000
+        theme: 'plasma',
+        duration: 38000,
+        obstacleTypes: ['energy', 'beam'],
+        backgroundColor: '#001122',
+        accentColor: '#FF4500'
       },
       6: { 
         difficulty: { gameSpeed: 3.4, obstacleSpawnRate: 0.035, powerUpSpawnRate: 0.010 }, 
         theme: 'crystal',
-        duration: 45000
+        duration: 39000,
+        obstacleTypes: ['shard', 'prism'],
+        backgroundColor: '#2A0845',
+        accentColor: '#DA70D6'
       },
       7: { 
         difficulty: { gameSpeed: 3.8, obstacleSpawnRate: 0.040, powerUpSpawnRate: 0.011 }, 
-        theme: 'plasma',
-        duration: 45000
+        theme: 'solar',
+        duration: 40000,
+        obstacleTypes: ['flare', 'corona'],
+        backgroundColor: '#331100',
+        accentColor: '#FFA500'
       },
       8: { 
         difficulty: { gameSpeed: 4.2, obstacleSpawnRate: 0.045, powerUpSpawnRate: 0.012 }, 
         theme: 'quantum',
-        duration: 45000
+        duration: 41000,
+        obstacleTypes: ['particle', 'wave'],
+        backgroundColor: '#0D1B2A',
+        accentColor: '#00CED1'
       },
       9: { 
         difficulty: { gameSpeed: 4.6, obstacleSpawnRate: 0.050, powerUpSpawnRate: 0.013 }, 
-        theme: 'solar',
-        duration: 45000
+        theme: 'toxic',
+        duration: 42000,
+        obstacleTypes: ['spore', 'virus'],
+        backgroundColor: '#2D4A22',
+        accentColor: '#ADFF2F'
       },
       10: { 
         difficulty: { gameSpeed: 5.0, obstacleSpawnRate: 0.055, powerUpSpawnRate: 0.014 }, 
-        theme: 'core',
-        duration: 45000
+        theme: 'volcanic',
+        duration: 43000,
+        obstacleTypes: ['lava', 'magma'],
+        backgroundColor: '#4A1C0D',
+        accentColor: '#FF6347'
       },
       11: { 
         difficulty: { gameSpeed: 5.5, obstacleSpawnRate: 0.060, powerUpSpawnRate: 0.015 }, 
         theme: 'void',
-        duration: 45000
+        duration: 44000,
+        obstacleTypes: ['shadow', 'void'],
+        backgroundColor: '#0A0A0A',
+        accentColor: '#8A2BE2'
       },
       12: { 
         difficulty: { gameSpeed: 6.0, obstacleSpawnRate: 0.065, powerUpSpawnRate: 0.016 }, 
-        theme: 'void',
-        duration: 45000
+        theme: 'storm',
+        duration: 45000,
+        obstacleTypes: ['lightning', 'thunder'],
+        backgroundColor: '#2F4F4F',
+        accentColor: '#FFD700'
       },
       13: { 
         difficulty: { gameSpeed: 6.5, obstacleSpawnRate: 0.070, powerUpSpawnRate: 0.017 }, 
-        theme: 'void',
-        duration: 45000
+        theme: 'chaos',
+        duration: 46000,
+        obstacleTypes: ['fractal', 'distortion'],
+        backgroundColor: '#4B0082',
+        accentColor: '#FF1493'
+      },
       },
       14: { 
         difficulty: { gameSpeed: 7.0, obstacleSpawnRate: 0.075, powerUpSpawnRate: 0.018 }, 
