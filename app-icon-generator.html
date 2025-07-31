@@ -1,0 +1,111 @@
+<!-- Butterfly Nebula Brawl App Icon Generator -->
+<!-- Open this HTML file in browser, screenshot, and resize for iOS icons -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .app-icon {
+            width: 1024px;
+            height: 1024px;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 50%, #0f0f23 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-radius: 180px;
+            overflow: hidden;
+        }
+        
+        .butterfly-container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .wing {
+            position: absolute;
+            border-radius: 50%;
+        }
+        
+        .upper-left { 
+            width: 120px; height: 180px; 
+            top: -80px; left: -100px;
+            background: linear-gradient(135deg, #ff6b9d, #c084fc);
+            box-shadow: 0 0 40px rgba(255, 107, 157, 0.6);
+        }
+        
+        .upper-right { 
+            width: 120px; height: 180px; 
+            top: -80px; right: -100px;
+            background: linear-gradient(135deg, #ff6b9d, #c084fc);
+            box-shadow: 0 0 40px rgba(255, 107, 157, 0.6);
+        }
+        
+        .lower-left { 
+            width: 100px; height: 140px; 
+            bottom: -20px; left: -80px;
+            background: linear-gradient(135deg, #60a5fa, #34d399);
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.6);
+        }
+        
+        .lower-right { 
+            width: 100px; height: 140px; 
+            bottom: -20px; right: -80px;
+            background: linear-gradient(135deg, #60a5fa, #34d399);
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.6);
+        }
+        
+        .body {
+            width: 8px;
+            height: 200px;
+            background: linear-gradient(to bottom, #fbbf24, #f59e0b, #dc2626);
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.8);
+            z-index: 3;
+            position: relative;
+        }
+        
+        .nebula-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 107, 157, 0.3), transparent 50%),
+                        radial-gradient(circle at 70% 70%, rgba(96, 165, 250, 0.3), transparent 50%),
+                        radial-gradient(circle at 50% 50%, rgba(192, 132, 252, 0.2), transparent 60%);
+        }
+        
+        .stars {
+            position: absolute;
+            inset: 0;
+        }
+        
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-icon">
+        <div class="nebula-bg"></div>
+        <div class="stars">
+            <div class="star" style="top: 20%; left: 15%;"></div>
+            <div class="star" style="top: 30%; left: 80%;"></div>
+            <div class="star" style="top: 70%; left: 25%;"></div>
+            <div class="star" style="top: 80%; left: 75%;"></div>
+            <div class="star" style="top: 15%; left: 60%;"></div>
+            <div class="star" style="top: 60%; left: 10%;"></div>
+        </div>
+        <div class="butterfly-container">
+            <div class="wing upper-left"></div>
+            <div class="wing upper-right"></div>
+            <div class="wing lower-left"></div>
+            <div class="wing lower-right"></div>
+            <div class="body"></div>
+        </div>
+    </div>
+</body>
+</html>
