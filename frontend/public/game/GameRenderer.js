@@ -1982,9 +1982,12 @@ window.GameRenderer = class GameRenderer {
   
   // Individual obstacle type renderers
   drawCrystalObstacle(obstacle, size, color, time) {
-    this.ctx.fillStyle = color + '80';
-    this.ctx.strokeStyle = color;
-    this.ctx.lineWidth = 2;
+    // LEVEL 2: Bright crystalline obstacles with sharp edges
+    this.ctx.fillStyle = '#00FFAA'; // Bright green crystals
+    this.ctx.strokeStyle = '#FFFFFF';
+    this.ctx.lineWidth = 3;
+    this.ctx.shadowColor = '#00FFAA';
+    this.ctx.shadowBlur = 10;
     
     this.ctx.beginPath();
     for (let i = 0; i < 6; i++) {
@@ -1998,6 +2001,14 @@ window.GameRenderer = class GameRenderer {
     this.ctx.closePath();
     this.ctx.fill();
     this.ctx.stroke();
+    
+    // Add crystalline core
+    this.ctx.fillStyle = '#FFFFFF';
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, size * 0.3, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    this.ctx.shadowBlur = 0;
   }
   
   drawSpiralObstacle(obstacle, size, color, time) {
