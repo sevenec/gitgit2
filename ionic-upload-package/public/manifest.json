@@ -1,0 +1,99 @@
+{
+  "name": "Butterfly Nebula Brawl",
+  "short_name": "Nebula Brawl",
+  "description": "Epic cosmic adventure • Collect • Battle • Survive against the Mother Insect in this stunning 2D space shooter",
+  "version": "1.0.0",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "portrait-primary",
+  "theme_color": "#4B0082",
+  "background_color": "#1a0033",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["games", "action", "arcade"],
+  "screenshots": [
+    {
+      "src": "/images/screenshot-gameplay.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "platform": "mobile",
+      "label": "Cosmic butterfly gameplay with particle effects"
+    },
+    {
+      "src": "/images/screenshot-boss.png", 
+      "sizes": "390x844",
+      "type": "image/png",
+      "platform": "mobile",
+      "label": "Epic Mother Insect boss battle"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96", 
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "features": [
+    "cross-platform",
+    "high-performance",
+    "offline-capable",
+    "immersive-audio",
+    "particle-effects",
+    "boss-battles"
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.nebulabrawl.app",
+      "id": "com.nebulabrawl.app"
+    },
+    {
+      "platform": "itunes",
+      "url": "https://apps.apple.com/app/butterfly-nebula-brawl/id123456789"
+    }
+  ]
+}

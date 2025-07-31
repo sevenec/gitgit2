@@ -1,0 +1,3 @@
+# This is a placeholder for the sparkles sound effect file
+# In a real implementation, this would be a binary MP3 file
+# The AudioManager has fallback logic for missing sound files

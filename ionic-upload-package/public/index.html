@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    
+    <!-- PWA & Mobile Optimization -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#4B0082" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Nebula Brawl" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    
+    <!-- iOS Splash Screens -->
+    <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/splash/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/splash/splash-1668x2388.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/splash/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/splash/splash-1290x2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/splash/splash-1179x2556.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/splash/splash-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    
+    <!-- Icons -->
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/icons/icon-192x192.png" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/icons/icon-192x192.png" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- SEO & Social -->
+    <meta name="description" content="Epic cosmic adventure • Collect • Battle • Survive against the Mother Insect in this stunning 2D space shooter with unique music for every level!" />
+    <meta name="keywords" content="butterfly, nebula, brawl, space, shooter, cosmic, mobile, game, PWA, boss battle, flutterer" />
+    <meta name="author" content="Butterfly Nebula Brawl Team" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Butterfly Nebula Brawl - Epic Cosmic Adventure" />
+    <meta property="og:description" content="Pilot your cosmic butterfly through 15 unique levels with epic space music, collect power-ups, and battle the Mother Insect boss!" />
+    <meta property="og:image" content="%PUBLIC_URL%/images/og-image.png" />
+    <meta property="og:type" content="website" />
+    
+    <!-- Performance Optimizations -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="//api.butterflynebulabrwal.com" />
+    
+    <title>Butterfly Nebula Brawl - Epic Cosmic Adventure</title>
+    
+    <!-- Game Scripts - Preload for faster startup -->
+    <script src="%PUBLIC_URL%/game/AudioManager.js"></script>
+    <script src="%PUBLIC_URL%/game/GameEngine.js"></script>
+    <script src="%PUBLIC_URL%/game/GameRenderer.js"></script>
+    <script src="%PUBLIC_URL%/game/inputHandler.js"></script>
+    <script src="%PUBLIC_URL%/game/player.js"></script>
+    
+    <!-- Performance & Touch Optimization CSS -->
+    <style>
+      /* Critical CSS for immediate rendering */
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: linear-gradient(135deg, #1a0033 0%, #4B0082 50%, #8B008B 100%);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      /* Disable iOS bounce scrolling */
+      body {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        overscroll-behavior: none;
+      }
+      
+      /* Loading spinner */
+      .loading-spinner {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(255,255,255,0.3);
+        border-top: 3px solid #fff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        z-index: 9999;
+      }
+      
+      @keyframes spin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+      }
+      
+      /* Canvas optimization */
+      canvas {
+        display: block;
+        touch-action: none;
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+      }
+      
+      /* Root container */
+      #root {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      /* Prevent text selection and context menus */
+      * {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      /* iOS safe area support */
+      @supports (padding: max(0px)) {
+        body {
+          padding-left: env(safe-area-inset-left);
+          padding-right: env(safe-area-inset-right);
+          padding-top: env(safe-area-inset-top);
+          padding-bottom: env(safe-area-inset-bottom);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to play Butterfly Nebula Brawl.</noscript>
+    
+    <!-- Loading spinner -->
+    <div class="loading-spinner" id="loading-spinner"></div>
+    
+    <!-- Main app container -->
+    <div id="root"></div>
+    
+    <!-- PWA Installation & Service Worker -->
+    <script>
+      // Register Service Worker for PWA functionality
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('🚀 SW registered: ', registration);
+              
+              // Progressive audio caching after initial load
+              setTimeout(() => {
+                if (registration.active) {
+                  registration.active.postMessage({ type: 'CACHE_AUDIO' });
+                }
+              }, 5000);
+            })
+            .catch((registrationError) => {
+              console.log('❌ SW registration failed: ', registrationError);
+            });
+        });
+      }
+      
+      // PWA Install Prompt
+      let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        console.log('💫 PWA install prompt available');
+      });
+      
+      // Touch optimization for iOS
+      document.addEventListener('touchstart', function(e) {
+        // Prevent default to avoid iOS zoom/scroll issues
+        if (e.touches.length > 1) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+      
+      // Prevent iOS zoom on double tap
+      let lastTouchEnd = 0;
+      document.addEventListener('touchend', function(event) {
+        const now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+          event.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, false);
+      
+      // Hide loading spinner when React loads
+      window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          const spinner = document.getElementById('loading-spinner');
+          if (spinner) spinner.style.display = 'none';
+        }, 2000);
+      });
+      
+      // Viewport height fix for mobile browsers
+      function setViewportHeight() {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+      }
+      
+      setViewportHeight();
+      window.addEventListener('resize', setViewportHeight);
+      window.addEventListener('orientationchange', () => {
+        setTimeout(setViewportHeight, 100);
+      });
+      
+      // Performance monitoring
+      if ('performance' in window) {
+        window.addEventListener('load', () => {
+          const perfData = performance.getEntriesByType('navigation')[0];
+          console.log('⚡ Load time:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
+        });
+      }
+    </script>
+    
+    <!-- Disable context menu globally -->
+    <script>
+      document.addEventListener('contextmenu', e => e.preventDefault());
+      
+      // Prevent zoom with Ctrl/Cmd + wheel
+      document.addEventListener('wheel', e => {
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+      
+      // Prevent keyboard shortcuts that might interfere
+      document.addEventListener('keydown', e => {
+        if (e.ctrlKey || e.metaKey) {
+          if (['=', '-', '0'].includes(e.key)) {
+            e.preventDefault();
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
