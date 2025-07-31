@@ -1701,14 +1701,9 @@ window.GameRenderer = class GameRenderer {
     const levelConfig = gameEngine ? gameEngine.getLevelConfig(gameEngine.currentLevel) : null;
     const accentColor = levelConfig?.accentColor || '#FFFFFF';
     
-    if (obstacle.type === 'asteroid') {
-      this.drawEnhancedAsteroid(obstacle, accentColor);
-    } else if (obstacle.type === 'insect') {
-      this.drawEnhancedInsect(obstacle, accentColor);
-    } else {
-      // Use level-specific obstacle rendering
-      this.drawLevelSpecificObstacle(obstacle, levelConfig);
-    }
+    // FORCE TEST: Make all obstacles use level-specific rendering
+    console.log(`Drawing obstacle type: ${obstacle.type} for level ${gameEngine?.currentLevel}`);
+    this.drawLevelSpecificObstacle(obstacle, levelConfig);
     
     this.ctx.restore();
   }
