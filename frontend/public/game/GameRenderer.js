@@ -1491,13 +1491,18 @@ window.GameRenderer = class GameRenderer {
     this.ctx.save();
     this.ctx.translate(obstacle.x + obstacle.width/2, obstacle.y + obstacle.height/2);
     
+    // Get current level config for obstacle styling
+    const gameEngine = window.gameEngine;
+    const levelConfig = gameEngine ? gameEngine.getLevelConfig(gameEngine.currentLevel) : null;
+    const accentColor = levelConfig?.accentColor || '#FFFFFF';
+    
     if (obstacle.type === 'asteroid') {
-      this.drawEnhancedAsteroid(obstacle);
+      this.drawEnhancedAsteroid(obstacle, accentColor);
     } else if (obstacle.type === 'insect') {
-      this.drawEnhancedInsect(obstacle);
+      this.drawEnhancedInsect(obstacle, accentColor);
     } else {
-      // Fallback for other obstacle types
-      this.drawBasicObstacle(obstacle);
+      // Use level-specific obstacle rendering
+      this.drawLevelSpecificObstacle(obstacle, levelConfig);
     }
     
     this.ctx.restore();
