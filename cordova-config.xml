@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.yourcompany.butterflynebulabrawl" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Butterfly Nebula Brawl</name>
+    <description>Premium cosmic adventure through 15 unique levels with collectible butterflies</description>
+    <author email="your-email@domain.com" href="https://yourwebsite.com">Your Name</author>
+    
+    <content src="index.html" />
+    <access origin="*" />
+    
+    <!-- Preferences for optimal iOS performance -->
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="Orientation" value="portrait" />
+    <preference name="Fullscreen" value="true" />
+    <preference name="StatusBarOverlaysWebView" value="false" />
+    <preference name="StatusBarBackgroundColor" value="#000000" />
+    <preference name="BackgroundColor" value="#0f0f23" />
+    <preference name="HideKeyboardFormAccessoryBar" value="true" />
+    <preference name="DisallowOverscroll" value="true" />
+    
+    <!-- iOS specific settings -->
+    <platform name="ios">
+        <preference name="WKWebViewOnly" value="true" />
+        <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
+        <preference name="deployment-target" value="12.0" />
+        <preference name="WKSuspendInBackground" value="false" />
+        
+        <!-- Performance optimizations -->
+        <preference name="EnableViewportScale" value="false" />
+        <preference name="MediaPlaybackRequiresUserAction" value="false" />
+        <preference name="AllowInlineMediaPlayback" value="true" />
+        
+        <!-- App Icon Placeholder (you'll add actual icons in Xcode) -->
+        <icon src="www/icons/icon-512x512.svg" width="512" height="512" />
+        
+        <!-- Basic splash screen -->
+        <splash src="www/icons/icon-512x512.svg" width="320" height="568" />
+    </platform>
+</widget>
