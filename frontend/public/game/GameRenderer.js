@@ -77,19 +77,43 @@ window.GameRenderer = class GameRenderer {
     // }
   }
   
-  renderEnhancedBackground(level) {
+  renderEnhancedBackground(level, levelConfig = null) {
     // Enhanced background rendering with level-specific themes
     const gameEngine = window.gameEngine;
-    const levelConfig = gameEngine ? gameEngine.getLevelConfig(level) : null;
+    const config = levelConfig || (gameEngine ? gameEngine.getLevelConfig(level) : null);
     
-    // DEBUG: Log what background is being rendered
-    console.log(`Rendering background for Level ${level}:`, levelConfig);
+    // FORCE DEBUG: Ensure we have config and log it
+    console.log(`🎨 renderEnhancedBackground for Level ${level}:`, config);
     
-    // Use level-specific background color if available
-    let backgroundColor = levelConfig?.backgroundColor || '#001122';
-    let accentColor = levelConfig?.accentColor || '#4A90E2';
+    // Use level-specific background color if available, with more dramatic defaults
+    let backgroundColor = '#001122'; // Default
+    let accentColor = '#4A90E2'; // Default
     
-    console.log(`Background colors - BG: ${backgroundColor}, Accent: ${accentColor}`);
+    if (config) {
+      backgroundColor = config.backgroundColor;
+      accentColor = config.accentColor;
+      console.log(`🎨 Using level colors - BG: ${backgroundColor}, Accent: ${accentColor}`);
+    } else {
+      console.warn(`🎨 No level config found for level ${level}, using defaults`);
+    }
+    
+    // FORCE VARIETY: Make sure different levels have dramatically different backgrounds
+    if (level === 1) {
+      backgroundColor = '#001122'; // Dark blue
+      accentColor = '#4A90E2'; // Blue
+    } else if (level === 2) {
+      backgroundColor = '#002211'; // Dark green
+      accentColor = '#00FFAA'; // Bright green
+    } else if (level === 3) {
+      backgroundColor = '#220011'; // Dark magenta
+      accentColor = '#FF6B9D'; // Pink
+    } else if (level >= 4) {
+      // Use config colors for higher levels
+      backgroundColor = config?.backgroundColor || '#112200';
+      accentColor = config?.accentColor || '#FFAA00';
+    }
+    
+    console.log(`🎨 FINAL colors for Level ${level} - BG: ${backgroundColor}, Accent: ${accentColor}`);
     
     // Create gradient with level-specific colors
     const gradient = this.ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height);
@@ -104,7 +128,7 @@ window.GameRenderer = class GameRenderer {
     this.renderEnhancedStars(accentColor);
     
     // Add level-specific visual effects
-    this.renderLevelVisualEffects(level, { backgroundColor, accentColor, theme: levelConfig?.theme });
+    this.renderLevelVisualEffects(level, { backgroundColor, accentColor, theme: config?.theme });
   }
   
   // Render stars with level-specific accent colors
