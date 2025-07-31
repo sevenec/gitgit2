@@ -1117,11 +1117,21 @@ window.GameEngine = class GameEngine {
     console.log(`Level ${this.currentLevel} config:`, levelConfig);
     console.log(`Available obstacle types:`, obstacleTypes);
     
-    // Choose obstacle type based on level configuration
-    const randomIndex = Math.floor(Math.random() * obstacleTypes.length);
-    const obstacleType = obstacleTypes[randomIndex];
+    // FORCE VARIETY: Ensure we actually use different types for testing
+    let obstacleType;
+    if (this.currentLevel === 1) {
+      obstacleType = Math.random() > 0.5 ? 'asteroid' : 'debris';
+    } else if (this.currentLevel === 2) {
+      obstacleType = Math.random() > 0.5 ? 'crystal' : 'ice';
+    } else if (this.currentLevel === 3) {
+      obstacleType = Math.random() > 0.5 ? 'spiral' : 'vortex';
+    } else {
+      // Use regular logic
+      const randomIndex = Math.floor(Math.random() * obstacleTypes.length);
+      obstacleType = obstacleTypes[randomIndex];
+    }
     
-    console.log(`Spawning obstacle type: ${obstacleType}`);
+    console.log(`FORCING obstacle type: ${obstacleType} for level ${this.currentLevel}`);
     
     const obstacle = {
       x: Math.random() * (this.canvas.width - 60) + 30,
