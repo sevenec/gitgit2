@@ -164,60 +164,7 @@ window.AudioManager = class AudioManager {
       console.log('🔇 Music stopped successfully');
     }
   }
-  
-  // FORCE STOP ALL AUDIO - Ultra-aggressive stopping for overlap prevention
-  forceStopAllAudio() {
-    console.log('🔇 FORCE STOPPING ALL AUDIO to prevent overlap');
-    
-    // Stop current tracked music with extreme prejudice
-    if (this.currentTrack) {
-      try {
-        this.currentTrack.pause();
-        this.currentTrack.currentTime = 0;
-        this.currentTrack.volume = 0;
-        this.currentTrack.src = ''; // Clear source
-        this.currentTrack = null;
-      } catch (e) {
-        console.warn('Error force-stopping current track:', e);
-        this.currentTrack = null;
-      }
-    }
-    
-    // Find and destroy ALL audio elements on the page
-    try {
-      const allAudioElements = document.querySelectorAll('audio');
-      allAudioElements.forEach((audio, index) => {
-        try {
-          audio.pause();
-          audio.currentTime = 0;
-          audio.volume = 0;
-          audio.src = ''; // Clear source
-          // Remove from DOM if possible
-          if (audio.parentNode) {
-            audio.parentNode.removeChild(audio);
-          }
-          console.log(`🔇 DESTROYED audio element ${index + 1}`);
-        } catch (e) {
-          console.warn(`Error destroying audio element ${index + 1}:`, e);
-        }
-      });
-      console.log(`🔇 FORCE STOPPED ${allAudioElements.length} audio elements`);
-    } catch (e) {
-      console.warn('Error in force stop all audio:', e);
-    }
-    
-    // Clear any references
-    this.currentTrack = null;
-    
-    // Wait a moment for browser cleanup
-    return new Promise(resolve => setTimeout(resolve, 100));
-  }
 
-  // Stop ALL audio completely - use before starting new music
-  stopAllAudio() {
-    // Use the force stop method
-    return this.forceStopAllAudio();
-  }
 
   // Resume paused music
   resumeMusic() {
