@@ -154,45 +154,14 @@ window.AudioManager = class AudioManager {
     }
   }
   
-  // Stop current music with optional fade out - ENHANCED to stop ALL audio
-  stopMusic(fadeOut = false) {
-    console.log('🔇 Stopping current music...');
-    
-    if (!this.currentTrack) {
-      console.log('🔇 No current track to stop');
-      return;
-    }
-    
-    if (fadeOut) {
-      // Fade out over 1 second
-      const fadeStep = this.currentTrack.volume / 20;
-      const fadeInterval = setInterval(() => {
-        if (this.currentTrack && this.currentTrack.volume - fadeStep > 0) {
-          this.currentTrack.volume -= fadeStep;
-        } else {
-          if (this.currentTrack) {
-            this.currentTrack.pause();
-            this.currentTrack.currentTime = 0; // Reset to beginning
-            this.currentTrack.src = ''; // Clear source
-            this.currentTrack = null;
-          }
-          clearInterval(fadeInterval);
-          console.log('🔇 Music fade-out completed');
-        }
-      }, 50);
-    } else {
-      // Immediate stop with full cleanup
-      try {
-        this.currentTrack.pause();
-        this.currentTrack.currentTime = 0; // Reset to beginning
-        this.currentTrack.volume = 0; // Mute it
-        this.currentTrack.src = ''; // Clear source to stop loading
-        this.currentTrack = null;
-        console.log('🔇 Music stopped and cleaned up immediately');
-      } catch (e) {
-        console.warn('Error stopping music:', e);
-        this.currentTrack = null; // Force cleanup
-      }
+  // Stop current music - SIMPLE SINGLE ELEMENT APPROACH
+  stopMusic() {
+    console.log('🔇 Stopping music - single element approach');
+    if (this.audioElement) {
+      this.audioElement.pause();
+      this.audioElement.currentTime = 0;
+      this.currentTrackPath = null;
+      console.log('🔇 Music stopped successfully');
     }
   }
   
