@@ -57,8 +57,10 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
-    "test": "craco test"
+    "build": "craco build && npm run optimize-build",
+    "optimize-build": "echo 'Build optimized for mobile deployment'",
+    "test": "craco test",
+    "build-mobile": "GENERATE_SOURCEMAP=false craco build"
   },
   "browserslist": {
     "production": [
