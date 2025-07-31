@@ -71,10 +71,10 @@ window.GameRenderer = class GameRenderer {
       gameEngine.mobileInput.renderTouchIndicator(this.ctx);
     }
     
-    // Render performance stats in debug mode
-    if (gameEngine.performanceOptimized) {
-      this.renderPerformanceStats(gameEngine);
-    }
+    // Performance stats disabled for clean UI
+    // if (gameEngine.performanceOptimized) {
+    //   this.renderPerformanceStats(gameEngine);
+    // }
   }
   
   renderEnhancedBackground(level) {
