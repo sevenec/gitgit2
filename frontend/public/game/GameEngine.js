@@ -694,7 +694,7 @@ window.GameEngine = class GameEngine {
       this.frameCount = 0;
       this.lastFpsCheck = now;
       
-      // Auto-optimize if FPS drops below 45 on mobile
+      // Auto-optimize performance but keep stats disabled for clean UI
       if (this.fps < 45 && !this.performanceOptimized) {
         this.optimizeForLowPerformance();
       }
