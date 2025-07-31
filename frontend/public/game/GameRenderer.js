@@ -2041,17 +2041,27 @@ window.GameRenderer = class GameRenderer {
   }
   
   drawGasCloudObstacle(obstacle, size, color, time) {
-    this.ctx.fillStyle = color + '40';
+    // LEVEL 4: Orange/yellow nebula gas clouds
+    this.ctx.fillStyle = 'rgba(255, 170, 0, 0.6)'; // Orange gas
     
-    for (let i = 0; i < 5; i++) {
-      const offsetX = Math.sin(time + i) * size * 0.3;
-      const offsetY = Math.cos(time + i * 1.5) * size * 0.3;
-      const cloudSize = size * (0.6 + Math.sin(time * 2 + i) * 0.2);
+    for (let i = 0; i < 8; i++) {
+      const offsetX = Math.sin(time + i * 0.8) * size * 0.4;
+      const offsetY = Math.cos(time + i * 1.2) * size * 0.4;
+      const cloudSize = size * (0.4 + Math.sin(time * 1.5 + i) * 0.3);
       
       this.ctx.beginPath();
       this.ctx.arc(offsetX, offsetY, cloudSize, 0, Math.PI * 2);
       this.ctx.fill();
     }
+    
+    // Add glowing center
+    this.ctx.fillStyle = '#FFAA00';
+    this.ctx.shadowColor = '#FFAA00';
+    this.ctx.shadowBlur = 20;
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, size * 0.3, 0, Math.PI * 2);
+    this.ctx.fill();
+    this.ctx.shadowBlur = 0;
   }
   
   drawEnergyObstacle(obstacle, size, color, time) {
