@@ -1896,11 +1896,11 @@ window.GameRenderer = class GameRenderer {
     const size = Math.min(obstacle.width, obstacle.height) / 2;
     const theme = levelConfig?.theme || 'starfield';
     const accentColor = levelConfig?.accentColor || '#FFFFFF';
-    const obstacleTypes = levelConfig?.obstacleTypes || ['asteroid', 'debris'];
     
-    // Choose obstacle type based on level configuration
-    const typeIndex = Math.floor((obstacle.x + obstacle.y) * 0.01) % obstacleTypes.length;
-    const obstacleType = obstacleTypes[typeIndex];
+    // USE THE OBSTACLE TYPE THAT WAS ALREADY SET IN spawnObstacle()
+    const obstacleType = obstacle.type;
+    
+    console.log(`🎨 Drawing obstacle type: ${obstacleType} (from obstacle.type)`);
     
     this.ctx.rotate(obstacle.rotation + time * 0.5);
     
@@ -1959,8 +1959,14 @@ window.GameRenderer = class GameRenderer {
         case 'shockwave':
           this.drawApocalypseObstacle(obstacle, size, accentColor, time);
           break;
+        case 'asteroid':
+        case 'debris':
+          // Level 1 specific obstacles
+          this.drawEnhancedAsteroid(obstacle);
+          break;
         default:
           // Safe fallback
+          console.log(`🎨 Using basic fallback for obstacle type: ${obstacleType}`);
           this.drawBasicObstacle(obstacle);
           break;
       }
