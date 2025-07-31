@@ -75,18 +75,6 @@ export const FLUTTERERS = [
       sparkles: true,
       glow: true
     },
-    unlockCondition: 'reach_level_3'
-  },
-      speed: 1.1,
-      health: 100,
-      special: 'trail_sparkles'
-    },
-    colors: {
-      body: '#4A5568',
-      wing1: '#E2E8F0',
-      wing2: '#CBD5E0',
-      accent: '#F7FAFC'
-    },
     unlockCondition: 'score_5000'
   },
   {
@@ -106,6 +94,14 @@ export const FLUTTERERS = [
       wing2: '#FCD34D',
       accent: '#FEF3C7'
     },
+    visualProps: {
+      wingShape: 'broad',
+      wingPattern: 'radial',
+      size: 1.2,
+      trailEffect: false,
+      sparkles: false,
+      glow: true
+    },
     unlockCondition: 'level_5'
   },
   
@@ -118,136 +114,197 @@ export const FLUTTERERS = [
     unlocked: false,
     skills: {
       speed: 1.2,
-      health: 110,
-      special: 'freeze_enemies'
+      health: 95,
+      special: 'frost_freeze'
     },
     colors: {
       body: '#1E3A8A',
       wing1: '#3B82F6',
       wing2: '#93C5FD',
-      accent: '#DBEAFE'
+      accent: '#DBEAFE',
+      glow: '#00FFFF'
     },
-    unlockCondition: 'defeat_100_enemies'
+    visualProps: {
+      wingShape: 'crystalline',
+      wingPattern: 'frost',
+      size: 1.0,
+      trailEffect: true,
+      sparkles: true,
+      glow: true
+    },
+    unlockCondition: 'defeat_boss'
   },
   {
-    id: 'plasma_striker',
-    name: 'Plasma Striker',
+    id: 'thunder_strike',
+    name: 'Thunder Strike',
     rarity: RARITY_TIERS.RARE,
-    description: 'Generates plasma bursts on collision',
-    unlocked: false,
-    skills: {
-      speed: 1.0,
-      health: 100,
-      special: 'plasma_burst'
-    },
-    colors: {
-      body: '#7C2D12',
-      wing1: '#DC2626',
-      wing2: '#F87171',
-      accent: '#FEE2E2'
-    },
-    unlockCondition: 'survive_300_seconds'
-  },
-  {
-    id: 'void_phantom',
-    name: 'Void Phantom',
-    rarity: RARITY_TIERS.RARE,
-    description: 'Phase through obstacles briefly',
+    description: 'Electric wings crackle with energy',
     unlocked: false,
     skills: {
       speed: 1.3,
-      health: 90,
-      special: 'phase_through'
+      health: 85,
+      special: 'lightning_bolt'
     },
     colors: {
-      body: '#111827',
-      wing1: '#374151',
-      wing2: '#6B7280',
-      accent: '#D1D5DB'
+      body: '#4C1D95',
+      wing1: '#7C3AED',
+      wing2: '#A78BFA',
+      accent: '#EDE9FE',
+      glow: '#FFFF00'
     },
-    unlockCondition: 'score_25000'
+    visualProps: {
+      wingShape: 'angular',
+      wingPattern: 'electric',
+      size: 1.1,
+      trailEffect: true,
+      sparkles: false,
+      glow: true
+    },
+    unlockCondition: 'level_10'
   },
-
+  {
+    id: 'nature_spirit',
+    name: 'Nature Spirit',
+    rarity: RARITY_TIERS.RARE,
+    description: 'Connected to the life force of distant worlds',
+    unlocked: false,
+    skills: {
+      speed: 1.0,
+      health: 110,
+      special: 'healing_aura'
+    },
+    colors: {
+      body: '#15803D',
+      wing1: '#22C55E',
+      wing2: '#86EFAC',
+      accent: '#DCFCE7',
+      glow: '#00FF00'
+    },
+    visualProps: {
+      wingShape: 'ethereal',
+      wingPattern: 'ghostly',
+      size: 1.3,
+      trailEffect: true,
+      sparkles: true,
+      glow: true
+    },
+    unlockCondition: 'survive_60_seconds'
+  },
+  
   // Epic Flutterers (2)
   {
-    id: 'epic_blaster_wing',
-    name: 'Epic Blaster Wing',
+    id: 'void_walker',
+    name: 'Void Walker',
     rarity: RARITY_TIERS.EPIC,
-    description: 'Shoots energy projectiles to destroy obstacles',
+    description: 'Master of dark energy and shadow manipulation',
     unlocked: false,
     skills: {
-      speed: 1.1,
-      health: 120,
-      special: 'shoot_projectiles'
+      speed: 1.4,
+      health: 80,
+      special: 'phase_shift'
     },
     colors: {
-      body: '#581C87',
-      wing1: '#8B5CF6',
-      wing2: '#A78BFA',
-      accent: '#DDD6FE'
+      body: '#000000',
+      wing1: '#374151',
+      wing2: '#6B7280',
+      accent: '#F3F4F6',
+      glow: '#8B5CF6'
     },
-    unlockCondition: 'purchase_or_level_10'
+    visualProps: {
+      wingShape: 'armored',
+      wingPattern: 'tech',
+      size: 1.2,
+      trailEffect: true,
+      sparkles: false,
+      glow: true
+    },
+    unlockCondition: 'reach_level_12'
   },
   {
-    id: 'cosmic_guardian',
-    name: 'Cosmic Guardian',
+    id: 'phoenix_rise',
+    name: 'Phoenix Rise',
     rarity: RARITY_TIERS.EPIC,
-    description: 'Creates protective energy barriers',
-    unlocked: false,
-    skills: {
-      speed: 0.9,
-      health: 150,
-      special: 'energy_barrier'
-    },
-    colors: {
-      body: '#0F766E',
-      wing1: '#14B8A6',
-      wing2: '#5EEAD4',
-      accent: '#CCFBF1'
-    },
-    unlockCondition: 'defeat_boss_3_times'
-  },
-
-  // Legendary Flutterers (2)
-  {
-    id: 'legendary_nebula_guardian',
-    name: 'Legendary Nebula Guardian',
-    rarity: RARITY_TIERS.LEGENDARY,
-    description: 'One-hit shield and cosmic powers',
+    description: 'Reborn from cosmic flames, immune to fire damage',
     unlocked: false,
     skills: {
       speed: 1.2,
-      health: 100,
-      special: 'one_hit_shield'
+      health: 120,
+      special: 'fire_immunity'
     },
     colors: {
-      body: '#92400E',
-      wing1: '#F59E0B',
-      wing2: '#FCD34D',
-      accent: '#FEF3C7',
-      glow: '#FBBF24'
-    },
-    unlockCondition: 'purchase_or_complete_all_levels'
-  },
-  {
-    id: 'speedy_cosmic_flutter',
-    name: 'Speedy Cosmic Flutter',
-    rarity: RARITY_TIERS.LEGENDARY,
-    description: 'Ultimate speed and agility master',
-    unlocked: false,
-    skills: {
-      speed: 1.8,
-      health: 80,
-      special: 'speed_master'
-    },
-    colors: {
-      body: '#7C2D12',
+      body: '#DC2626',
       wing1: '#EF4444',
       wing2: '#F87171',
       accent: '#FEE2E2',
-      glow: '#DC2626'
+      glow: '#FF4500'
     },
-    unlockCondition: 'purchase_or_speedrun_record'
+    visualProps: {
+      wingShape: 'guardian',
+      wingPattern: 'legendary',
+      size: 1.4,
+      trailEffect: true,
+      sparkles: true,
+      glow: true
+    },
+    unlockCondition: 'score_50000'
+  },
+  
+  // Legendary Flutterers (2)
+  {
+    id: 'cosmic_empress',
+    name: 'Cosmic Empress',
+    rarity: RARITY_TIERS.LEGENDARY,
+    description: 'Supreme ruler of the butterfly nebula',
+    unlocked: false,
+    skills: {
+      speed: 1.5,
+      health: 150,
+      special: 'cosmic_shield'
+    },
+    colors: {
+      body: '#C9B037',
+      wing1: '#FFD700',
+      wing2: '#FFF8DC',
+      accent: '#FFFEF7',
+      glow: '#FFD700'
+    },
+    visualProps: {
+      wingShape: 'majestic',
+      wingPattern: 'legendary',
+      size: 1.5,
+      trailEffect: true,
+      sparkles: true,
+      glow: true
+    },
+    unlockCondition: 'defeat_all_bosses'
+  },
+  {
+    id: 'quantum_butterfly',
+    name: 'Quantum Butterfly',
+    rarity: RARITY_TIERS.LEGENDARY,
+    description: 'Exists in multiple dimensions simultaneously',
+    unlocked: false,
+    skills: {
+      speed: 1.6,
+      health: 100,
+      special: 'quantum_phase'
+    },
+    colors: {
+      body: '#7C2D12',
+      wing1: '#EA580C',
+      wing2: '#FB923C',
+      accent: '#FED7AA',
+      glow: '#00CED1'
+    },
+    visualProps: {
+      wingShape: 'streamlined',
+      wingPattern: 'speed',
+      size: 1.3,
+      trailEffect: true,
+      sparkles: true,
+      glow: true
+    },
+    unlockCondition: 'complete_game'
   }
 ];
 
