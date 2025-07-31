@@ -2065,26 +2065,35 @@ window.GameRenderer = class GameRenderer {
   }
   
   drawEnergyObstacle(obstacle, size, color, time) {
-    this.ctx.strokeStyle = color;
-    this.ctx.lineWidth = 3;
-    this.ctx.shadowColor = color;
-    this.ctx.shadowBlur = 10;
+    // LEVEL 5: Electric blue energy orbs with lightning
+    this.ctx.strokeStyle = '#FF4500'; // Orange-red energy
+    this.ctx.lineWidth = 4;
+    this.ctx.shadowColor = '#FF4500';
+    this.ctx.shadowBlur = 20;
     
+    // Main energy sphere
     this.ctx.beginPath();
     this.ctx.arc(0, 0, size, 0, Math.PI * 2);
     this.ctx.stroke();
     
-    // Energy bolts
-    for (let i = 0; i < 4; i++) {
-      const angle = (i / 4) * Math.PI * 2 + time * 3;
+    // Energy bolts radiating outward
+    for (let i = 0; i < 8; i++) {
+      const angle = (i / 8) * Math.PI * 2 + time * 4;
       const innerRadius = size * 0.3;
-      const outerRadius = size * 1.2;
+      const outerRadius = size * 1.5;
       
       this.ctx.beginPath();
       this.ctx.moveTo(Math.cos(angle) * innerRadius, Math.sin(angle) * innerRadius);
       this.ctx.lineTo(Math.cos(angle) * outerRadius, Math.sin(angle) * outerRadius);
       this.ctx.stroke();
     }
+    
+    // Pulsing core
+    this.ctx.fillStyle = '#FFFFFF';
+    const coreSize = size * 0.4 * (1 + Math.sin(time * 8) * 0.3);
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, coreSize, 0, Math.PI * 2);
+    this.ctx.fill();
     
     this.ctx.shadowBlur = 0;
   }
