@@ -1447,7 +1447,11 @@ window.GameEngine = class GameEngine {
   }
   
   checkLevelCompletion() {
-    if (this.levelTime >= this.levelDuration && !this.isBossLevel) {
+    // TESTING: Quick level advancement for testing variety
+    const quickTestingMode = true;
+    const testLevelDuration = quickTestingMode ? 8000 : this.levelDuration; // 8 seconds for testing
+    
+    if (this.levelTime >= testLevelDuration && !this.isBossLevel) {
       this.completeLevel();
     }
     
