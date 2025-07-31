@@ -450,7 +450,12 @@ window.GameRenderer = class GameRenderer {
   }
   
   renderGame(gameEngine) {
-    // Apply screen shake effects first
+    // Render level-specific background first
+    if (gameEngine && gameEngine.currentLevel) {
+      this.renderEnhancedBackground(gameEngine.currentLevel);
+    }
+    
+    // Apply screen shake effects
     this.ctx.save();
     if (gameEngine.screenEffects) {
       gameEngine.screenEffects.applyShake(this.ctx);
