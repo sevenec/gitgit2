@@ -207,7 +207,7 @@ const OpeningScreen = ({ onStartGame, onShowTutorial, onOpenFluttererSelector, o
             <Button
               onClick={onShowTutorial}
               variant="outline"
-              className="py-3 bg-blue-600/20 border-blue-400 text-blue-200 hover:bg-blue-600/40 rounded-full"
+              className="premium-button py-3 bg-blue-600/20 border-blue-400 text-blue-200 hover:bg-blue-600/40 rounded-full"
             >
               <ArrowRight className="mr-2" size={18} />
               Tutorial
