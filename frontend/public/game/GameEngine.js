@@ -655,12 +655,10 @@ window.GameEngine = class GameEngine {
       15: { 
         difficulty: { gameSpeed: 4.0, obstacleSpawnRate: 0.030, powerUpSpawnRate: 0.020 },
         theme: 'boss',
-        duration: 60000,
+        duration: 180000, // 3 minutes for boss fight
         obstacleTypes: ['final', 'ultimate'],
         backgroundColor: '#2F1B2C',
         accentColor: '#FFD700'
-      }
-        duration: 180000 // 3 minutes for boss fight
       }
     };
     
