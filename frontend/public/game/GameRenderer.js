@@ -628,6 +628,24 @@ window.GameRenderer = class GameRenderer {
     
     this.ctx.globalAlpha = 1;
   }
+
+  // Basic obstacle fallback rendering
+  drawBasicObstacle(obstacle) {
+    const size = Math.min(obstacle.width, obstacle.height) / 2;
+    const time = Date.now() * 0.001;
+    
+    this.ctx.rotate(obstacle.rotation + time * 0.5);
+    
+    // Simple colorful obstacle
+    this.ctx.fillStyle = '#FF6B9D';
+    this.ctx.strokeStyle = '#FFFFFF';
+    this.ctx.lineWidth = 2;
+    
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, size, 0, Math.PI * 2);
+    this.ctx.fill();
+    this.ctx.stroke();
+  }
   
   renderMenu() {
     // Game title
