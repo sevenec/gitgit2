@@ -59,7 +59,7 @@ const SimpleMobileGame = () => {
   };
 
   const initializeSimpleGame = () => {
-    console.log('🎮 Initializing REAL game engine...');
+    console.log('🎮 Attempting to initialize REAL game engine...');
     
     const canvas = document.getElementById('gameCanvas');
     if (!canvas) {
@@ -67,92 +67,107 @@ const SimpleMobileGame = () => {
       return;
     }
     
-    const ctx = canvas.getContext('2d');
-    
-    // Set canvas size for mobile
-    canvas.width = Math.min(400, window.innerWidth - 20);
-    canvas.height = Math.min(600, window.innerHeight - 200);
-    
-    // Initialize the REAL game engine
-    try {
-      if (typeof window.GameEngine !== 'function') {
-        console.error('❌ GameEngine not loaded!');
-        // Show error message on canvas
-        ctx.fillStyle = '#1a0033';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#ff4444';
-        ctx.font = '16px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('❌ Game Engine Not Loaded', canvas.width / 2, canvas.height / 2);
-        ctx.fillText('Check browser console for details', canvas.width / 2, canvas.height / 2 + 30);
-        return;
-      }
+    // Wait for game scripts to load with retry mechanism
+    const tryInitializeGame = (attempt = 1) => {
+      console.log(`🔄 Game initialization attempt ${attempt}/5`);
       
-      console.log('✅ Creating GameEngine instance...');
-      const gameEngine = new window.GameEngine(canvas, ctx);
-      
-      console.log('✅ Creating GameRenderer instance...');
-      const gameRenderer = new window.GameRenderer(canvas, ctx);
-      
-      // Set renderer
-      if (gameEngine.setRenderer) {
-        gameEngine.setRenderer(gameRenderer);
-      }
-      
-      // Set default flutterer
-      const defaultFlutterer = { 
-        id: 'basic_cosmic', 
-        name: 'Basic Cosmic Flutter',
-        colors: { body: '#8B4513', wing1: '#FF6B9D', wing2: '#FF8FA3', accent: '#FFFFFF' }
-      };
-      
-      if (gameEngine.setSelectedFlutterer) {
-        gameEngine.setSelectedFlutterer(defaultFlutterer);
-      }
-      
-      // Start the game!
-      console.log('🚀 Starting game...');
-      gameEngine.startGame();
-      
-      // Start game loop
-      let lastTime = 0;
-      const gameLoop = (currentTime) => {
-        const deltaTime = currentTime - lastTime;
-        lastTime = currentTime;
-
-        if (gameEngine && gameRenderer) {
-          gameEngine.update(deltaTime);
-          gameRenderer.render(gameEngine);
+      if (typeof window.GameEngine !== 'function' || typeof window.GameRenderer !== 'function') {
+        if (attempt < 5) {
+          console.log(`⏳ Game scripts not ready, retrying in ${attempt}s...`);
+          setTimeout(() => tryInitializeGame(attempt + 1), attempt * 1000);
+          return;
+        } else {
+          console.error('❌ Game scripts failed to load after 5 attempts');
+          showErrorOnCanvas(canvas, 'Game scripts not loaded');
+          return;
         }
+      }
+      
+      // Scripts are loaded, initialize game
+      const ctx = canvas.getContext('2d');
+      
+      // Set canvas size for mobile
+      canvas.width = Math.min(400, window.innerWidth - 20);
+      canvas.height = Math.min(600, window.innerHeight - 200);
+      
+      try {
+        console.log('✅ Creating GameEngine instance...');
+        const gameEngine = new window.GameEngine(canvas, ctx);
+        
+        console.log('✅ Creating GameRenderer instance...');
+        const gameRenderer = new window.GameRenderer(canvas, ctx);
+        
+        // Set renderer
+        if (gameEngine.setRenderer) {
+          gameEngine.setRenderer(gameRenderer);
+        }
+        
+        // Set default flutterer
+        const defaultFlutterer = { 
+          id: 'basic_cosmic', 
+          name: 'Basic Cosmic Flutter',
+          colors: { body: '#8B4513', wing1: '#FF6B9D', wing2: '#FF8FA3', accent: '#FFFFFF' }
+        };
+        
+        if (gameEngine.setSelectedFlutterer) {
+          gameEngine.setSelectedFlutterer(defaultFlutterer);
+        }
+        
+        // Start the game!
+        console.log('🚀 Starting game...');
+        gameEngine.startGame();
+        
+        // Start game loop
+        let lastTime = performance.now();
+        const gameLoop = (currentTime) => {
+          const deltaTime = currentTime - lastTime;
+          lastTime = currentTime;
 
+          try {
+            if (gameEngine && gameRenderer) {
+              gameEngine.update(deltaTime);
+              gameRenderer.render(gameEngine);
+            }
+          } catch (loopError) {
+            console.error('❌ Game loop error:', loopError);
+          }
+
+          requestAnimationFrame(gameLoop);
+        };
+        
+        // Start level 1 music
+        setTimeout(() => {
+          if (window.audioManager) {
+            try {
+              window.audioManager.playLevelMusic(1);
+              console.log('🎵 Level 1 music started');
+            } catch (audioError) {
+              console.error('❌ Audio failed:', audioError);
+            }
+          }
+        }, 500);
+        
         requestAnimationFrame(gameLoop);
-      };
-      
-      // Start level 1 music
-      if (window.audioManager) {
-        try {
-          window.audioManager.playLevelMusic(1);
-          console.log('🎵 Level 1 music started');
-        } catch (audioError) {
-          console.error('❌ Audio failed:', audioError);
-        }
+        console.log('✅ REAL GAME ENGINE STARTED SUCCESSFULLY!');
+        
+      } catch (error) {
+        console.error('❌ Game engine initialization failed:', error);
+        showErrorOnCanvas(canvas, `Game Error: ${error.message}`);
       }
-      
-      requestAnimationFrame(gameLoop);
-      console.log('✅ REAL GAME ENGINE STARTED!');
-      
-    } catch (error) {
-      console.error('❌ Game engine initialization failed:', error);
-      
-      // Show error on canvas
-      ctx.fillStyle = '#1a0033';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#ff4444';
-      ctx.font = '16px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('❌ Game Engine Error', canvas.width / 2, canvas.height / 2 - 20);
-      ctx.fillText('Check console for details', canvas.width / 2, canvas.height / 2 + 20);
-    }
+    };
+    
+    tryInitializeGame();
+  };
+  
+  const showErrorOnCanvas = (canvas, message) => {
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#1a0033';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#ff4444';
+    ctx.font = '16px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('❌ ' + message, canvas.width / 2, canvas.height / 2 - 20);
+    ctx.fillText('Check console for details', canvas.width / 2, canvas.height / 2 + 20);
   };
 
   if (gameState === 'opening') {
