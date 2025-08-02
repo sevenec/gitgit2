@@ -22,28 +22,28 @@ window.AudioManager = class AudioManager {
     // COMPLETE LEVEL MUSIC MAPPING - 15 UNIQUE TRACKS + INTRO (ZERO REPETITION!)
     this.levelMusicMap = {
       // INTRO SCREEN - Epic welcome music
-      'intro': '/sounds/intro-cinematic-battle-score.mp3',
+      'intro': './sounds/intro-cinematic-battle-score.mp3',
       
       // EXPLORATION PHASE (Levels 1-5) - Original space ambience uploads
-      1: '/sounds/level1-space-epic-cinematic.mp3',        // Epic opening
-      2: '/sounds/level2-traveling-through-space.mp3',     // Journey begins
-      3: '/sounds/level3-lost-in-space.mp3',               // Mystery & danger
-      4: '/sounds/level4-space-music.mp3',                 // Cosmic ambience
-      5: '/sounds/level5-space-clouds-velvet.mp3',         // Ethereal beauty
+      1: './sounds/level1-space-epic-cinematic.mp3',        // Epic opening
+      2: './sounds/level2-traveling-through-space.mp3',     // Journey begins
+      3: './sounds/level3-lost-in-space.mp3',               // Mystery & danger
+      4: './sounds/level4-space-music.mp3',                 // Cosmic ambience
+      5: './sounds/level5-space-clouds-velvet.mp3',         // Ethereal beauty
       
       // ADVENTURE PHASE (Levels 6-10) - Second wave space uploads  
-      6: '/sounds/level6-space-travel.mp3',                // Space travel adventure
-      7: '/sounds/level7-space-flight.mp3',                // Dynamic flight
-      8: '/sounds/level8-calm-space-music.mp3',            // Calm before storm
-      9: '/sounds/level9-ambient-space-arpeggio.mp3',      // Building tension
-      10: '/sounds/level10-space-ambient.mp3',             // Deep space mystery
+      6: './sounds/level6-space-travel.mp3',                // Space travel adventure
+      7: './sounds/level7-space-flight.mp3',                // Dynamic flight
+      8: './sounds/level8-calm-space-music.mp3',            // Calm before storm
+      9: './sounds/level9-ambient-space-arpeggio.mp3',      // Building tension
+      10: './sounds/level10-space-ambient.mp3',             // Deep space mystery
       
       // FINAL BATTLE PHASE (Levels 11-15) - Epic battle finale uploads
-      11: '/sounds/level11-epic-cinematic-battle.mp3',     // Epic battle begins
-      12: '/sounds/level12-glorious-army-battle.mp3',      // Glorious army march
-      13: '/sounds/level13-war-battle-military.mp3',       // Military war intensity
-      14: '/sounds/level14-z-battle-finale.mp3',           // Z-Battle finale prep
-      15: '/sounds/level5-space-clouds-velvet.mp3'         // MOTHER INSECT BOSS - Ethereal finale
+      11: './sounds/level11-epic-cinematic-battle.mp3',     // Epic battle begins
+      12: './sounds/level12-glorious-army-battle.mp3',      // Glorious army march
+      13: './sounds/level13-war-battle-military.mp3',       // Military war intensity
+      14: './sounds/level14-z-battle-finale.mp3',           // Z-Battle finale prep
+      15: './sounds/level5-space-clouds-velvet.mp3'         // MOTHER INSECT BOSS - Ethereal finale
     };
     
     // Initialize audio context
