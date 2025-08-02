@@ -25,26 +25,29 @@ const OpeningScreen = ({ onStartGame, onShowTutorial, onOpenFluttererSelector, o
       setCurrentTip((prev) => (prev + 1) % gameTips.length);
     }, 3000);
 
-    // 🎵 START INTRO MUSIC when app opens (with proper null checks)
-    if (audioManager) {
-      console.log('🎵 Starting intro music on app open - OpeningScreen');
-      audioManager.playIntroMusic();
-    } else {
-      console.warn('⚠️ AudioManager not ready yet - will retry intro music');
-      // Retry after AudioManager is ready
-      const retryIntroMusic = () => {
-        if (window.audioManager) {
-          console.log('🎵 Starting intro music on retry - OpeningScreen');
-          window.audioManager.playIntroMusic();
-        } else {
-          setTimeout(retryIntroMusic, 500); // Retry every 500ms
-        }
-      };
-      setTimeout(retryIntroMusic, 1000); // Wait 1 second then start retrying
-    }
+    // 🎵 ADD CLICK HANDLER FOR AUDIO CONTEXT
+    const handleUserInteraction = () => {
+      console.log('🎵 User clicked - attempting to start audio');
+      if (audioManager) {
+        audioManager.resumeAudioContext();
+        audioManager.playIntroMusic();
+      } else if (window.audioManager) {
+        window.audioManager.resumeAudioContext();
+        window.audioManager.playIntroMusic();
+      }
+      // Remove listener after first successful interaction
+      document.removeEventListener('click', handleUserInteraction);
+      document.removeEventListener('touchstart', handleUserInteraction);
+    };
+
+    // Add click and touch listeners for mobile
+    document.addEventListener('click', handleUserInteraction);
+    document.addEventListener('touchstart', handleUserInteraction);
 
     return () => {
       clearInterval(tipInterval);
+      document.removeEventListener('click', handleUserInteraction);
+      document.removeEventListener('touchstart', handleUserInteraction);
     };
   }, [audioManager]);
 
