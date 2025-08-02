@@ -21,7 +21,7 @@ function App() {
       )}
       
       <div className={`screen-transition-enter-active ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-        <BrowserRouter>
+        <BrowserRouter basename="/gitgit2/mobile-package-ready">
           <Routes>
             <Route path="/" element={<Game />} />
           </Routes>
