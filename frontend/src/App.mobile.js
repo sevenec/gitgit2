@@ -25,19 +25,37 @@ const SimpleMobileGame = () => {
   const handleStartGame = () => {
     console.log('🎮 Starting game...');
     
-    // Try to play audio on user interaction
+    // Initialize and test audio on user interaction
     if (window.audioManager) {
       try {
         window.audioManager.resumeAudioContext();
+        console.log('🎵 Audio context resumed');
+        
+        // Test intro music
         window.audioManager.playIntroMusic();
         console.log('🎵 Intro music started');
       } catch (error) {
-        console.error('❌ Audio failed:', error);
+        console.error('❌ Audio initialization failed:', error);
       }
+    } else if (window.AudioManager) {
+      try {
+        console.log('🎵 Creating new AudioManager...');
+        const audioManager = new window.AudioManager();
+        window.audioManager = audioManager;
+        audioManager.resumeAudioContext();
+        audioManager.playIntroMusic();
+        console.log('🎵 AudioManager created and intro music started');
+      } catch (error) {
+        console.error('❌ AudioManager creation failed:', error);
+      }
+    } else {
+      console.warn('⚠️ No AudioManager available');
     }
     
     setGameState('playing');
-    initializeSimpleGame();
+    
+    // Small delay to ensure state change
+    setTimeout(initializeSimpleGame, 200);
   };
 
   const initializeSimpleGame = () => {
