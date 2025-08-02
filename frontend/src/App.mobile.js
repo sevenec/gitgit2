@@ -197,7 +197,32 @@ const SimpleMobileGame = () => {
           </button>
           
           <button
-            onClick={() => console.log('🎵 Audio test')}
+            onClick={() => {
+              console.log('🎵 Testing audio...');
+              if (window.audioManager) {
+                try {
+                  window.audioManager.resumeAudioContext();
+                  window.audioManager.playSound('sparkles', { volume: 0.7 });
+                  console.log('✅ Test audio played');
+                } catch (error) {
+                  console.error('❌ Test audio failed:', error);
+                }
+              } else if (window.AudioManager) {
+                try {
+                  console.log('🎵 Creating AudioManager for test...');
+                  const audioManager = new window.AudioManager();
+                  window.audioManager = audioManager;
+                  audioManager.resumeAudioContext();
+                  audioManager.playSound('sparkles', { volume: 0.7 });
+                  console.log('✅ Test audio played after AudioManager creation');
+                } catch (error) {
+                  console.error('❌ AudioManager creation failed:', error);
+                }
+              } else {
+                console.warn('⚠️ No audio system available');
+                alert('No audio system detected');
+              }
+            }}
             className="w-64 py-3 text-lg bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all duration-300"
           >
             🎵 Test Audio
