@@ -41,25 +41,99 @@ const SimpleMobileGame = () => {
   };
 
   const initializeSimpleGame = () => {
-    // Simple game initialization without complex React components
+    console.log('🎮 Initializing REAL game engine...');
+    
     const canvas = document.getElementById('gameCanvas');
-    if (canvas) {
-      const ctx = canvas.getContext('2d');
-      canvas.width = Math.min(400, window.innerWidth - 20);
-      canvas.height = Math.min(600, window.innerHeight - 200);
+    if (!canvas) {
+      console.error('❌ Canvas not found!');
+      return;
+    }
+    
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas size for mobile
+    canvas.width = Math.min(400, window.innerWidth - 20);
+    canvas.height = Math.min(600, window.innerHeight - 200);
+    
+    // Initialize the REAL game engine
+    try {
+      if (typeof window.GameEngine !== 'function') {
+        console.error('❌ GameEngine not loaded!');
+        // Show error message on canvas
+        ctx.fillStyle = '#1a0033';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#ff4444';
+        ctx.font = '16px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('❌ Game Engine Not Loaded', canvas.width / 2, canvas.height / 2);
+        ctx.fillText('Check browser console for details', canvas.width / 2, canvas.height / 2 + 30);
+        return;
+      }
       
-      // Basic game loop
+      console.log('✅ Creating GameEngine instance...');
+      const gameEngine = new window.GameEngine(canvas, ctx);
+      
+      console.log('✅ Creating GameRenderer instance...');
+      const gameRenderer = new window.GameRenderer(canvas, ctx);
+      
+      // Set renderer
+      if (gameEngine.setRenderer) {
+        gameEngine.setRenderer(gameRenderer);
+      }
+      
+      // Set default flutterer
+      const defaultFlutterer = { 
+        id: 'basic_cosmic', 
+        name: 'Basic Cosmic Flutter',
+        colors: { body: '#8B4513', wing1: '#FF6B9D', wing2: '#FF8FA3', accent: '#FFFFFF' }
+      };
+      
+      if (gameEngine.setSelectedFlutterer) {
+        gameEngine.setSelectedFlutterer(defaultFlutterer);
+      }
+      
+      // Start the game!
+      console.log('🚀 Starting game...');
+      gameEngine.startGame();
+      
+      // Start game loop
+      let lastTime = 0;
+      const gameLoop = (currentTime) => {
+        const deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+
+        if (gameEngine && gameRenderer) {
+          gameEngine.update(deltaTime);
+          gameRenderer.render(gameEngine);
+        }
+
+        requestAnimationFrame(gameLoop);
+      };
+      
+      // Start level 1 music
+      if (window.audioManager) {
+        try {
+          window.audioManager.playLevelMusic(1);
+          console.log('🎵 Level 1 music started');
+        } catch (audioError) {
+          console.error('❌ Audio failed:', audioError);
+        }
+      }
+      
+      requestAnimationFrame(gameLoop);
+      console.log('✅ REAL GAME ENGINE STARTED!');
+      
+    } catch (error) {
+      console.error('❌ Game engine initialization failed:', error);
+      
+      // Show error on canvas
       ctx.fillStyle = '#1a0033';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#ffffff';
-      ctx.font = '20px Arial';
+      ctx.fillStyle = '#ff4444';
+      ctx.font = '16px Arial';
       ctx.textAlign = 'center';
-      ctx.fillText('🎮 BUTTERFLY NEBULA BRAWL', canvas.width / 2, canvas.height / 2 - 40);
-      ctx.fillText('🎵 Audio Loading...', canvas.width / 2, canvas.height / 2);
-      ctx.fillText('🔧 Simplified Mobile Version', canvas.width / 2, canvas.height / 2 + 40);
-      ctx.fillText('✅ Core Game Engine Ready!', canvas.width / 2, canvas.height / 2 + 80);
-      
-      console.log('🎮 Simple game canvas initialized');
+      ctx.fillText('❌ Game Engine Error', canvas.width / 2, canvas.height / 2 - 20);
+      ctx.fillText('Check console for details', canvas.width / 2, canvas.height / 2 + 20);
     }
   };
 
